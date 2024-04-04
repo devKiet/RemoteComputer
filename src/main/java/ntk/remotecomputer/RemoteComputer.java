@@ -11,17 +11,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.Base64;
-import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -460,8 +459,13 @@ public class RemoteComputer extends javax.swing.JFrame {
                             // Hide the current frame and show the client page on the EDT
                             SwingUtilities.invokeLater(() -> {
                                 dispose();
-                                clientfirstpage client = new clientfirstpage(jTextField7.getText());
-                                client.setVisible(true);
+                                clientfirstpage client;
+                                try {
+                                    client = new clientfirstpage(jTextField7.getText());
+                                    client.setVisible(true);
+                                } catch (UnknownHostException ex) {
+                                    Logger.getLogger(RemoteComputer.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             });
                         } else {
                             // Show access denied message on the EDT
@@ -531,33 +535,8 @@ public class RemoteComputer extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_jButton4ActionPerformed
     
-    public static String getWifiIPAddress() {
-        try {
-            // Liệt kê tất cả các giao diện mạng
-            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-            
-            while (networkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = networkInterfaces.nextElement(); 
-                
-                if (networkInterface.isUp() && !networkInterface.isLoopback()) { 
-                    if (networkInterface.getName().contains("wlan") || networkInterface.getDisplayName().toLowerCase().contains("wi-fi")) {
-                        // Lấy danh sách các địa chỉ IP của giao diện
-                        Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
-                        
-                        while (inetAddresses.hasMoreElements()) {
-                            InetAddress inetAddress = inetAddresses.nextElement();
-                            // Lấy địa chỉ IPv4
-                            if (inetAddress instanceof Inet4Address) {
-                                return inetAddress.getHostAddress();
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        return "-.-.-.-";
+    public static String getWifiIPAddress() throws UnknownHostException {
+        return Inet4Address.getLocalHost().getHostAddress();
     }
     
     public static String generateNewToken() {

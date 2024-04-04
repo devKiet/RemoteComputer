@@ -10,6 +10,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
@@ -35,6 +36,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.io.ObjectOutputStream;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 /**
  *
@@ -80,7 +84,7 @@ public class clientremoteform extends javax.swing.JFrame {
         
         setSize(screenSize.width, screenSize.height + titleBarHeight);
         panel.setSize(screenSize.width, screenSize.height);
-        
+        this.setExtendedState(JFrame.MAXIMIZED_HORIZ);
         //Setting IP address of Server
         serverName = ip;
         
@@ -103,6 +107,22 @@ public class clientremoteform extends javax.swing.JFrame {
                 System.out.println("Frame closed and threads stopped.");
             }
         });
+        
+//        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_WINDOWS, 0, false), "pressedWindows");
+//        panel.getActionMap().put("pressedWindows", new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                //
+//            }
+//        });
+//
+//        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_WINDOWS, 0, true), "releasedWindows");
+//        panel.getActionMap().put("releasedWindows", new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                // 
+//            }
+//        });
     }
 
     /**
@@ -307,9 +327,6 @@ public class clientremoteform extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 try {
-                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
-                        e.consume(); // Consume the Windows key event
-                    }
                     writer.writeInt(e.getID());
                     System.out.println("Key Pressed: " + e.getKeyChar());
                     writer.writeInt(e.getKeyCode());
@@ -317,15 +334,16 @@ public class clientremoteform extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
+                if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+                    e.consume();
+                }
             }
                 
             //Key Released Event
             @Override
             public void keyReleased(KeyEvent e) {
                 try {
-                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
-                        e.consume(); // Consume the Windows key event
-                    }
                     writer.writeInt(e.getID());
                     System.out.println("Key Released");
                     writer.writeInt(e.getKeyCode());
@@ -333,7 +351,9 @@ public class clientremoteform extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+                    e.consume();
+                }
             }
             
             @Override

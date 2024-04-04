@@ -3,11 +3,7 @@ package ntk.remotecomputer.client;
 
 import java.io.IOException;
 import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -16,7 +12,7 @@ import javax.swing.JOptionPane;
 public class clientfirstpage extends javax.swing.JFrame {
 
     //Initializing JFrame
-    public clientfirstpage(String serverIp) {
+    public clientfirstpage(String serverIp) throws UnknownHostException {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
         setIconImage(icon.getImage());
@@ -199,35 +195,8 @@ public class clientfirstpage extends javax.swing.JFrame {
         c1.setVisible(true);   
     }//GEN-LAST:event_jButton4ActionPerformed
     
-    public static String getWifiIPAddress() {
-        try {
-            // Liệt kê tất cả các giao diện mạng
-            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-            
-            while (networkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = networkInterfaces.nextElement();
-                
-                // Kiểm tra nếu giao diện đang hoạt động và không phải là loopback
-                if (networkInterface.isUp() && !networkInterface.isLoopback()) {
-                    // Kiểm tra tên giao diện để xác định WiFi adapter
-                    if (networkInterface.getName().contains("wlan") || networkInterface.getDisplayName().toLowerCase().contains("wi-fi")) {
-                        // Lấy danh sách các địa chỉ IP của giao diện
-                        Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
-                        
-                        while (inetAddresses.hasMoreElements()) {
-                            InetAddress inetAddress = inetAddresses.nextElement();
-                            // Lấy địa chỉ IPv4
-                            if (inetAddress instanceof Inet4Address) {
-                                return inetAddress.getHostAddress();
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        return "Not connected";
+    public static String getWifiIPAddress() throws UnknownHostException {
+        return Inet4Address.getLocalHost().getHostAddress();
     }
     
     public static void main(String args[]) throws UnknownHostException {
@@ -235,7 +204,11 @@ public class clientfirstpage extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new clientfirstpage("192.168.2.22").setVisible(true);
+                try {
+                    new clientfirstpage(getWifiIPAddress()).setVisible(true);
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

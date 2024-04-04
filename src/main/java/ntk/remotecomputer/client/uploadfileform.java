@@ -21,7 +21,7 @@ public class uploadfileform extends javax.swing.JFrame {
    
     public uploadfileform(String ip) {
         this.ip = ip;
-        setSize(600, 400);
+        setSize(700, 400);
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
         setIconImage(icon.getImage());
@@ -35,6 +35,7 @@ public class uploadfileform extends javax.swing.JFrame {
         jFileChooser1 = new javax.swing.JFileChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -83,7 +84,7 @@ public class uploadfileform extends javax.swing.JFrame {
 
         try {
             outputStream.writeObject(fileEvent);
-            JOptionPane.showMessageDialog(null, "File uploaded successfully!");
+            JOptionPane.showMessageDialog(this, "File uploaded successfully!");
             System.out.println("Done...Going to exit");
             Thread.sleep(1000);
             outputStream.close();
@@ -103,8 +104,6 @@ public class uploadfileform extends javax.swing.JFrame {
         try {
       
             String serverName = ip; //loop back ip   
-            this.setBounds(550, 150, 800, 700);
-            this.setResizable(false);
             Socket sock = new Socket(serverName, 1234);
             Scanner input = new Scanner(System.in);
             System.out.print("Enter the file name : ");
