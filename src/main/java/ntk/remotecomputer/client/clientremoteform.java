@@ -80,7 +80,7 @@ public class clientremoteform extends javax.swing.JFrame {
 
         panel.setSize(screenSize.width, screenSize.height);
         this.setSize(screenSize.width, screenSize.height + titleBarHeight);
-        this.setExtendedState(JFrame.MAXIMIZED_HORIZ);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         //Setting IP address of Server
         serverName = ip;
