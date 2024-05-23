@@ -91,15 +91,12 @@ public class serverstartscreen extends javax.swing.JFrame {
         jLabel1.setBounds(70, 20, 620, 34);
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel2.setText("Server, please select any one of the below options to connect with your client");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(10, 240, 1080, 30);
+        jLabel2.setBounds(70, 250, 1080, 30);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
-        jLabel3.setMaximumSize(new java.awt.Dimension(1920, 1079));
-        jLabel3.setMinimumSize(new java.awt.Dimension(1920, 1079));
-        jLabel3.setPreferredSize(new java.awt.Dimension(1920, 1079));
         getContentPane().add(jLabel3);
         jLabel3.setBounds(0, 0, 1930, 1050);
 
@@ -114,12 +111,8 @@ public class serverstartscreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
         serverfile s = new serverfile();
-        try {
-            s.fileServer();
-        } catch (IOException ex) {
-            Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed

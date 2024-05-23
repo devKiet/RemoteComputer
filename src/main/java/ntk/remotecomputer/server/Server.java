@@ -201,10 +201,6 @@ public class Server extends Thread {
         Server_Thread_4.start();
     }
     
-    public JFrame getServerFrame() {
-        return serverScreen;
-    }
-    
     // Method to send screenshots to clients
     private static void sendScreen(final Robot robot) throws IOException {
         //Get current screen dimensions

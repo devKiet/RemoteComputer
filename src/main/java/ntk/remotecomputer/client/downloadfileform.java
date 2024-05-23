@@ -32,7 +32,7 @@ public class downloadfileform extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -47,7 +47,7 @@ public class downloadfileform extends javax.swing.JFrame {
 
         jTextField1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         getContentPane().add(jTextField1);
-        jTextField1.setBounds(53, 142, 586, 28);
+        jTextField1.setBounds(53, 142, 586, 40);
 
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
         jButton1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -95,9 +95,10 @@ public class downloadfileform extends javax.swing.JFrame {
             System.out.println("Output file : " + outputFile + " is successfully saved ");
             JOptionPane.showMessageDialog(null, "File downloaded successfully!");
             Thread.sleep(3000);
-            System.exit(0);
+            this.dispose();
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error: " + e);
         }
     }
     

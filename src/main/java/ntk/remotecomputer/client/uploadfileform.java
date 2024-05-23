@@ -20,6 +20,7 @@ public class uploadfileform extends javax.swing.JFrame {
    
     public uploadfileform(String ip) {
         this.ip = ip;
+        setSize(803, 700);
         initComponents();
     }
 
@@ -27,10 +28,9 @@ public class uploadfileform extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-		/* choose file from file chooser */
         jFileChooser1 = new javax.swing.JFileChooser();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -60,7 +60,7 @@ public class uploadfileform extends javax.swing.JFrame {
     private static ObjectOutputStream outputStream = null;
     private FileEvent fileEvent = null;
     private static String fname = null;
-    private String destinationPath = "C:/";
+    private String destinationPath = "C:/User";
 
 	/* send file from client to server */
     public void sendFile() {
@@ -98,11 +98,13 @@ public class uploadfileform extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "File uploaded successfully!");
             System.out.println("Done...Going to exit");
             Thread.sleep(3000);
-            System.exit(0);
+            this.dispose();
         } catch (InterruptedException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error: " + e);
         } catch (IOException ex) {
             Logger.getLogger(uploadfileform.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Error: " + ex);
         }
 
     }
