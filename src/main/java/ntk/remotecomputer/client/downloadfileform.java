@@ -2,11 +2,10 @@
 package ntk.remotecomputer.client;
 
 import ntk.remotecomputer.server.FileEvent;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -62,6 +61,8 @@ static String ip="";
         });
         getContentPane().add(jButton1);
         jButton1.setBounds(267, 206, 171, 28);
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         getContentPane().add(jLabel3);
         jLabel3.setBounds(0, 0, 700, 300);
 

@@ -1,11 +1,11 @@
 
 package ntk.remotecomputer.server;
 
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -18,12 +18,25 @@ public class serverstartscreen extends javax.swing.JFrame {
         Dimension screenDimensions = toolkit.getScreenSize();
         jLabel3.setSize(screenDimensions.width, screenDimensions.height);        
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        InetAddress IP;
+        try {
+            IP = InetAddress.getLocalHost();
+            System.out.println("My IP Address is:");
+            System.out.println(IP.getHostAddress());
+            String x = IP.getHostAddress();
+            jTextField2.setText(x);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField2 = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -32,6 +45,27 @@ public class serverstartscreen extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
+
+        jTextField2.setEditable(false);
+        jTextField2.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        jTextField2.setToolTipText("");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextField2);
+        jTextField2.setBounds(70, 160, 366, 42);
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel5.setText("Client Enter this IP Address to remote server");
+        getContentPane().add(jLabel5);
+        jLabel5.setBounds(70, 120, 420, 22);
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
+        jLabel4.setText("Your IP address");
+        getContentPane().add(jLabel4);
+        jLabel4.setBounds(70, 70, 227, 34);
 
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
         jButton1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -43,7 +77,7 @@ public class serverstartscreen extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(560, 200, 101, 28);
+        jButton1.setBounds(280, 290, 150, 30);
 
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
         jButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -55,19 +89,19 @@ public class serverstartscreen extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(520, 260, 180, 28);
+        jButton2.setBounds(70, 290, 180, 28);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Welcome to Remote Desktop Connector!");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(360, 50, 650, 34);
+        jLabel1.setBounds(30, 20, 660, 34);
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Server, please select any one of the below options to connect with your client");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(120, 110, 1090, 30);
+        jLabel2.setBounds(10, 240, 1080, 30);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.jpg"))); // NOI18N
         jLabel3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -99,6 +133,10 @@ public class serverstartscreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -127,7 +165,6 @@ public class serverstartscreen extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new serverstartscreen().setVisible(true);
-
             }
         });
     }
@@ -138,5 +175,8 @@ public class serverstartscreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    public static javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }

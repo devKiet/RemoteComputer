@@ -1,16 +1,8 @@
 
 package ntk.remotecomputer.client;
 
-import ntk.remotecomputer.server.Server;
-import ntk.remotecomputer.server.serverfile;
-import ntk.remotecomputer.server.servermsg;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -22,6 +14,16 @@ public class clientfirstpage extends javax.swing.JFrame {
     public clientfirstpage() {
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        try {
+            //Getting IP address of the host
+            InetAddress IP = InetAddress.getLocalHost();
+            System.out.println("My IP Address is:");
+            System.out.println(IP.getHostAddress());
+            String x = IP.getHostAddress();
+            jTextField2.setText(x);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -69,7 +71,13 @@ public class clientfirstpage extends javax.swing.JFrame {
         getContentPane().add(jLabel3);
         jLabel3.setBounds(50, 300, 280, 22);
 
+        jTextField2.setEditable(false);
         jTextField2.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jTextField2);
         jTextField2.setBounds(50, 340, 366, 42);
 
@@ -101,6 +109,8 @@ public class clientfirstpage extends javax.swing.JFrame {
         });
         getContentPane().add(jButton3);
         jButton3.setBounds(750, 50, 220, 51);
+
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         getContentPane().add(jLabel6);
         jLabel6.setBounds(0, 0, 1930, 1050);
 
@@ -158,25 +168,16 @@ public class clientfirstpage extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton3MouseReleased
 
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
     public static void main(String args[]) throws UnknownHostException {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                try {
-                    
-                    //Setting Host IP address in the frame
-                    new clientfirstpage().setVisible(true);
-                    
-                    //Getting IP address of the host
-                    InetAddress IP = InetAddress.getLocalHost();
-                    System.out.println("My IP Address is:");
-                    System.out.println(IP.getHostAddress());
-                    String x = IP.getHostAddress();
-                    jTextField2.setText(x);
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                new clientfirstpage().setVisible(true);
             }
         });
     }

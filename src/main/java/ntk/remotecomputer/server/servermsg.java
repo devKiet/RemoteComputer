@@ -2,7 +2,6 @@
 package ntk.remotecomputer.server;
 
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
@@ -70,7 +69,7 @@ public class servermsg extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel2.setText("Enter the message that you want to send");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(67, 370, 511, 30);
+        jLabel2.setBounds(140, 380, 511, 30);
 
         jButton1.setBackground(new java.awt.Color(0, 102, 0));
         jButton1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -94,7 +93,10 @@ public class servermsg extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea2);
 
         getContentPane().add(jScrollPane2);
-        jScrollPane2.setBounds(67, 85, 655, 233);
+        jScrollPane2.setBounds(67, 85, 655, 260);
+
+        jLabel3.setBackground(new java.awt.Color(102, 255, 255));
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         getContentPane().add(jLabel3);
         jLabel3.setBounds(0, 0, 800, 700);
 

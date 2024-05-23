@@ -64,7 +64,7 @@ static String ip="";
         getContentPane().add(jButton2);
         jButton2.setBounds(272, 356, 237, 36);
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/imgonline-com-ua-resize-moyxaEMgPu6.jpg"))); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         getContentPane().add(jLabel4);
         jLabel4.setBounds(0, 0, 800, 700);
 
