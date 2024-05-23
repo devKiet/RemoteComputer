@@ -10,13 +10,12 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class downloadfileform extends javax.swing.JFrame {
-static String ip="";
+    static String ip = "";
  
     public downloadfileform(String ip) {
         this.ip = ip;
@@ -76,8 +75,6 @@ static String ip="";
 	/* Function for downloading file */
     public void downloadFile() {
         try {
-
-		/* file event - file management */
             fileEvent = (FileEvent) inputStream.readObject();
             if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
                 System.out.println("Error occurred ..So exiting");
@@ -88,29 +85,22 @@ static String ip="";
                 new File(fileEvent.getDestinationDirectory()).mkdirs();
             }
 
-		/* Destination file */
             dstFile = new File(outputFile);
 
-		/* send File as output object */
             fileOutputStream = new FileOutputStream(dstFile);
             fileOutputStream.write(fileEvent.getFileData());
             fileOutputStream.flush();
             fileOutputStream.close();
 
-		/* Outfile successful message */
             System.out.println("Output file : " + outputFile + " is successfully saved ");
             JOptionPane.showMessageDialog(null, "File downloaded successfully!");
             Thread.sleep(3000);
             System.exit(0);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }
     }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
            
@@ -119,24 +109,20 @@ static String ip="";
             this.setBounds(550, 150, 700, 300);
             this.setResizable(false);
 
-		/* Read name from textbox*/
             String keyRead = jTextField1.getText();
             String sourceFilePath2 = keyRead;
             System.out.println("Path is: " + sourceFilePath2);
           
-               /* Get output stream and download the file */
 	    OutputStream ostream = null;
             ostream = sock.getOutputStream();
             PrintWriter pwrite = new PrintWriter(ostream, true);
             pwrite.println(sourceFilePath2 + " download");
             inputStream = new ObjectInputStream(sock.getInputStream());
            
-		/* Call function download file */
             this.downloadFile();
             sock.close();
             ostream.close();
             pwrite.close();
-
         } catch (IOException ex) {
             Logger.getLogger(downloadfileform.class.getName()).log(Level.SEVERE, null, ex);
         }

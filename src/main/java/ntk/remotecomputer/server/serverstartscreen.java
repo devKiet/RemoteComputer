@@ -4,8 +4,12 @@ package ntk.remotecomputer.server;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -13,21 +17,10 @@ import javax.swing.JFrame;
 public class serverstartscreen extends javax.swing.JFrame {
 
     public serverstartscreen() {
-        initComponents();
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenDimensions = toolkit.getScreenSize();
-        jLabel3.setSize(screenDimensions.width, screenDimensions.height);        
+        initComponents();      
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        InetAddress IP;
-        try {
-            IP = InetAddress.getLocalHost();
-            System.out.println("My IP Address is:");
-            System.out.println(IP.getHostAddress());
-            String x = IP.getHostAddress();
-            jTextField2.setText(x);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String ipAddress = getWifiIPAddress();
+        jTextField2.setText(ipAddress);
     }
 
     @SuppressWarnings("unchecked")
@@ -92,10 +85,10 @@ public class serverstartscreen extends javax.swing.JFrame {
         jButton2.setBounds(70, 290, 180, 28);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Welcome to Remote Desktop Connector!");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel1.setText("Welcome to Remote Computer");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(30, 20, 660, 34);
+        jLabel1.setBounds(70, 20, 620, 34);
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -103,18 +96,17 @@ public class serverstartscreen extends javax.swing.JFrame {
         getContentPane().add(jLabel2);
         jLabel2.setBounds(10, 240, 1080, 30);
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.jpg"))); // NOI18N
-        jLabel3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
+        jLabel3.setMaximumSize(new java.awt.Dimension(1920, 1079));
+        jLabel3.setMinimumSize(new java.awt.Dimension(1920, 1079));
+        jLabel3.setPreferredSize(new java.awt.Dimension(1920, 1079));
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(0, 0, 1370, 770);
+        jLabel3.setBounds(0, 0, 1930, 1050);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        
-        //Chat Method
         servermsg s = new servermsg();
         s.setBounds (0, 0 , 800 , 700 );
         s.setResizable(false);
@@ -122,9 +114,6 @@ public class serverstartscreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        
-        //File server call
         serverfile s = new serverfile();
         try {
             s.fileServer();
@@ -136,7 +125,38 @@ public class serverstartscreen extends javax.swing.JFrame {
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
-
+    
+    public static String getWifiIPAddress() {
+        try {
+            // Liệt kê tất cả các giao diện mạng
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+                
+                // Kiểm tra nếu giao diện đang hoạt động và không phải là loopback
+                if (networkInterface.isUp() && !networkInterface.isLoopback()) {
+                    // Kiểm tra tên giao diện để xác định WiFi adapter
+                    if (networkInterface.getName().contains("wlan") || networkInterface.getDisplayName().toLowerCase().contains("wi-fi")) {
+                        // Lấy danh sách các địa chỉ IP của giao diện
+                        Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+                        
+                        while (inetAddresses.hasMoreElements()) {
+                            InetAddress inetAddress = inetAddresses.nextElement();
+                            // Lấy địa chỉ IPv4
+                            if (inetAddress instanceof Inet4Address) {
+                                return inetAddress.getHostAddress();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return "Not connected";
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

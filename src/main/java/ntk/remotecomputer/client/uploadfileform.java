@@ -5,9 +5,7 @@ import ntk.remotecomputer.server.FileEvent;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -18,7 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class uploadfileform extends javax.swing.JFrame {
-static String ip="";
+    static String ip = "";
    
     public uploadfileform(String ip) {
         this.ip = ip;
@@ -59,15 +57,10 @@ static String ip="";
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private static String sourceFilePath2;
-    private static ObjectInputStream inputStream = null;
     private static ObjectOutputStream outputStream = null;
     private FileEvent fileEvent = null;
-    private File dstFile = null;
     private static String fname = null;
-    private FileOutputStream fileOutputStream = null;
-    private String destinationPath = "D:/Upload/";
+    private String destinationPath = "C:/";
 
 	/* send file from client to server */
     public void sendFile() {

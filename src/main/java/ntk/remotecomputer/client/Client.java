@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import java.io.*;
 
 class Client extends Thread {
-//Height and Width sync class
+    //Height and Width sync class
     class Control {
         public AtomicInteger height = new AtomicInteger(0);               
         public AtomicInteger width = new AtomicInteger(0);
@@ -32,27 +32,16 @@ class Client extends Thread {
 
     final Control c = new Control();
     clientfirstpage c1 = new clientfirstpage();               
-    private static long nextTime = 0;
-    private static Client clientApp = null;
     private String serverName = c1.ipAddress.getText(); //loop back ip
     private static int portNo = 8087;
-    static String ip ="";
     Dimension screenSize;
 
     //Receive Screen Thread 
     class T1 implements Runnable {
-
         @Override
         public void run() {
-
             while (true) {
-                try {
-                    
-                    //Getting screen size for frame
-                    
-                    Toolkit toolkit = Toolkit.getDefaultToolkit();
-                    Dimension dimensions = toolkit.getScreenSize();               
-                    
+                try {       
                     //New Socket for receiving screen  
                     Socket serverSocket = new Socket(serverName, portNo);  
                     
@@ -72,10 +61,7 @@ class Client extends Thread {
                    
                     //Height and width of image         
                     JLabel lab = new JLabel(new ImageIcon(scaledImage));
-                    
-                    //Setting image into label
-                    // lab = new JLabel(new ImageIcon((new ImageIcon(img).getImage().getScaledInstance(c.panel.getWidth(), c.panel.getHeight(), java.awt.Image.SCALE_SMOOTH))));
-                    
+
                     //Add label to panel
                     c.panel.removeAll();
                     c.panel.add(lab);
@@ -120,20 +106,7 @@ class Client extends Thread {
             }
         }
     }
-     
-    //Thread for Chat
-    class T3 implements Runnable {
-
-        @Override
-        public void run() {
-            clientmsg c = new clientmsg(ip);
-            c.sendmess();
-            c.repaint();
-            c.pack();
-        }
-
-    }
-            
+                
     //Client Constructor with IP of Server as parameter 
     Client(String ip) {
        
@@ -182,16 +155,14 @@ class Client extends Thread {
         c.frame.setVisible(true);
         
         //Setting IP address of Server
-        this.ip = ip;
         serverName = ip;
         
         //Creating three Threads
         T1 t1 = new T1();
         T2 t2 = new T2();
-        T3 t3 = new T3();
+
         //Starting Threads
         new Thread(t1).start();
         new Thread(t2).start();
-        new Thread(t3).start();
     }
 }

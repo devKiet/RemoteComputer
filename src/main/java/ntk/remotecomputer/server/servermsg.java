@@ -4,11 +4,13 @@ package ntk.remotecomputer.server;
 import java.awt.Dimension;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class servermsg extends javax.swing.JFrame {
-	/* Define socket and inout output stream */
     static ServerSocket ssckt;
     static Socket sckt;
     static DataInputStream dtinpt;
@@ -32,12 +34,12 @@ public class servermsg extends javax.swing.JFrame {
             while (!msg.equals("bye")) {
                 msg = dtinpt.readUTF();
                 System.out.println("message received: " + msg);
-                jTextArea2.setText(jTextArea2.getText().trim() + "\n Client:" + msg);
-           
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String formattedDateTime = now.format(formatter);
+                jTextArea2.setText(jTextArea2.getText().trim() + "\n[" + formattedDateTime + "] Client: " + msg);
             }
-           
-
-        } catch (Exception ex) {
+        } catch (IOException ex) {
         }
     }
 
@@ -111,7 +113,11 @@ public class servermsg extends javax.swing.JFrame {
             dtotpt.writeUTF(msgout);
             System.out.println("Message sent: " + msgout);
             jTextField1.setText(null);
-
+            
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = now.format(formatter);
+            jTextArea2.setText(jTextArea2.getText().trim() + "\n[" + formattedDateTime + "] Server: " + msgout);            
         } catch (Exception ex) {
         }
     }//GEN-LAST:event_jButton1ActionPerformed

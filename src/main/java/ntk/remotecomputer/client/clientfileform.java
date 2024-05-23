@@ -1,10 +1,8 @@
-
 package ntk.remotecomputer.client;
 
-
 public class clientfileform extends javax.swing.JFrame {
-/* ip address */
-static String ip="";
+    /* ip address */
+    static String ip = "";
  
     public clientfileform(String ip) {
         this.ip = ip;

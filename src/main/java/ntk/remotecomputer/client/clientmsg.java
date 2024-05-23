@@ -4,20 +4,30 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import javax.swing.SwingUtilities;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class clientmsg extends javax.swing.JFrame {
-
-	/* Socket define */	
+public class clientmsg extends javax.swing.JFrame {	
     static Socket sock;
-
-	/* Define input output stream */
     static DataInputStream dtinpt;
     static DataOutputStream dtotpt;
     static String ip = "";
-   
+    
+    //Thread for Chat
+    class ChatThread implements Runnable {
+
+        @Override
+        public void run() {
+            sendmess();
+            repaint();
+            pack();
+        }
+    }
+    
     public clientmsg(String ip) {
         clientmsg.ip = ip;
+        ChatThread chat = new ChatThread();
+        new Thread(chat).start();
         initComponents();
     }
 
@@ -38,25 +48,17 @@ public class clientmsg extends javax.swing.JFrame {
 		/* converation until message bye */
             String msg = "";
             while (!msg.equals("bye")) {
-
 		/* input in string and send */
                 msg = dtinpt.readUTF();
-                System.out.println("message received: " + msg);
-                final String message = msg;
-		/* Set message in textbox */
-                jTextArea1.append("\nServer:" + message);
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        jTextArea1.setText(jTextArea1.getText().trim() + "\nServer:" + message);
-                    }
-                });
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String formattedDateTime = now.format(formatter);
+                jTextArea1.setText(jTextArea1.getText().trim() + "\n[" + formattedDateTime + "] Client: " + msg);
             }
         } catch (IOException ex) {
         }
     }
-
-   
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -121,6 +123,10 @@ public class clientmsg extends javax.swing.JFrame {
             dtotpt.writeUTF(msgout);
             System.out.println("Message sent:" + msgout);
             jTextField1.setText(null);
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = now.format(formatter);
+            jTextArea1.setText(jTextArea1.getText().trim() + "\n[" + formattedDateTime + "] Server: " + msgout);
         } catch (IOException ex) {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
