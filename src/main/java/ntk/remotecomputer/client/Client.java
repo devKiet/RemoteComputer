@@ -30,9 +30,8 @@ class Client extends Thread {
         public volatile JPanel panel;
     }
 
-    final Control c = new Control();
-    clientfirstpage c1 = new clientfirstpage();               
-    private String serverName = c1.ipAddress.getText(); //loop back ip
+    final Control c = new Control();           
+    private String serverName = "";
     private static int portNo = 8087;
     Dimension screenSize;
 
