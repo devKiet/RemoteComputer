@@ -19,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import javax.swing.JFrame;
 
 public class Server extends Thread {
 

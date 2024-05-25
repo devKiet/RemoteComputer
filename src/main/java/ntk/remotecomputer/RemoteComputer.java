@@ -136,7 +136,7 @@ public class RemoteComputer extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(51, 255, 255));
-        jLabel2.setText("START SERVER");
+        jLabel2.setText("START CLIENT");
 
         jButton2.setBackground(new java.awt.Color(51, 153, 255));
         jButton2.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
@@ -195,6 +195,7 @@ public class RemoteComputer extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel6.setText("IP Address");
 
+        jTextField6.setEditable(false);
         jTextField6.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jTextField6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

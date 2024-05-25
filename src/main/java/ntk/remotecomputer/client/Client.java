@@ -7,6 +7,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import static java.lang.Thread.sleep;
@@ -34,12 +36,13 @@ class Client extends Thread {
     private String serverName = "";
     private static int portNo = 8087;
     Dimension screenSize;
-
+    private volatile boolean running = true; 
+    
     //Receive Screen Thread 
     class T1 implements Runnable {
         @Override
         public void run() {
-            while (true) {
+            while (running) {
                 try {       
                     //New Socket for receiving screen  
                     Socket serverSocket = new Socket(serverName, portNo);  
@@ -95,7 +98,7 @@ class Client extends Thread {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            while (true) {
+            while (running) {
                 try {
                     // Sleep to reduce CPU usage
                     Thread.sleep(100);
@@ -153,6 +156,16 @@ class Client extends Thread {
         c.frame.pack();
         c.frame.setVisible(true);
         
+        c.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
+        c.frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                running = false; // Stop threads
+                c.frame.dispose(); // Dispose the frame
+                System.out.println("Frame closed and threads stopped.");
+            }
+        });
         //Setting IP address of Server
         serverName = ip;
         
