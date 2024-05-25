@@ -7,6 +7,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -15,7 +16,9 @@ public class clientfirstpage extends javax.swing.JFrame {
     //Initializing JFrame
     public clientfirstpage(String serverIp) {
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null);
         String ip = getWifiIPAddress();
         jTextField2.setText(ip);
         ipAddress.setText(serverIp);

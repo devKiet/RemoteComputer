@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class uploadfileform extends javax.swing.JFrame {
@@ -22,6 +23,9 @@ public class uploadfileform extends javax.swing.JFrame {
         this.ip = ip;
         setSize(803, 700);
         initComponents();
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")

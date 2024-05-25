@@ -51,7 +51,7 @@ public class RemoteComputer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel3 = new javax.swing.JPanel();
+        mainPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
@@ -81,7 +81,7 @@ public class RemoteComputer extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(850, 550));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel3.setLayout(new java.awt.CardLayout());
+        mainPanel.setLayout(new java.awt.CardLayout());
 
         jPanel1.setBackground(new java.awt.Color(36, 47, 65));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -165,7 +165,7 @@ public class RemoteComputer extends javax.swing.JFrame {
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 0, 420, 550));
 
-        jPanel3.add(jPanel1, "card2");
+        mainPanel.add(jPanel1, "card2");
 
         jPanel6.setBackground(new java.awt.Color(102, 255, 255));
 
@@ -220,10 +220,10 @@ public class RemoteComputer extends javax.swing.JFrame {
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(50, 50, 50)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addContainerGap(192, Short.MAX_VALUE))
         );
 
-        jPanel3.add(jPanel6, "card3");
+        mainPanel.add(jPanel6, "card3");
 
         jPanel7.setBackground(new java.awt.Color(36, 47, 65));
 
@@ -281,25 +281,25 @@ public class RemoteComputer extends javax.swing.JFrame {
                 .addGap(172, 172, 172)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(40, 40, 40)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(259, Short.MAX_VALUE))
             .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel7Layout.createSequentialGroup()
                     .addGap(111, 111, 111)
-                    .addComponent(jLabel9)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(411, Short.MAX_VALUE)))
             .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel7Layout.createSequentialGroup()
                     .addGap(111, 111, 111)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(411, Short.MAX_VALUE)))
         );
 
-        jPanel3.add(jPanel7, "card4");
+        mainPanel.add(jPanel7, "card4");
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        getContentPane().add(mainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -311,7 +311,7 @@ public class RemoteComputer extends javax.swing.JFrame {
             protected Void doInBackground() throws Exception {
                 try {
                     // Switch to the "card3" panel
-                    ((CardLayout) jPanel3.getLayout()).show(jPanel3, "card3");
+                    ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card3");
                     String ipAddress = getWifiIPAddress();
                     jTextField6.setText(ipAddress);
                     // Generate new token and display it
@@ -333,7 +333,7 @@ public class RemoteComputer extends javax.swing.JFrame {
                             // Validate token
                             if (token.equals(receivedToken)) {
                                 out.println("Access Granted");
-                                socket.close();
+                                serverSocket.close();
                                 dispose();
                                 try {
                                     Server server = new Server();
@@ -361,7 +361,7 @@ public class RemoteComputer extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         SwingUtilities.invokeLater(() -> {
-            ((CardLayout) jPanel3.getLayout()).show(jPanel3, "card4");
+            ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card4");
         });
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -472,7 +472,6 @@ public class RemoteComputer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -482,5 +481,6 @@ public class RemoteComputer extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
+    private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 }

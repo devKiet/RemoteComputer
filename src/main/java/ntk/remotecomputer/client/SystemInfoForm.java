@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import org.jfree.chart.ChartFactory;
@@ -43,6 +44,10 @@ public class SystemInfoForm extends java.awt.Frame {
         setSize(600, 400);
         SystemInfoForm.ip = ip;
         initComponents();
+        
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null);
         
         backgroundThread = new Thread(new BackgroundTask());
         backgroundThread.start();

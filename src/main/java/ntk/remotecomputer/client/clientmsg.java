@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.ImageIcon;
 
 public class clientmsg extends javax.swing.JFrame {	
     static Socket sock;
@@ -29,6 +30,9 @@ public class clientmsg extends javax.swing.JFrame {
         ChatThread chat = new ChatThread();
         new Thread(chat).start();
         initComponents();
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null);
     }
 
 	/* function for sending message */

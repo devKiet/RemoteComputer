@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.ImageIcon;
 
 public class servermsg extends javax.swing.JFrame {
     static ServerSocket ssckt;
@@ -45,6 +46,9 @@ public class servermsg extends javax.swing.JFrame {
 
     public servermsg() {
         initComponents();
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null);
     }
   
     @SuppressWarnings("unchecked")

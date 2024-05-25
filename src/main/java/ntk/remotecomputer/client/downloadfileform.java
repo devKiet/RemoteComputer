@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class downloadfileform extends javax.swing.JFrame {
@@ -20,6 +21,9 @@ public class downloadfileform extends javax.swing.JFrame {
     public downloadfileform(String ip) {
         this.ip = ip;
         initComponents();
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")
