@@ -9,7 +9,7 @@ public class clientfileform extends javax.swing.JFrame {
     public clientfileform(String ip) {
         this.ip = ip;
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
     }

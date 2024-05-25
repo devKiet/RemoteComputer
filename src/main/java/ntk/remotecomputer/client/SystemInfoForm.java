@@ -45,7 +45,7 @@ public class SystemInfoForm extends java.awt.Frame {
         SystemInfoForm.ip = ip;
         initComponents();
         
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
         

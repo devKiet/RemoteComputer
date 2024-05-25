@@ -12,9 +12,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.security.SecureRandom;
 import java.sql.SQLException;
@@ -35,10 +37,12 @@ public class RemoteComputer extends javax.swing.JFrame {
     
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
-    
+    private ServerSocket serverSocket;
+    private SwingWorker<Void, Void> worker;
+
     public RemoteComputer() {
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null); 
     }
@@ -68,12 +72,15 @@ public class RemoteComputer extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jTextField6 = new javax.swing.JTextField();
+        jButton5 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jTextField3 = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jTextField7 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -88,7 +95,6 @@ public class RemoteComputer extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(0, 255, 255));
-        jPanel2.setMaximumSize(new java.awt.Dimension(32767, 32767));
         jPanel2.setMinimumSize(new java.awt.Dimension(0, 0));
         jPanel2.setPreferredSize(new java.awt.Dimension(420, 550));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -196,14 +202,19 @@ public class RemoteComputer extends javax.swing.JFrame {
             }
         });
 
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-left-arrow-64.png"))); // NOI18N
+        jButton5.setBorder(null);
+        jButton5.setBorderPainted(false);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(309, 309, 309)
-                .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGap(111, 111, 111)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,11 +225,22 @@ public class RemoteComputer extends javax.swing.JFrame {
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTextField4))
                 .addGap(0, 129, Short.MAX_VALUE))
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(309, 309, 309)
+                        .addComponent(jLabel4))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton5)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(77, 77, 77)
+                .addContainerGap()
+                .addComponent(jButton5)
+                .addGap(48, 48, 48)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5))
@@ -228,7 +250,7 @@ public class RemoteComputer extends javax.swing.JFrame {
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(50, 50, 50)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addContainerGap(139, Short.MAX_VALUE))
         );
 
         mainPanel.add(jPanel6, "card3");
@@ -260,18 +282,36 @@ public class RemoteComputer extends javax.swing.JFrame {
 
         jTextField7.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/Dual Ring@1x-1.0s-200px-200px.gif"))); // NOI18N
+
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-left-back-arrow-64.png"))); // NOI18N
+        jButton4.setBorder(null);
+        jButton4.setBorderPainted(false);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(145, 145, 145)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton3)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(145, 145, 145)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton3))
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton4)))
                 .addContainerGap(233, Short.MAX_VALUE))
             .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel7Layout.createSequentialGroup()
@@ -287,13 +327,17 @@ public class RemoteComputer extends javax.swing.JFrame {
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(172, 172, 172)
+                .addContainerGap()
+                .addComponent(jButton4)
+                .addGap(143, 143, 143)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(40, 40, 40)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(247, Short.MAX_VALUE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addContainerGap(207, Short.MAX_VALUE))
             .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel7Layout.createSequentialGroup()
                     .addGap(111, 111, 111)
@@ -314,7 +358,6 @@ public class RemoteComputer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        SwingWorker<Void, Void> worker;
         worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
@@ -328,9 +371,8 @@ public class RemoteComputer extends javax.swing.JFrame {
                     jTextField4.setText(token);
                     jLabel4.setVisible(true);
                     // Set up the server socket
-                    ServerSocket serverSocket = new ServerSocket(8888);
-                    System.out.println("Server started on port 8888.");
-                    
+                    serverSocket = new ServerSocket(8888);
+
                     // Keep listening for incoming connections
                     while (true) {
                         try (Socket socket = serverSocket.accept();
@@ -371,36 +413,112 @@ public class RemoteComputer extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         SwingUtilities.invokeLater(() -> {
             ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card4");
+            jLabel1.setVisible(false);
         });
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (jTextField7.getText().isEmpty() && jTextField3.getText().isEmpty()) {
+        SwingUtilities.invokeLater(() -> jLabel1.setVisible(true));
+    
+        if (jTextField7.getText().isEmpty() || jTextField3.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter the IP address and access key to get connected!!!");
+            SwingUtilities.invokeLater(() -> jLabel1.setVisible(false));
         } else {
-            try (Socket socket = new Socket(jTextField7.getText(), 8888);
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    
+                    try {
+                    // Set up the socket address and timeout values
+                    String ipAddress = jTextField7.getText();
+                    int port = 8888;
+                    int connectionTimeout = 10000;
+                    int readTimeout = 10000;
 
-                out.println(jTextField3.getText());
-                String response = in.readLine();
+                    SocketAddress socketAddress = new InetSocketAddress(ipAddress, port);
+                    Socket socket = new Socket();
+                    
+                    // Attempt to connect with timeout
+                    socket.connect(socketAddress, connectionTimeout);
+                    // Set the read timeout
+                    socket.setSoTimeout(readTimeout);
 
-                if ("Access Granted".equals(response)) {
-                    dispose();
-                    clientfirstpage client = new clientfirstpage(jTextField7.getText());
-                    client.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Access Denied by Server");
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                         PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+                        out.println(jTextField3.getText());
+                        String response = in.readLine();
+
+                        if ("Access Granted".equals(response)) {
+                            // Hide the current frame and show the client page on the EDT
+                            SwingUtilities.invokeLater(() -> {
+                                dispose();
+                                clientfirstpage client = new clientfirstpage(jTextField7.getText());
+                                client.setVisible(true);
+                            });
+                        } else {
+                            // Show access denied message on the EDT
+                            SwingUtilities.invokeLater(() -> {
+                                JOptionPane.showMessageDialog(jButton3, "Access Denied by Server");
+                            });
+                        }
+                    } catch (IOException ex) {
+                        // Handle read timeout and other I/O exceptions
+                        SwingUtilities.invokeLater(() -> {
+                            JOptionPane.showMessageDialog(jButton3, "Connection failed: " + ex.getMessage());
+                        });
+                    } finally {
+                        socket.close();
+                    }
+                } catch (IOException ex) {
+                    // Handle connection timeout and other I/O exceptions
+                    SwingUtilities.invokeLater(() -> {
+                        JOptionPane.showMessageDialog(jButton3, "Connection failed: " + ex.getMessage());
+                    });
                 }
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Access Denied by Server");
+                return null;
             }
+
+                @Override
+                protected void done() {
+                    // Hide the loading indicator
+                    jLabel1.setVisible(false);
+                }
+            };
+
+            worker.execute();
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField6ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        SwingUtilities.invokeLater(() -> {
+            ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card2");
+            jLabel1.setVisible(false);
+        });
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if (worker != null && !worker.isDone()) {
+            worker.cancel(true); // Cancel the worker
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                try {
+                    serverSocket.close(); 
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            SwingUtilities.invokeLater(() -> {
+                ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card2");
+                jLabel1.setVisible(false);
+            });
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
     
     public static String getWifiIPAddress() {
         try {
@@ -477,6 +595,9 @@ public class RemoteComputer extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

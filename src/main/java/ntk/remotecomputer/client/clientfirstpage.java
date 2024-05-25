@@ -16,7 +16,7 @@ public class clientfirstpage extends javax.swing.JFrame {
     //Initializing JFrame
     public clientfirstpage(String serverIp) {
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
         String ip = getWifiIPAddress();

@@ -30,7 +30,7 @@ public class clientmsg extends javax.swing.JFrame {
         ChatThread chat = new ChatThread();
         new Thread(chat).start();
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
     }
