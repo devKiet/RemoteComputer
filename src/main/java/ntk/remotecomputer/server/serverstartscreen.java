@@ -1,6 +1,7 @@
 
 package ntk.remotecomputer.server;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class serverstartscreen extends javax.swing.JFrame {
@@ -8,6 +9,9 @@ public class serverstartscreen extends javax.swing.JFrame {
     public serverstartscreen() {
         initComponents();      
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null); 
     }
 
     @SuppressWarnings("unchecked")

@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.Enumeration;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import ntk.remotecomputer.client.clientfirstpage;
@@ -87,6 +88,9 @@ public class RemoteComputer extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(0, 255, 255));
+        jPanel2.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        jPanel2.setMinimumSize(new java.awt.Dimension(0, 0));
+        jPanel2.setPreferredSize(new java.awt.Dimension(420, 550));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTextField1.setEditable(false);
@@ -95,7 +99,7 @@ public class RemoteComputer extends javax.swing.JFrame {
         jTextField1.setForeground(new java.awt.Color(36, 47, 65));
         jTextField1.setText("WELLCOME TO");
         jTextField1.setBorder(null);
-        jPanel2.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, -1, 60));
+        jPanel2.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, -1, 60));
 
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
         jLabel3.setText("START SERVER");
@@ -143,20 +147,23 @@ public class RemoteComputer extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jButton2)
-                        .addComponent(jLabel2)))
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(140, 140, 140)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2)
+                            .addComponent(jLabel2)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addGap(69, 69, 69)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(89, 89, 89)
+                .addGap(90, 90, 90)
                 .addComponent(jLabel2)
                 .addGap(60, 60, 60)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -168,6 +175,7 @@ public class RemoteComputer extends javax.swing.JFrame {
         mainPanel.add(jPanel1, "card2");
 
         jPanel6.setBackground(new java.awt.Color(102, 255, 255));
+        jPanel6.setPreferredSize(new java.awt.Dimension(840, 550));
 
         jTextField4.setEditable(false);
         jTextField4.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
@@ -220,12 +228,13 @@ public class RemoteComputer extends javax.swing.JFrame {
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(50, 50, 50)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(192, Short.MAX_VALUE))
+                .addContainerGap(180, Short.MAX_VALUE))
         );
 
         mainPanel.add(jPanel6, "card3");
 
         jPanel7.setBackground(new java.awt.Color(36, 47, 65));
+        jPanel7.setPreferredSize(new java.awt.Dimension(840, 550));
 
         jTextField3.setFont(new java.awt.Font("Helvetica Neue", 1, 24)); // NOI18N
 
@@ -284,17 +293,17 @@ public class RemoteComputer extends javax.swing.JFrame {
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(40, 40, 40)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(259, Short.MAX_VALUE))
+                .addContainerGap(247, Short.MAX_VALUE))
             .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel7Layout.createSequentialGroup()
                     .addGap(111, 111, 111)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(411, Short.MAX_VALUE)))
+                    .addContainerGap(399, Short.MAX_VALUE)))
             .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel7Layout.createSequentialGroup()
                     .addGap(111, 111, 111)
                     .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(411, Short.MAX_VALUE)))
+                    .addContainerGap(399, Short.MAX_VALUE)))
         );
 
         mainPanel.add(jPanel7, "card4");
@@ -366,21 +375,26 @@ public class RemoteComputer extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        try (Socket socket = new Socket(jTextField7.getText(), 8888);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+        if (jTextField7.getText().isEmpty() && jTextField3.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the IP address and access key to get connected!!!");
+        } else {
+            try (Socket socket = new Socket(jTextField7.getText(), 8888);
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            out.println(jTextField3.getText());
-            String response = in.readLine();
-            
-            if ("Access Granted".equals(response)) {
-                dispose();
-                clientfirstpage client = new clientfirstpage(jTextField7.getText());
-                client.setVisible(true);
-            } else {
-                System.out.println("Access Denied by Server");
+                out.println(jTextField3.getText());
+                String response = in.readLine();
+
+                if ("Access Granted".equals(response)) {
+                    dispose();
+                    clientfirstpage client = new clientfirstpage(jTextField7.getText());
+                    client.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Access Denied by Server");
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Access Denied by Server");
             }
-        } catch (IOException ex) {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
