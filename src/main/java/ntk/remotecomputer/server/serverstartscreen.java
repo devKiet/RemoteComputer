@@ -8,7 +8,6 @@ public class serverstartscreen extends javax.swing.JFrame {
 
     public serverstartscreen() {
         initComponents();      
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null); 
@@ -37,7 +36,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 210, 160, 30));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 210, 150, 50));
 
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
         jButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -48,7 +47,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 210, 180, -1));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 210, 150, 50));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -69,7 +68,7 @@ public class serverstartscreen extends javax.swing.JFrame {
         jLabel3.setMaximumSize(new java.awt.Dimension(842, 551));
         jLabel3.setMinimumSize(new java.awt.Dimension(842, 551));
         jLabel3.setPreferredSize(new java.awt.Dimension(842, 551));
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 842, 551));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 850, 550));
         jLabel3.getAccessibleContext().setAccessibleName("");
 
         pack();
