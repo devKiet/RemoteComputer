@@ -1,16 +1,24 @@
 
 package ntk.remotecomputer.server;
 
+import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import ntk.remotecomputer.RemoteComputer;
 
 public class serverstartscreen extends javax.swing.JFrame {
-
-    public serverstartscreen() {
+    
+    private Server server = null;
+    
+    public serverstartscreen() throws SQLException, ClassNotFoundException, Exception {
         initComponents();      
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null); 
+        server = new Server();
+        server.start();
     }
 
     @SuppressWarnings("unchecked")
@@ -19,6 +27,7 @@ public class serverstartscreen extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -36,7 +45,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 210, 150, 50));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 210, 150, 50));
 
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
         jButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -48,6 +57,17 @@ public class serverstartscreen extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 210, 150, 50));
+
+        jButton3.setBackground(new java.awt.Color(0, 0, 0));
+        jButton3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setText("Restart");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 440, 150, 50));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -85,6 +105,17 @@ public class serverstartscreen extends javax.swing.JFrame {
 
         serverfile s = new serverfile();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        server.setRunning(false);
+        this.dispose();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+  
+                new RemoteComputer().setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_jButton3ActionPerformed
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -113,7 +144,13 @@ public class serverstartscreen extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new serverstartscreen().setVisible(true);
+                try {
+                    new serverstartscreen().setVisible(true);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -121,6 +158,7 @@ public class serverstartscreen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

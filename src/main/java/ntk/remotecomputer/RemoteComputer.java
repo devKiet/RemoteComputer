@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import ntk.remotecomputer.client.clientfirstpage;
-import ntk.remotecomputer.server.Server;
+import ntk.remotecomputer.server.serverstartscreen;
 
 /**
  *
@@ -56,6 +56,7 @@ public class RemoteComputer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton6 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -81,6 +82,13 @@ public class RemoteComputer extends javax.swing.JFrame {
         jTextField7 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
+
+        jButton6.setText("jButton6");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -287,7 +295,6 @@ public class RemoteComputer extends javax.swing.JFrame {
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-left-back-arrow-64.png"))); // NOI18N
         jButton4.setBorder(null);
-        jButton4.setBorderPainted(false);
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -330,7 +337,7 @@ public class RemoteComputer extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton4)
-                .addGap(143, 143, 143)
+                .addGap(184, 184, 184)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -338,7 +345,7 @@ public class RemoteComputer extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addContainerGap(207, Short.MAX_VALUE))
+                .addContainerGap(166, Short.MAX_VALUE))
             .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel7Layout.createSequentialGroup()
                     .addGap(111, 111, 111)
@@ -388,8 +395,8 @@ public class RemoteComputer extends javax.swing.JFrame {
                                 serverSocket.close();
                                 dispose();
                                 try {
-                                    Server server = new Server();
-                                    server.start();
+                                    serverstartscreen se = new serverstartscreen();
+                                    se.setVisible(true);
                                 } catch (SQLException ex) {
                                 } catch (ClassNotFoundException ex) {
                                 } catch (Exception ex) {
@@ -496,29 +503,18 @@ public class RemoteComputer extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         SwingUtilities.invokeLater(() -> {
             ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card2");
             jLabel1.setVisible(false);
         });
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (worker != null && !worker.isDone()) {
-            worker.cancel(true); // Cancel the worker
-            if (serverSocket != null && !serverSocket.isClosed()) {
-                try {
-                    serverSocket.close(); 
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            
-            SwingUtilities.invokeLater(() -> {
-                ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card2");
-                jLabel1.setVisible(false);
-            });
-        }
     }//GEN-LAST:event_jButton4ActionPerformed
     
     public static String getWifiIPAddress() {
@@ -598,6 +594,7 @@ public class RemoteComputer extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

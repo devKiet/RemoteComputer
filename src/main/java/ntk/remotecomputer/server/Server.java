@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Server extends Thread {
 
@@ -27,8 +28,12 @@ public class Server extends Thread {
     private static Socket server = null;
     private static ServerSocket eveSocket = null;
     private static Socket eve = null;
-    private static serverstartscreen serverScreen = null;
+    private AtomicBoolean running = new AtomicBoolean(true);
 
+    public void setRunning(boolean running) {
+        this.running.set(running);
+    }
+    
     //Robot and Threads Initialization
     static Robot robot = null;
     static Thread Server_Thread_1 = null;
@@ -54,8 +59,8 @@ public class Server extends Thread {
                 } catch (AWTException ex) {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-                while (true) {
+                System.out.println("Th 1 start");
+                while (running.get()) {
                     try {
                         //Accepting Client Requests and creating new socket for each client
                         server = serverSocket.accept();
@@ -84,8 +89,8 @@ public class Server extends Thread {
                     robot = new Robot();
                 } catch (AWTException ex) {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                while (true) {
+                }System.out.println("Th 2 start");
+                while (running.get()) {
                     try {
                         //Accepting Client Requests and creating new socket for each client
                         eve = eveSocket.accept();
@@ -109,7 +114,7 @@ public class Server extends Thread {
         Server_Thread_3 = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (running.get()) {
 
                     //Calling Server message method for chat
                     servermsg s = new servermsg();
@@ -136,7 +141,7 @@ public class Server extends Thread {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     return;
                 }
-                while (true) {
+                while (running.get()) {
                     try {
                         // Tạo các luồng riêng biệt cho từng hàm xử lý
                         Thread hardwareThread = new Thread(() -> {
@@ -189,10 +194,6 @@ public class Server extends Thread {
                 }
             }
         });
-        
-        //Making start screen visible
-        serverScreen = new serverstartscreen();
-        serverScreen.setVisible(true);
         
         Server_Thread_1.start();
         Server_Thread_2.start();
