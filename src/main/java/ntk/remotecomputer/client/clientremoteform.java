@@ -286,7 +286,7 @@ public class clientremoteform extends javax.swing.JFrame {
                     double y = ((double) (e.getY() - titleBarHeight) / panel.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
-                    // writer.flush();
+                    writer.flush();
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -303,7 +303,7 @@ public class clientremoteform extends javax.swing.JFrame {
                     double y = ((double) (e.getY() - titleBarHeight) / panel.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
-                    // writer.flush();
+                    writer.flush();
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -351,11 +351,17 @@ public class clientremoteform extends javax.swing.JFrame {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 try {
                     writer.writeInt(e.getID());
+                    
+                    double x = ((double) (e.getX()) / panel.getWidth());
+                    double y = ((double) (e.getY() - titleBarHeight) / panel.getHeight());
+                    writer.writeDouble(x);
+                    writer.writeDouble(y);
+                    
                     writer.writeInt(e.getWheelRotation());
                     writer.writeDouble(e.getPreciseWheelRotation());
                     writer.writeInt(e.getScrollAmount());
                     writer.writeInt(e.getScrollType());
-                    System.out.println("Mouse wheel");
+                    writer.flush();
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }

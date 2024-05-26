@@ -68,6 +68,7 @@ public class ReceiveEvents {
                         System.out.println("Key Released");
                         break;
                     case MouseWheelEvent.MOUSE_WHEEL:
+                        r.mouseMove((int) (reader.readDouble()* width), (int) (reader.readDouble() * height));
                         int wheelRotation = reader.readInt();
                         double preciseWheelRotation = reader.readDouble();
                         int scrollAmount = reader.readInt();
