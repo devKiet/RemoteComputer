@@ -1,12 +1,15 @@
 
 package ntk.remotecomputer.client;
 
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -139,8 +142,16 @@ public class clientfirstpage extends javax.swing.JFrame {
         if (ipAddress.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter the IP address to get connected");
         } else {
-            //Chat and Share Screen Window Initialization
-            Client c = new Client(ipAddress.getText());       
+            // Chat and Share Screen Window Initialization
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    try {
+                        new clientremoteform(ipAddress.getText()).setVisible(true);
+                    } catch (IOException ex) {
+                        Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -224,7 +235,7 @@ public class clientfirstpage extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new clientfirstpage("localhost").setVisible(true);
+                new clientfirstpage("192.168.2.22").setVisible(true);
             }
         });
     }

@@ -33,13 +33,17 @@ public class ReceiveEvents {
         //Set height and width values
         int height = st.getHeight();
         int width = st.getWidth();
-        
+        boolean isRuning = true;
         //Received Events decoder
-        while (true) {
+        while (isRuning) {
             try {
                 
+                if (!s.isConnected()) break;
+                
                 //Getting Event id from input stream
-                int eventId = scanner.readInt();
+                var event = scanner.readInt();
+                
+                int eventId = (int) event;
                 
                 //Check Event id and take actions accordingly
                 switch (eventId) {
@@ -73,9 +77,10 @@ public class ReceiveEvents {
                     default:
                         break;
                 }
-            } catch (Exception ex) {
+            } catch (IOException ex) {
 
                 System.out.println("Exception in receive events:" + ex);
+                // isRuning = false;
             }
         }
 

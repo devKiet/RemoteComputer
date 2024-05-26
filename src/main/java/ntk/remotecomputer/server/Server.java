@@ -47,7 +47,7 @@ public class Server extends Thread {
         //Creating Sockets on different ports
         serverSocket = new ServerSocket(8087);
         eveSocket = new ServerSocket(8888);
-        serverSocket.setSoTimeout(1000000);
+        serverSocket.setSoTimeout(10000);
         
         //Thread for Sending Screenshots
         Server_Thread_1 = new Thread(new Runnable() {
@@ -89,7 +89,7 @@ public class Server extends Thread {
                     robot = new Robot();
                 } catch (AWTException ex) {
                     Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                }System.out.println("Th 2 start");
+                }
                 while (running.get()) {
                     try {
                         //Accepting Client Requests and creating new socket for each client
@@ -97,9 +97,6 @@ public class Server extends Thread {
                         System.out.println("Thread to Receive events from clients");
                         //Recieve Events from Clients on current screen
                         new ReceiveEvents(eve, robot);
-                    } catch (SocketTimeoutException st) {
-                        System.out.println("Socket timed out!");
-                        break;
                     } catch (IOException e) {
                         e.printStackTrace();
                         break;

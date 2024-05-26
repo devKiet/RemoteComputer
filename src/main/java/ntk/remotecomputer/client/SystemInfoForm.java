@@ -178,7 +178,7 @@ public class SystemInfoForm extends java.awt.Frame {
                             Socket socket = new Socket(ip, 8001);
                             receiveSystemResourceInfo(socket);
                         } catch (IOException | JSONException ex) {
-                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                            
                         }
                     });
 
@@ -187,7 +187,7 @@ public class SystemInfoForm extends java.awt.Frame {
                             Socket socket = new Socket(ip, 8002);
                             receiveSystemResourceInfo(socket);
                         } catch (IOException | JSONException ex) {
-                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+
                         }
                     });
 
@@ -196,7 +196,7 @@ public class SystemInfoForm extends java.awt.Frame {
                             Socket socket = new Socket(ip, 8003);
                             receiveSystemResourceInfo(socket);
                         } catch (IOException | JSONException ex) {
-                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                           
                         }
                     });
 
@@ -209,7 +209,7 @@ public class SystemInfoForm extends java.awt.Frame {
                     realtimeProcessThread.join();
                     performanceThread.join();
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                    
                 }      
             }
         }

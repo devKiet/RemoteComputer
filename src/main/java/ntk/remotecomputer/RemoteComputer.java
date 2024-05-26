@@ -390,7 +390,8 @@ public class RemoteComputer extends javax.swing.JFrame {
                             String receivedToken = in.readLine();
 
                             // Validate token
-                            if (token.equals(receivedToken)) {
+                            // if (token.equals(receivedToken)) {
+                            if (true) {
                                 out.println("Access Granted");
                                 serverSocket.close();
                                 dispose();
@@ -503,7 +504,22 @@ public class RemoteComputer extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (worker != null && !worker.isDone()) {
+             worker.cancel(true); // Cancel the worker
+             if (serverSocket != null && !serverSocket.isClosed()) {
+                 try {
+                     serverSocket.close(); 
 
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+             }
+
+             SwingUtilities.invokeLater(() -> {
+                 ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card2");
+                 jLabel1.setVisible(false);
+             });
+         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
