@@ -5,7 +5,6 @@
 package ntk.remotecomputer.client;
 
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -44,6 +43,9 @@ public class clientremoteform extends javax.swing.JFrame {
     Dimension screenSize;
     private volatile boolean running = true; 
     private ObjectOutputStream writer = null;
+    private Socket eve = null;
+    private Socket serverSocket = null;
+    private int titleBarHeight = 0;
     
     /**
      * Creates new form clientremoteform
@@ -55,51 +57,35 @@ public class clientremoteform extends javax.swing.JFrame {
         
         Dimension screenDimensions = toolkit.getScreenSize();
         String os = System.getProperty("os.name").toLowerCase();
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        Insets screenInsets = toolkit.getScreenInsets(gd.getDefaultConfiguration());
         int taskbarHeight = 0;
         if (os.contains("mac")) {
             // Get screen insets for macOS
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice gd = ge.getDefaultScreenDevice();
-            Insets screenInsets = toolkit.getScreenInsets(gd.getDefaultConfiguration());
-            taskbarHeight = screenInsets.top + 100;
+
+            taskbarHeight = screenInsets.top + screenInsets.bottom;
         } else if (os.contains("win")) {
             // For Windows, use toolkit to get the screen insets
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice gd = ge.getDefaultScreenDevice();
-            Insets screenInsets = toolkit.getScreenInsets(gd.getDefaultConfiguration());
-            taskbarHeight = screenInsets.bottom + 25;
+            taskbarHeight = screenInsets.bottom + screenInsets.top;
         }
-
-        // Create a temporary JFrame to get the height of the title bar
+        
         JFrame tempFrame = new JFrame();
-        tempFrame.setUndecorated(true);
         tempFrame.setSize(200, 200);
         tempFrame.setVisible(true);
         Insets insets = tempFrame.getInsets();
+        titleBarHeight = insets.top;
         tempFrame.dispose();
-        int titleBarHeight = insets.top;
-
+        
         // Set the frame size excluding taskbar and title bar
         screenSize = new Dimension(screenDimensions.width, screenDimensions.height - taskbarHeight - titleBarHeight);
-        
+ 
         System.out.println(screenSize);
         //Set frame and Panel size
         
-        setSize(screenSize.width, screenSize.height);
+        setSize(screenSize.width, screenSize.height + titleBarHeight);
         panel.setSize(screenSize.width, screenSize.height);
-        setExtendedState(Frame.MAXIMIZED_BOTH);
         
-        
-//        c.frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        
-//        c.frame.addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent e) {
-//                running = false; // Stop threads
-//                c.frame.dispose(); // Dispose the frame
-//                System.out.println("Frame closed and threads stopped.");
-//            }
-//        });
         //Setting IP address of Server
         serverName = ip;
         
@@ -108,8 +94,20 @@ public class clientremoteform extends javax.swing.JFrame {
         T2 t2 = new T2();
 
         //Starting Threads
-        new Thread(t1).start();
-        new Thread(t2).start();
+        Thread revScreen = new Thread(t1);
+        revScreen.start();
+        Thread revEvent = new Thread(t2);
+        revEvent.start();
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                t1.stop();
+                t2.stop();
+                dispose();       // Dispose the frame
+                System.out.println("Frame closed and threads stopped.");
+            }
+        });
     }
 
     /**
@@ -124,9 +122,12 @@ public class clientremoteform extends javax.swing.JFrame {
         panel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setLocation(new java.awt.Point(0, 0));
+        setResizable(false);
+        getContentPane().setLayout(new java.awt.FlowLayout());
 
-        panel.setLocation(new java.awt.Point(0, 0));
-        getContentPane().add(panel, java.awt.BorderLayout.CENTER);
+        panel.setLayout(new java.awt.BorderLayout());
+        getContentPane().add(panel);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -138,7 +139,7 @@ public class clientremoteform extends javax.swing.JFrame {
             while (running) {
                 try {       
                     //New Socket for receiving screen  
-                    Socket serverSocket = new Socket(serverName, portNo);  
+                    serverSocket = new Socket(serverName, portNo);  
                     
                     InputStream inputStream = serverSocket.getInputStream();
                     DataInputStream dataInputStream = new DataInputStream(inputStream);
@@ -173,13 +174,23 @@ public class clientremoteform extends javax.swing.JFrame {
             }
 
         }
-
+         
+        public void stop() {
+            running = false;
+            try {
+                if (eve != null && !eve.isClosed()) {
+                    // End thread
+                    writer.writeInt(10000);
+                    eve.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     //Send Events Thread
     class T2 implements Runnable {
-        private Socket eve = null;
-
         @Override
         public void run() {
             
@@ -192,10 +203,8 @@ public class clientremoteform extends javax.swing.JFrame {
                         setEvent(eve);
                     }
 
-
-                    // If we reach here, connection was successful. Wait until socket is closed.
                     while (!eve.isClosed() && running) {
-                        Thread.sleep(100); // Check connection status every second.
+                        Thread.sleep(1000);
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
@@ -215,8 +224,10 @@ public class clientremoteform extends javax.swing.JFrame {
         public void stop() {
             running = false;
             try {
-                if (eve != null && !eve.isClosed()) {
-                    eve.close();
+                if (serverSocket != null && !serverSocket.isClosed()) {
+                    // End thread
+                    writer.writeInt(10000);
+                    serverSocket.close();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
@@ -269,8 +280,8 @@ public class clientremoteform extends javax.swing.JFrame {
                     writer.writeInt(e.getID());
                     System.out.println("Mouse moved");
 
-                    double x = ((double) e.getX() / getWidth());
-                    double y = ((double) e.getY() / getHeight());
+                    double x = ((double) (e.getX()) / panel.getWidth());
+                    double y = ((double) (e.getY() - titleBarHeight) / panel.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
                     // writer.flush();
@@ -284,10 +295,10 @@ public class clientremoteform extends javax.swing.JFrame {
             public void mouseDragged(MouseEvent e) {
                 try {
                     writer.writeInt(e.getID());
-                    //System.out.println("Mouse moved");
+                    System.out.println("Mouse moved");
 
-                    double x = ((double) e.getX() / getWidth());
-                    double y = ((double) e.getY() / getHeight());
+                    double x = ((double) (e.getX()) / panel.getWidth());
+                    double y = ((double) (e.getY() - titleBarHeight) / panel.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
                     // writer.flush();
@@ -339,6 +350,10 @@ public class clientremoteform extends javax.swing.JFrame {
                 try {
                     writer.writeInt(e.getID());
                     writer.writeInt(e.getWheelRotation());
+                    writer.writeDouble(e.getPreciseWheelRotation());
+                    writer.writeInt(e.getScrollAmount());
+                    writer.writeInt(e.getScrollType());
+                    System.out.println("Mouse wheel");
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
