@@ -21,7 +21,7 @@ public class uploadfileform extends javax.swing.JFrame {
    
     public uploadfileform(String ip) {
         this.ip = ip;
-        setSize(803, 700);
+        setSize(600, 400);
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
         setIconImage(icon.getImage());
@@ -35,15 +35,13 @@ public class uploadfileform extends javax.swing.JFrame {
         jFileChooser1 = new javax.swing.JFileChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(null);
 
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jFileChooser1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jFileChooser1);
-        jFileChooser1.setBounds(6, 6, 512, 326);
+        getContentPane().add(jFileChooser1, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -88,6 +86,8 @@ public class uploadfileform extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "File uploaded successfully!");
             System.out.println("Done...Going to exit");
             Thread.sleep(1000);
+            outputStream.close();
+            
             this.dispose();
         } catch (InterruptedException e) {
             e.printStackTrace();

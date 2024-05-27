@@ -107,14 +107,19 @@ public class serverfileform extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     class T1 implements Runnable {
+        
         @Override
         public void run() {
+            ServerSocket sersock = null;
+
+            try {
+                sersock = new ServerSocket(1234); 
+            }   catch (IOException ex) {
+                Logger.getLogger(serverfileform.class.getName()).log(Level.SEVERE, null, ex);
+            }
             while (true) {
-                ServerSocket sersock;
-                try {
-                    sersock = new ServerSocket(1234);
+                try {   
                     System.out.println("Server ready ");
-                    JOptionPane.showMessageDialog(null, "Connection is successful, Wating Client upload or download !!!");
                     Socket sock = sersock.accept();
                    
                     /* Define input stream and read line from client */
@@ -135,10 +140,6 @@ public class serverfileform extends javax.swing.JFrame {
                         inputStream = new ObjectInputStream(sock.getInputStream());
                         downloadFile();
                     }
-                    
-                    sock.close();
-                    sersock.close();
-                    break;
                 } catch (IOException ex) {
                     Logger.getLogger(serverfileform.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -178,8 +179,7 @@ public class serverfileform extends javax.swing.JFrame {
                 fileEvent.setFileSize(len);
                 fileEvent.setFileData(fileBytes);
                 fileEvent.setStatus("Success");
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException e) {
                 fileEvent.setStatus("Error");
             }
         } else {
@@ -192,9 +192,7 @@ public class serverfileform extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Done...Going to exit");
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
-
     }
 
     public void downloadFile() {
@@ -218,7 +216,6 @@ public class serverfileform extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Output file : " + outputFile + " is successfully saved ");
             Thread.sleep(1000);
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
-            e.printStackTrace();
         }
 
     }
