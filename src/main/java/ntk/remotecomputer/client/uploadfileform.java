@@ -35,29 +35,15 @@ public class uploadfileform extends javax.swing.JFrame {
         jFileChooser1 = new javax.swing.JFileChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(null);
 
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jFileChooser1ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 791, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jFileChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        getContentPane().add(jFileChooser1);
+        jFileChooser1.setBounds(6, 6, 512, 326);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -101,7 +87,7 @@ public class uploadfileform extends javax.swing.JFrame {
             outputStream.writeObject(fileEvent);
             JOptionPane.showMessageDialog(null, "File uploaded successfully!");
             System.out.println("Done...Going to exit");
-            Thread.sleep(3000);
+            Thread.sleep(1000);
             this.dispose();
         } catch (InterruptedException e) {
             e.printStackTrace();

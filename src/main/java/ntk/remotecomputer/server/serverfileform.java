@@ -18,6 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -40,6 +41,10 @@ public class serverfileform extends javax.swing.JFrame {
      */
     public serverfileform() {
         initComponents();
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null); 
+
         destinationPath1 = System.getProperty("user.dir");   
         jTextField1.setText(destinationPath1);
         T1 t1 = new T1();
@@ -62,7 +67,7 @@ public class serverfileform extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(700, 300));
         getContentPane().setLayout(null);
 
@@ -185,7 +190,7 @@ public class serverfileform extends javax.swing.JFrame {
         try {
             outputStream.writeObject(fileEvent);
             JOptionPane.showMessageDialog(null, "Done...Going to exit");
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -197,10 +202,10 @@ public class serverfileform extends javax.swing.JFrame {
             fileEvent = (FileEvent) inputStream.readObject();
             if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
                 JOptionPane.showMessageDialog(null, "Error occurred ..So exiting");
-                System.exit(0);
+                return;
             }
             
-            String outputFile = fileEvent.getDestinationDirectory() + fileEvent.getFilename();
+            String outputFile = destinationPath1 + "\\" + fileEvent.getFilename();
             if (!new File(fileEvent.getDestinationDirectory()).exists()) {
                 new File(fileEvent.getDestinationDirectory()).mkdirs();
             }
@@ -211,7 +216,7 @@ public class serverfileform extends javax.swing.JFrame {
             fileOutputStream.flush();
             fileOutputStream.close();
             JOptionPane.showMessageDialog(null, "Output file : " + outputFile + " is successfully saved ");
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }
