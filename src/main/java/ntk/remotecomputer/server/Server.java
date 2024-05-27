@@ -47,150 +47,18 @@ public class Server extends Thread {
         //Creating Sockets on different ports
         serverSocket = new ServerSocket(8087);
         eveSocket = new ServerSocket(8888);
-        serverSocket.setSoTimeout(10000);
         
         //Thread for Sending Screenshots
-        Server_Thread_1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    //New Robot for the current screen
-                    robot = new Robot();
-                } catch (AWTException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.out.println("Th 1 start");
-                while (running.get()) {
-                    try {
-                        //Accepting Client Requests and creating new socket for each client
-                        server = serverSocket.accept();
-
-                        //Send Screen captures to clients
-                        sendScreen(robot);
-                    } catch (SocketTimeoutException st) {
-                        System.out.println("Socket timed out!");
-                        break;
-                    } catch (IOException e) {
-                        break;
-                    } catch (Exception ex) {
-                        System.out.println(ex);
-                    }
-                }
-            }
-        });
+        Server_Thread_1 = new Thread(new sendScreenThread());
 
         //Thread to Receive events from clients
-        Server_Thread_2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-
-                    //New Robot for the current screen
-                    robot = new Robot();
-                } catch (AWTException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                while (running.get()) {
-                    try {
-                        //Accepting Client Requests and creating new socket for each client
-                        eve = eveSocket.accept();
-                        System.out.println("Thread to Receive events from clients");
-                        //Recieve Events from Clients on current screen
-                        new ReceiveEvents(eve, robot);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        break;
-                    } catch (Exception ex) {
-                        System.out.println(ex);
-                    }
-                }
-            }
-        });
+        Server_Thread_2 = new Thread(new receviceEventThread());
 
         //Thread for chat with Clients
-        Server_Thread_3 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (running.get()) {
-
-                    //Calling Server message method for chat
-                    servermsg s = new servermsg();
-                    s.sendmsg();
-                    s.repaint();
-                    s.pack();
-                }
-            }
-        });
+        Server_Thread_3 = new Thread(new chatThread());
         
         ///Thread for send i4 
-        Server_Thread_4 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ServerSocket processSeverSocket;
-                ServerSocket hardwareSeverSocket;
-                ServerSocket performenceSeverSocket;
-                
-                try {
-                    processSeverSocket = new ServerSocket(8001);
-                    hardwareSeverSocket = new ServerSocket(8002);
-                    performenceSeverSocket = new ServerSocket(8003);
-                } catch (IOException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    return;
-                }
-                while (running.get()) {
-                    try {
-                        // Tạo các luồng riêng biệt cho từng hàm xử lý
-                        Thread hardwareThread = new Thread(() -> {
-                            try {    
-                                //New Socket for send events
-                                Socket hardSocket = hardwareSeverSocket.accept();     
-                                JSONObject systemResourceInfo = new JSONObject();
-                                systemResourceInfo.put("HardwareInfo", getHardwareInfo());
-                                sendSystemResourceInfo(hardSocket, systemResourceInfo);
-                            } catch (IOException | JSONException ex) {
-                                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        });
-
-                        Thread realtimeProcessThread = new Thread(() -> {
-                            try {
-                                Socket processSocket = processSeverSocket.accept();    
-                                JSONObject systemResourceInfo = new JSONObject();
-                                systemResourceInfo.put("RealtimeProcess", getRealtimeProcessInfo());
-                                sendSystemResourceInfo(processSocket, systemResourceInfo);
-                            } catch (IOException | JSONException ex) {
-                                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        });
-
-                        Thread performanceThread = new Thread(() -> {
-                            try {
-                                Socket perSocket = performenceSeverSocket.accept();    
-                                JSONObject systemResourceInfo = new JSONObject();
-                                systemResourceInfo.put("Performence", getPerformanceInfo());
-                                sendSystemResourceInfo(perSocket, systemResourceInfo);
-                            } catch (IOException | JSONException ex) {
-                                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        });
-
-                        // Khởi động các luồng
-                        hardwareThread.start();
-                        realtimeProcessThread.start();
-                        performanceThread.start();
-                        
-                        hardwareThread.join();
-                        realtimeProcessThread.join();
-                        performanceThread.join();
-
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        });
+        Server_Thread_4 = new Thread(new trackingThread());
         
         Server_Thread_1.start();
         Server_Thread_2.start();
@@ -198,6 +66,149 @@ public class Server extends Thread {
         Server_Thread_4.start();
     }
     
+    //Thread for Sending Screenshots
+    class sendScreenThread implements Runnable {
+        @Override
+        public void run() {
+            try {
+                //New Robot for the current screen
+                robot = new Robot();
+            } catch (AWTException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("Th 1 start");
+            while (running.get()) {
+                try {
+                    //Accepting Client Requests and creating new socket for each client
+                    server = serverSocket.accept();
+
+                    //Send Screen captures to clients
+                    sendScreen(robot);
+                } catch (SocketTimeoutException st) {
+                    System.out.println("Socket timed out!");
+                    break;
+                } catch (IOException e) {
+                    break;
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }
+        }
+    }
+
+    //Thread to Receive events from clients
+    class receviceEventThread implements Runnable {
+        @Override
+        public void run() {
+            try {
+
+                //New Robot for the current screen
+                robot = new Robot();
+            } catch (AWTException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            while (running.get()) {
+                try {
+                    //Accepting Client Requests and creating new socket for each client
+                    eve = eveSocket.accept();
+                    System.out.println("Thread to Receive events from clients");
+                    //Recieve Events from Clients on current screen
+                    new ReceiveEvents(eve, robot);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    break;
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }
+        }
+    }
+
+    //Thread for chat with Clients
+    class chatThread implements Runnable {
+        @Override
+        public void run() {
+            while (running.get()) {
+
+                //Calling Server message method for chat
+                servermsg s = new servermsg();
+                s.sendmsg();
+                s.repaint();
+                s.pack();
+            }
+        }
+    }
+
+    ///Thread for send i4 
+    class trackingThread implements Runnable {
+        @Override
+        public void run() {
+            ServerSocket processSeverSocket;
+            ServerSocket hardwareSeverSocket;
+            ServerSocket performenceSeverSocket;
+
+            try {
+                processSeverSocket = new ServerSocket(8001);
+                hardwareSeverSocket = new ServerSocket(8002);
+                performenceSeverSocket = new ServerSocket(8003);
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+            while (running.get()) {
+                try {
+                    // Tạo các luồng riêng biệt cho từng hàm xử lý
+                    Thread hardwareThread = new Thread(() -> {
+                        try {    
+                            //New Socket for send events
+                            Socket hardSocket = hardwareSeverSocket.accept();     
+                            JSONObject systemResourceInfo = new JSONObject();
+                            systemResourceInfo.put("HardwareInfo", getHardwareInfo());
+                            sendSystemResourceInfo(hardSocket, systemResourceInfo);
+                        } catch (IOException | JSONException ex) {
+                            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
+
+                    Thread realtimeProcessThread = new Thread(() -> {
+                        try {
+                            Socket processSocket = processSeverSocket.accept();    
+                            JSONObject systemResourceInfo = new JSONObject();
+                            systemResourceInfo.put("RealtimeProcess", getRealtimeProcessInfo());
+                            sendSystemResourceInfo(processSocket, systemResourceInfo);
+                        } catch (IOException | JSONException ex) {
+                            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
+
+                    Thread performanceThread = new Thread(() -> {
+                        try {
+                            Socket perSocket = performenceSeverSocket.accept();    
+                            JSONObject systemResourceInfo = new JSONObject();
+                            systemResourceInfo.put("Performence", getPerformanceInfo());
+                            sendSystemResourceInfo(perSocket, systemResourceInfo);
+                        } catch (IOException | JSONException ex) {
+                            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
+
+                    // Khởi động các luồng
+                    hardwareThread.start();
+                    realtimeProcessThread.start();
+                    performanceThread.start();
+
+                    hardwareThread.join();
+                    realtimeProcessThread.join();
+                    performanceThread.join();
+
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
     // Method to send screenshots to clients
     private static void sendScreen(final Robot robot) throws IOException {
         //Get current screen dimensions

@@ -77,15 +77,13 @@ public class ReceiveEvents {
                         int wheelAmount = (int) (preciseWheelRotation * scrollMultiplier * wheelRotation);
                         r.mouseWheel(wheelAmount);
                         break;
-                    case 10000:
                     default:
-                        isRuning = false;
                         break;
                 }
             } catch (IOException ex) {
 
                 System.out.println("Exception in receive events:" + ex);
-                // isRuning = false;
+                isRuning = false;
             }
         }
 

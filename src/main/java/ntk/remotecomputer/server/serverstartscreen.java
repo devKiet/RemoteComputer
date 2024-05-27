@@ -2,7 +2,6 @@
 package ntk.remotecomputer.server;
 
 import java.sql.SQLException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -67,7 +66,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 440, 150, 50));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 210, 150, 50));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -102,8 +101,11 @@ public class serverstartscreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        serverfile s = new serverfile();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new serverfileform().setVisible(true);
+            }
+        });
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

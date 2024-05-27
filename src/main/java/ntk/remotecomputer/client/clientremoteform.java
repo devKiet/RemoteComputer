@@ -10,6 +10,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -58,19 +60,10 @@ public class clientremoteform extends javax.swing.JFrame {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         
         Dimension screenDimensions = toolkit.getScreenSize();
-        String os = System.getProperty("os.name").toLowerCase();
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         Insets screenInsets = toolkit.getScreenInsets(gd.getDefaultConfiguration());
-        int taskbarHeight = 0;
-        if (os.contains("mac")) {
-            // Get screen insets for macOS
-
-            taskbarHeight = screenInsets.top + screenInsets.bottom;
-        } else if (os.contains("win")) {
-            // For Windows, use toolkit to get the screen insets
-            taskbarHeight = screenInsets.bottom + screenInsets.top;
-        }
+        int taskbarHeight = screenInsets.bottom + screenInsets.top;
         
         JFrame tempFrame = new JFrame();
         tempFrame.setSize(200, 200);
@@ -180,9 +173,7 @@ public class clientremoteform extends javax.swing.JFrame {
         public void stop() {
             running = false;
             try {
-                if (eve != null && !eve.isClosed()) {
-                    // End thread
-                    writer.writeInt(10000);
+                if (eve != null && !eve.isClosed()) {                   
                     eve.close();
                 }
             } catch (IOException ex) {
@@ -228,7 +219,6 @@ public class clientremoteform extends javax.swing.JFrame {
             try {
                 if (serverSocket != null && !serverSocket.isClosed()) {
                     // End thread
-                    writer.writeInt(10000);
                     serverSocket.close();
                 }
             } catch (IOException ex) {
@@ -310,13 +300,16 @@ public class clientremoteform extends javax.swing.JFrame {
             }
 
         });
-
+        
         // Add key listener to the frame
         addKeyListener(new KeyAdapter() {
             //Key Pressed Event
             @Override
             public void keyPressed(KeyEvent e) {
                 try {
+                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+                        e.consume(); // Consume the Windows key event
+                    }
                     writer.writeInt(e.getID());
                     System.out.println("Key Pressed: " + e.getKeyChar());
                     writer.writeInt(e.getKeyCode());
@@ -330,6 +323,9 @@ public class clientremoteform extends javax.swing.JFrame {
             @Override
             public void keyReleased(KeyEvent e) {
                 try {
+                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+                        e.consume(); // Consume the Windows key event
+                    }
                     writer.writeInt(e.getID());
                     System.out.println("Key Released");
                     writer.writeInt(e.getKeyCode());
@@ -365,6 +361,19 @@ public class clientremoteform extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
+        });
+        
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                // JFrame gained focus, allow key events to be sent
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                // JFrame lost focus, disable key events
+                panel.requestFocusInWindow(); // Ensure another component gets focus
             }
         });
         
