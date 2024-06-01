@@ -1,6 +1,7 @@
 package ntk.remotecomputer.client;
 
 import javax.swing.ImageIcon;
+import ntk.remotecomputer.Commons;
 
 public class clientfileform extends javax.swing.JFrame {
     /* ip address */
@@ -9,7 +10,7 @@ public class clientfileform extends javax.swing.JFrame {
     public clientfileform(String ip) {
         this.ip = ip;
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
     }

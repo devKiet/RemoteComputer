@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import ntk.remotecomputer.RemoteComputer;
+import ntk.remotecomputer.Commons;
 
 public class serverstartscreen extends javax.swing.JFrame {
     
@@ -13,7 +14,7 @@ public class serverstartscreen extends javax.swing.JFrame {
     
     public serverstartscreen() throws SQLException, ClassNotFoundException, Exception {
         initComponents();      
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null); 
         server = new Server();

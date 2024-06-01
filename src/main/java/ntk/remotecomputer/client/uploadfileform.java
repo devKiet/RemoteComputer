@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import ntk.remotecomputer.Commons;
 
 public class uploadfileform extends javax.swing.JFrame {
     static String ip = "";
@@ -23,7 +24,7 @@ public class uploadfileform extends javax.swing.JFrame {
         this.ip = ip;
         setSize(700, 400);
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
     }
@@ -104,7 +105,7 @@ public class uploadfileform extends javax.swing.JFrame {
         try {
       
             String serverName = ip; //loop back ip   
-            Socket sock = new Socket(serverName, 1234);
+            Socket sock = new Socket(serverName, Commons.FILE_SOCKET_PORT);
             Scanner input = new Scanner(System.in);
             System.out.print("Enter the file name : ");
             String keyRead = jFileChooser1.getSelectedFile().getAbsolutePath();

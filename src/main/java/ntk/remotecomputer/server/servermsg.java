@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.ImageIcon;
+import ntk.remotecomputer.Commons;
 
 public class servermsg extends javax.swing.JFrame {
     static ServerSocket ssckt;
@@ -22,7 +23,7 @@ public class servermsg extends javax.swing.JFrame {
 
         String msg = "";
         try {
-            ssckt = new ServerSocket(1201);
+            ssckt = new ServerSocket(Commons.CHAT_SOCKET_PORT);
             sckt = ssckt.accept();
 
 		/* Get message from input stream */
@@ -46,7 +47,7 @@ public class servermsg extends javax.swing.JFrame {
 
     public servermsg() {
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
     }

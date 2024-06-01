@@ -8,13 +8,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import ntk.remotecomputer.Commons;
 
 public class clientfirstpage extends javax.swing.JFrame {
 
     //Initializing JFrame
     public clientfirstpage(String serverIp) throws UnknownHostException {
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
         String ip = getWifiIPAddress();

@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import ntk.remotecomputer.Commons;
 
 public class downloadfileform extends javax.swing.JFrame {
     static String ip = "";
@@ -21,7 +22,7 @@ public class downloadfileform extends javax.swing.JFrame {
     public downloadfileform(String ip) {
         this.ip = ip;
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
     }
@@ -110,7 +111,7 @@ public class downloadfileform extends javax.swing.JFrame {
         try {
            
             String serverName = ip; //loop back ip      
-            Socket sock = new Socket(serverName, 1234);
+            Socket sock = new Socket(serverName, Commons.FILE_SOCKET_PORT);
             this.setBounds(550, 150, 700, 300);
             this.setResizable(false);
 

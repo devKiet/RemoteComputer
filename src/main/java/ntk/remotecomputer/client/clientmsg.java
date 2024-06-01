@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.ImageIcon;
+import ntk.remotecomputer.Commons;
 
 public class clientmsg extends javax.swing.JFrame {	
     static Socket sock;
@@ -30,7 +31,7 @@ public class clientmsg extends javax.swing.JFrame {
         ChatThread chat = new ChatThread();
         new Thread(chat).start();
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
     }
@@ -41,7 +42,7 @@ public class clientmsg extends javax.swing.JFrame {
             System.out.println("Send message method called Client side");
           
             String serverName = ip;             
-            sock = new Socket(serverName, 1201);
+            sock = new Socket(serverName, Commons.CHAT_SOCKET_PORT);
 
 		/* Get message from input stream */
             dtinpt = new DataInputStream(sock.getInputStream());

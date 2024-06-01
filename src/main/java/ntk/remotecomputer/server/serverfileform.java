@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import ntk.remotecomputer.Commons;
 
 /**
  *
@@ -41,7 +42,7 @@ public class serverfileform extends javax.swing.JFrame {
      */
     public serverfileform() {
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-64.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null); 
 
@@ -113,7 +114,7 @@ public class serverfileform extends javax.swing.JFrame {
             ServerSocket sersock = null;
 
             try {
-                sersock = new ServerSocket(1234); 
+                sersock = new ServerSocket(Commons.FILE_SOCKET_PORT); 
             }   catch (IOException ex) {
                 Logger.getLogger(serverfileform.class.getName()).log(Level.SEVERE, null, ex);
             }

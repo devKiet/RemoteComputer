@@ -36,9 +36,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.io.ObjectOutputStream;
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
+import ntk.remotecomputer.Commons;
 
 /**
  *
@@ -47,7 +45,6 @@ import javax.swing.KeyStroke;
 public class clientremoteform extends javax.swing.JFrame {
     
     private String serverName = "";
-    private static int portNo = 8087;
     Dimension screenSize;
     private volatile boolean running = true; 
     private ObjectOutputStream writer = null;
@@ -60,6 +57,9 @@ public class clientremoteform extends javax.swing.JFrame {
      */
     public clientremoteform(String ip) throws IOException {
         initComponents();
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
+        setIconImage(icon.getImage());
+        setLocationRelativeTo(null);
         
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         
@@ -107,22 +107,6 @@ public class clientremoteform extends javax.swing.JFrame {
                 System.out.println("Frame closed and threads stopped.");
             }
         });
-        
-//        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_WINDOWS, 0, false), "pressedWindows");
-//        panel.getActionMap().put("pressedWindows", new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                //
-//            }
-//        });
-//
-//        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_WINDOWS, 0, true), "releasedWindows");
-//        panel.getActionMap().put("releasedWindows", new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // 
-//            }
-//        });
     }
 
     /**
@@ -154,7 +138,7 @@ public class clientremoteform extends javax.swing.JFrame {
             while (running) {
                 try {       
                     //New Socket for receiving screen  
-                    serverSocket = new Socket(serverName, portNo);  
+                    serverSocket = new Socket(serverName, Commons.SCREEN_SOCKET_PORT);  
                     
                     InputStream inputStream = serverSocket.getInputStream();
                     DataInputStream dataInputStream = new DataInputStream(inputStream);
@@ -180,7 +164,7 @@ public class clientremoteform extends javax.swing.JFrame {
                     panel.repaint();
                  
                     //Sleep for delay
-                    sleep(10);  
+                    sleep(Commons.SLEEP_TIME);  
                 } catch (IOException ex) {
 
                 } catch (InterruptedException ex) {
@@ -211,7 +195,7 @@ public class clientremoteform extends javax.swing.JFrame {
                 try {
                     if (eve == null || eve.isClosed()) {
                         System.out.println("Attempting to connect to server...");
-                        eve = new Socket(serverName, 8888);
+                        eve = new Socket(serverName, Commons.CHAT_SOCKET_PORT);
                         System.out.println("Connected to server.");
                         setEvent(eve);
                     }
@@ -432,7 +416,7 @@ public class clientremoteform extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new clientremoteform("192.168.2.22").setVisible(true);
+                    new clientremoteform(Commons.SERVER_NAME).setVisible(true);
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }

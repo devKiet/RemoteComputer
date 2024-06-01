@@ -41,7 +41,7 @@ public class RemoteComputer extends javax.swing.JFrame {
 
     public RemoteComputer() {
         initComponents();
-        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-remote-desktop-96.png"));
+        ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null); 
     }
@@ -372,7 +372,7 @@ public class RemoteComputer extends javax.swing.JFrame {
                     jTextField4.setText(token);
                     jLabel4.setVisible(true);
                     // Set up the server socket
-                    serverSocket = new ServerSocket(8888);
+                    serverSocket = new ServerSocket(Commons.LOGIN_SOCKET_PORT);
 
                     // Keep listening for incoming connections
                     while (true) {
@@ -437,17 +437,14 @@ public class RemoteComputer extends javax.swing.JFrame {
                     try {
                     // Set up the socket address and timeout values
                     String ipAddress = jTextField7.getText();
-                    int port = 8888;
-                    int connectionTimeout = 10000;
-                    int readTimeout = 10000;
 
-                    SocketAddress socketAddress = new InetSocketAddress(ipAddress, port);
+                    SocketAddress socketAddress = new InetSocketAddress(ipAddress, Commons.LOGIN_SOCKET_PORT);
                     Socket socket = new Socket();
                     
                     // Attempt to connect with timeout
-                    socket.connect(socketAddress, connectionTimeout);
+                    socket.connect(socketAddress, Commons.CONNECTION_TIMEOUT);
                     // Set the read timeout
-                    socket.setSoTimeout(readTimeout);
+                    socket.setSoTimeout(Commons.READ_TIMEOUT);
 
                     try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                          PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {

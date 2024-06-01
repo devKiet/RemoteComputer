@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicBoolean;
+import ntk.remotecomputer.Commons;
 
 public class Server extends Thread {
 
@@ -45,8 +46,8 @@ public class Server extends Thread {
     public Server() throws IOException, SQLException, ClassNotFoundException, Exception {
 
         //Creating Sockets on different ports
-        serverSocket = new ServerSocket(8087);
-        eveSocket = new ServerSocket(8888);
+        serverSocket = new ServerSocket(Commons.SCREEN_SOCKET_PORT);
+        eveSocket = new ServerSocket(Commons.EVENT_SOCKET_PORT);
         
         //Thread for Sending Screenshots
         Server_Thread_1 = new Thread(new sendScreenThread());
