@@ -10,7 +10,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
@@ -51,7 +50,6 @@ public class clientremoteform extends javax.swing.JFrame {
     private Socket eve = null;
     private Socket serverSocket = null;
     private int titleBarHeight = 0;
-    private JLabel lab;
     
     /**
      * Creates new form clientremoteform
@@ -61,9 +59,7 @@ public class clientremoteform extends javax.swing.JFrame {
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
-        lab = new JLabel();
-        panel.add(lab);
-        
+
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension screenDimensions = toolkit.getScreenSize();
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -160,19 +156,15 @@ public class clientremoteform extends javax.swing.JFrame {
                     //Height and width of image         
                     JLabel lab = new JLabel(new ImageIcon(scaledImage));
 
-                    //Add label to panel
-                    if (panelSize != panel.getSize()) {
-                        // panel.setSize(panelSize);
-                    }
+                    panel.setPreferredSize(panelSize);
+                    panel.revalidate();
+                    panel.repaint();
+                    
                     panel.removeAll();
                     panel.add(lab);
                     panel.revalidate();
                     panel.repaint();
                     
-//                    lab.setIcon(new ImageIcon(scaledImage));
-//                    lab.revalidate();
-//                    lab.repaint();
-                 
                     //Sleep for delay
                     sleep(Commons.SLEEP_TIME);  
                 } catch (IOException ex) {
@@ -210,20 +202,27 @@ public class clientremoteform extends javax.swing.JFrame {
                         setEvent(eve);
                     }
 
-                    while (!eve.isClosed() && running) {
-                        Thread.sleep(1000);
+                    while (eve.isConnected() && !eve.isClosed() && running) {
+                        try {
+                            if (eve.isInputShutdown() || eve.isOutputShutdown()) {
+                                System.out.println("Connection lost. Retrying...");
+                                break;
+                            }
+                            Thread.sleep(1000);
+                            System.out.println("treo!!!");
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
+                            Thread.currentThread().interrupt(); // Restore interrupted status
+                        }
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                     System.out.println("Connection failed. Retrying...");
                     try {
-                        Thread.sleep(1000); // Wait for 5 seconds before retrying
+                        Thread.sleep(5000); // Wait for 5 seconds before retrying
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt(); // Restore interrupted status
                     }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
-                    Thread.currentThread().interrupt(); // Restore interrupted status
                 }
             }
         }
@@ -321,6 +320,10 @@ public class clientremoteform extends javax.swing.JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 try {
+                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+                        e.consume(); // Ignore Windows key
+                        return;
+                    }
                     writer.writeInt(e.getID());
                     System.out.println("Key Pressed: " + e.getKeyChar());
                     writer.writeInt(e.getKeyCode());
@@ -338,6 +341,10 @@ public class clientremoteform extends javax.swing.JFrame {
             @Override
             public void keyReleased(KeyEvent e) {
                 try {
+                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+                        e.consume(); // Ignore Windows key
+                        return;
+                    }
                     writer.writeInt(e.getID());
                     System.out.println("Key Released");
                     writer.writeInt(e.getKeyCode());

@@ -81,7 +81,6 @@ public class ReceiveEvents {
                         break;
                 }
             } catch (IOException ex) {
-
                 System.out.println("Exception in receive events:" + ex);
                 isRuning = false;
             }
