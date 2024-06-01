@@ -1,6 +1,7 @@
 
 package ntk.remotecomputer.server;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import ntk.remotecomputer.Commons;
 public class serverstartscreen extends javax.swing.JFrame {
     
     private Server server = null;
+    private serverfileform fileform = null;
     
     public serverstartscreen() throws SQLException, ClassNotFoundException, Exception {
         initComponents();      
@@ -104,17 +106,25 @@ public class serverstartscreen extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new serverfileform().setVisible(true);
+                fileform = new serverfileform();
+                fileform.setVisible(true);
             }
         });
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        server.setRunning(false);
+        
+        try {
+            server.setRunning(false);
+            server.stopServer();
+            fileform.setRunning(false);
+            fileform.closeSocket();
+        } catch (IOException ex) {
+            Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.dispose();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-  
                 new RemoteComputer().setVisible(true);
             }
         });

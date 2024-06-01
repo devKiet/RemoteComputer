@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
 
@@ -85,22 +86,31 @@ public class downloadfileform extends javax.swing.JFrame {
                 System.out.println("Error occurred ..So exiting");
                 System.exit(0);
             }
-            String outputFile = fileEvent.getDestinationDirectory() + fileEvent.getFilename();
-            if (!new File(fileEvent.getDestinationDirectory()).exists()) {
-                new File(fileEvent.getDestinationDirectory()).mkdirs();
+
+            // Tạo JFileChooser để người dùng chọn thư mục đích
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int returnVal = fileChooser.showSaveDialog(null);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File selectedDirectory = fileChooser.getSelectedFile();
+                String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
+
+                dstFile = new File(outputFile);
+
+                fileOutputStream = new FileOutputStream(dstFile);
+                fileOutputStream.write(fileEvent.getFileData());
+                fileOutputStream.flush();
+                fileOutputStream.close();
+
+                System.out.println("Output file : " + outputFile + " is successfully saved ");
+                JOptionPane.showMessageDialog(null, "File downloaded successfully!");
+                Thread.sleep(3000);
+                this.dispose();
+            } else {
+                System.out.println("No directory selected. Exiting...");
+                JOptionPane.showMessageDialog(null, "No directory selected. Exiting...");
             }
-
-            dstFile = new File(outputFile);
-
-            fileOutputStream = new FileOutputStream(dstFile);
-            fileOutputStream.write(fileEvent.getFileData());
-            fileOutputStream.flush();
-            fileOutputStream.close();
-
-            System.out.println("Output file : " + outputFile + " is successfully saved ");
-            JOptionPane.showMessageDialog(null, "File downloaded successfully!");
-            Thread.sleep(3000);
-            this.dispose();
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error: " + e);

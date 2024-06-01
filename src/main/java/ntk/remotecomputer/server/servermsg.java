@@ -13,18 +13,15 @@ import javax.swing.ImageIcon;
 import ntk.remotecomputer.Commons;
 
 public class servermsg extends javax.swing.JFrame {
-    static ServerSocket ssckt;
     static Socket sckt;
     static DataInputStream dtinpt;
     static DataOutputStream dtotpt;
-
-    public void sendmsg() {
+    public void sendmsg(ServerSocket sock) {
         System.out.println("Send message method called Server side");
 
         String msg = "";
         try {
-            ssckt = new ServerSocket(Commons.CHAT_SOCKET_PORT);
-            sckt = ssckt.accept();
+            sckt = sock.accept();
 
 		/* Get message from input stream */
             dtinpt = new DataInputStream(sckt.getInputStream());

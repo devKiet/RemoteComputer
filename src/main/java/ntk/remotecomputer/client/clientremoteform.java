@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import java.io.ObjectOutputStream;
 import ntk.remotecomputer.Commons;
 

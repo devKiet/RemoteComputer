@@ -204,11 +204,6 @@ public class RemoteComputer extends javax.swing.JFrame {
 
         jTextField6.setEditable(false);
         jTextField6.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
-            }
-        });
 
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-left-arrow-64.png"))); // NOI18N
         jButton5.setBorder(null);
@@ -497,10 +492,6 @@ public class RemoteComputer extends javax.swing.JFrame {
             worker.execute();
         }
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if (worker != null && !worker.isDone()) {

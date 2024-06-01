@@ -30,7 +30,11 @@ public class Server extends Thread {
     private static ServerSocket eveSocket = null;
     private static Socket eve = null;
     private AtomicBoolean running = new AtomicBoolean(true);
-
+    private static ServerSocket processSeverSocket = null;
+    private static ServerSocket hardwareSeverSocket = null;
+    private static ServerSocket performenceSeverSocket = null;
+    private static ServerSocket chatSocket = null;
+    
     public void setRunning(boolean running) {
         this.running.set(running);
     }
@@ -41,7 +45,7 @@ public class Server extends Thread {
     static Thread Server_Thread_2 = null;
     static Thread Server_Thread_3 = null;
     static Thread Server_Thread_4 = null;
-
+    
     //Constructor to assign threads
     public Server() throws IOException, SQLException, ClassNotFoundException, Exception {
 
@@ -67,6 +71,20 @@ public class Server extends Thread {
         Server_Thread_4.start();
     }
     
+    public void stopServer() {
+        running.set(false);
+        try {
+            eveSocket.close();
+            serverSocket.close();
+            performenceSeverSocket.close();
+            hardwareSeverSocket.close();
+            performenceSeverSocket.close();
+            chatSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     //Thread for Sending Screenshots
     class sendScreenThread implements Runnable {
         @Override
@@ -77,7 +95,7 @@ public class Server extends Thread {
             } catch (AWTException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println("Th 1 start");
+
             while (running.get()) {
                 try {
                     //Accepting Client Requests and creating new socket for each client
@@ -89,6 +107,11 @@ public class Server extends Thread {
                     System.out.println("Socket timed out!");
                     break;
                 } catch (IOException e) {
+                    if (running.get()) {
+                        e.printStackTrace();
+                    } else {
+                        System.out.println("Server stopped.");
+                    }
                     break;
                 } catch (Exception ex) {
                     System.out.println(ex);
@@ -116,12 +139,17 @@ public class Server extends Thread {
                     //Recieve Events from Clients on current screen
                     new ReceiveEvents(eve, robot);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if (running.get()) {
+                        e.printStackTrace();
+                    } else {
+                        System.out.println("Server stopped.");
+                    }
                     break;
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }
             }
+            System.out.println("Th 2 stop");
         }
     }
 
@@ -133,9 +161,18 @@ public class Server extends Thread {
 
                 //Calling Server message method for chat
                 servermsg s = new servermsg();
-                s.sendmsg();
-                s.repaint();
-                s.pack();
+                try {
+                    chatSocket = new ServerSocket(Commons.CHAT_SOCKET_PORT);
+                    s.sendmsg(chatSocket);
+                    s.repaint();
+                    s.pack();
+                } catch (IOException e) {
+                    if (running.get()) {
+                        e.printStackTrace();
+                    } else {
+                        System.out.println("Server stopped.");
+                    }
+                }
             }
         }
     }
@@ -144,10 +181,6 @@ public class Server extends Thread {
     class trackingThread implements Runnable {
         @Override
         public void run() {
-            ServerSocket processSeverSocket;
-            ServerSocket hardwareSeverSocket;
-            ServerSocket performenceSeverSocket;
-
             try {
                 processSeverSocket = new ServerSocket(8001);
                 hardwareSeverSocket = new ServerSocket(8002);
@@ -203,8 +236,12 @@ public class Server extends Thread {
                     performanceThread.join();
 
                     Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException e) {
+                    if (running.get()) {
+                        e.printStackTrace();
+                    } else {
+                        System.out.println("Server stopped.");
+                    }
                 }
             }
         }

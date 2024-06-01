@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -36,6 +37,8 @@ public class serverfileform extends javax.swing.JFrame {
     private FileOutputStream fileOutputStream = null;
     private static String destinationPath1 = "";
     private Thread fileThread = null;
+    private AtomicBoolean running = new AtomicBoolean(true);
+    ServerSocket sersock = null;
     
     /**
      * Creates new form serverfileform
@@ -92,11 +95,6 @@ public class serverfileform extends javax.swing.JFrame {
 
         jTextField2.setEditable(false);
         jTextField2.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
         getContentPane().add(jTextField2);
         jTextField2.setBounds(70, 120, 586, 50);
 
@@ -107,18 +105,26 @@ public class serverfileform extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    public void setRunning(boolean running) {
+        this.running.set(running);
+    }
+    
+    public void closeSocket() throws IOException {
+        if (sersock != null) {
+            sersock.close();
+        }
+    }
+    
     class T1 implements Runnable {
         
         @Override
         public void run() {
-            ServerSocket sersock = null;
-
             try {
                 sersock = new ServerSocket(Commons.FILE_SOCKET_PORT); 
             }   catch (IOException ex) {
                 Logger.getLogger(serverfileform.class.getName()).log(Level.SEVERE, null, ex);
             }
-            while (true) {
+            while (running.get()) {
                 try {   
                     System.out.println("Server ready ");
                     Socket sock = sersock.accept();
@@ -141,8 +147,12 @@ public class serverfileform extends javax.swing.JFrame {
                         inputStream = new ObjectInputStream(sock.getInputStream());
                         downloadFile();
                     }
-                } catch (IOException ex) {
-                    Logger.getLogger(serverfileform.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException e) {
+                    if (running.get()) {
+                        e.printStackTrace();
+                    } else {
+                        System.out.println("Server stopped.");
+                    }
                 }
             }
         }
@@ -233,10 +243,6 @@ public class serverfileform extends javax.swing.JFrame {
             destinationPath1 = jTextField1.getText();
         }
     }//GEN-LAST:event_jLabel3MousePressed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
 
     /**
      * @param args the command line arguments
