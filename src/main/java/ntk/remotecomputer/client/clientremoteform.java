@@ -26,7 +26,6 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import static java.lang.Thread.sleep;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,7 +49,7 @@ public class clientremoteform extends javax.swing.JFrame {
     private Socket eve = null;
     private Socket serverSocket = null;
     private int titleBarHeight = 0;
-    
+    private Dimension panelSize;
     /**
      * Creates new form clientremoteform
      */
@@ -80,7 +79,7 @@ public class clientremoteform extends javax.swing.JFrame {
         System.out.println(screenSize);
         //Set frame and Panel size
 
-        panel.setSize(screenSize.width, screenSize.height);
+        // panel.setSize(screenSize.width, screenSize.height);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Setting IP address of Server
         serverName = ip;
@@ -121,7 +120,7 @@ public class clientremoteform extends javax.swing.JFrame {
         setLocation(new java.awt.Point(0, 0));
         setResizable(false);
 
-        panel.setLayout(new java.awt.BorderLayout());
+        panel.setLayout(new java.awt.GridBagLayout());
         getContentPane().add(panel, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -149,27 +148,24 @@ public class clientremoteform extends javax.swing.JFrame {
                     // Convert bytes to BufferedImage
                     BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
                     
-                    Dimension panelSize = getScaledDimension(new Dimension(img.getWidth(), img.getHeight()), screenSize);
+                    panelSize = getScaledDimension(new Dimension(img.getWidth(), img.getHeight()), screenSize);
 
                     Image scaledImage = img.getScaledInstance(panelSize.width, panelSize.height, Image.SCALE_SMOOTH);                  
                    
                     //Height and width of image         
                     JLabel lab = new JLabel(new ImageIcon(scaledImage));
-
-                    panel.setPreferredSize(panelSize);
-                    panel.revalidate();
-                    panel.repaint();
                     
+                    if (/*panelSize.width != panel.getWidth() ||*/ panelSize.height != panel.getHeight()) {
+                        panel.setPreferredSize(new Dimension(panelSize.width, panelSize.height));
+                    }
                     panel.removeAll();
                     panel.add(lab);
                     panel.revalidate();
                     panel.repaint();
-                    
-                    //Sleep for delay
-                    sleep(Commons.SLEEP_TIME);  
-                } catch (IOException ex) {
 
-                } catch (InterruptedException ex) {
+                    //Sleep for delay
+                    Thread.sleep(Commons.SLEEP_TIME);  
+                } catch (IOException | InterruptedException ex) {
 
                 }
             }
@@ -209,7 +205,6 @@ public class clientremoteform extends javax.swing.JFrame {
                                 break;
                             }
                             Thread.sleep(1000);
-                            System.out.println("treo!!!");
                         } catch (InterruptedException ex) {
                             Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                             Thread.currentThread().interrupt(); // Restore interrupted status
@@ -248,7 +243,7 @@ public class clientremoteform extends javax.swing.JFrame {
             Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        addMouseListener(new MouseAdapter() {
+        panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 try {
@@ -277,7 +272,7 @@ public class clientremoteform extends javax.swing.JFrame {
             }
         });
         
-        addMouseMotionListener(new MouseMotionAdapter() {
+        panel.addMouseMotionListener(new MouseMotionAdapter() {
             //Mouse Moved Event
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -286,7 +281,7 @@ public class clientremoteform extends javax.swing.JFrame {
                     System.out.println("Mouse moved");
 
                     double x = ((double) (e.getX()) / panel.getWidth());
-                    double y = ((double) (e.getY() - titleBarHeight) / panel.getHeight());
+                    double y = ((double) (e.getY()) / panel.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
                     writer.flush();
@@ -303,7 +298,7 @@ public class clientremoteform extends javax.swing.JFrame {
                     System.out.println("Mouse moved");
 
                     double x = ((double) (e.getX()) / panel.getWidth());
-                    double y = ((double) (e.getY() - titleBarHeight) / panel.getHeight());
+                    double y = ((double) (e.getY()) / panel.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
                     writer.flush();
@@ -315,7 +310,7 @@ public class clientremoteform extends javax.swing.JFrame {
         });
         
         // Add key listener to the frame
-        addKeyListener(new KeyAdapter() {
+        panel.addKeyListener(new KeyAdapter() {
             //Key Pressed Event
             @Override
             public void keyPressed(KeyEvent e) {
@@ -330,10 +325,6 @@ public class clientremoteform extends javax.swing.JFrame {
                     writer.flush();
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-                if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
-                    e.consume();
                 }
             }
                 
@@ -352,9 +343,6 @@ public class clientremoteform extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
-                    e.consume();
-                }
             }
             
             @Override
@@ -363,7 +351,7 @@ public class clientremoteform extends javax.swing.JFrame {
             }
         });
         
-        addMouseWheelListener(new MouseAdapter() {
+        panel.addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 try {
@@ -385,7 +373,7 @@ public class clientremoteform extends javax.swing.JFrame {
             }
         });
         
-        addFocusListener(new FocusListener() {
+        panel.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 // JFrame gained focus, allow key events to be sent
@@ -398,20 +386,20 @@ public class clientremoteform extends javax.swing.JFrame {
             }
         });
         
-        setFocusable(true);
-        setFocusTraversalKeysEnabled(false);
+        panel.setFocusable(true);
+        panel.setFocusTraversalKeysEnabled(false);
     }
     
     private Dimension getScaledDimension(Dimension imgSize, Dimension frameSize) {
-    int originalWidth = imgSize.width;
-    int originalHeight = imgSize.height;
-    int boundWidth = frameSize.width;
-    int boundHeight = frameSize.height;
-    int newWidth = originalWidth;
-    int newHeight = originalHeight;
+        int originalWidth = imgSize.width;
+        int originalHeight = imgSize.height;
+        int boundWidth = frameSize.width;
+        int boundHeight = frameSize.height;
+        int newWidth = originalWidth;
+        int newHeight = originalHeight;
 
-    // Calculate the aspect ratio
-    double aspectRatio = (double) originalWidth / (double) originalHeight;
+        // Calculate the aspect ratio
+        double aspectRatio = (double) originalWidth / (double) originalHeight;
 
         // Scale to fit within frame size, maintaining aspect ratio
         if (originalWidth > boundWidth || originalHeight > boundHeight) {
