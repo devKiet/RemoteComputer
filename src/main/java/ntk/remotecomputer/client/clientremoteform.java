@@ -120,9 +120,11 @@ public class clientremoteform extends javax.swing.JFrame {
         lab = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(102, 102, 102));
         setLocation(new java.awt.Point(0, 0));
         setResizable(false);
 
+        panel.setBackground(new java.awt.Color(102, 102, 102));
         panel.setLayout(new java.awt.GridBagLayout());
         panel.add(lab, new java.awt.GridBagConstraints());
 
