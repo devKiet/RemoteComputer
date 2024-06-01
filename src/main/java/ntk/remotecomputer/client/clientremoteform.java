@@ -51,6 +51,7 @@ public class clientremoteform extends javax.swing.JFrame {
     private Socket eve = null;
     private Socket serverSocket = null;
     private int titleBarHeight = 0;
+    private JLabel lab;
     
     /**
      * Creates new form clientremoteform
@@ -60,9 +61,10 @@ public class clientremoteform extends javax.swing.JFrame {
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
+        lab = new JLabel();
+        panel.add(lab);
         
         Toolkit toolkit = Toolkit.getDefaultToolkit();
-        
         Dimension screenDimensions = toolkit.getScreenSize();
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
@@ -81,10 +83,9 @@ public class clientremoteform extends javax.swing.JFrame {
  
         System.out.println(screenSize);
         //Set frame and Panel size
-        
-        setSize(screenSize.width, screenSize.height + titleBarHeight);
+
         panel.setSize(screenSize.width, screenSize.height);
-        this.setExtendedState(JFrame.MAXIMIZED_HORIZ);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         //Setting IP address of Server
         serverName = ip;
         
@@ -123,10 +124,9 @@ public class clientremoteform extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocation(new java.awt.Point(0, 0));
         setResizable(false);
-        getContentPane().setLayout(new java.awt.FlowLayout());
 
         panel.setLayout(new java.awt.BorderLayout());
-        getContentPane().add(panel);
+        getContentPane().add(panel, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -135,6 +135,7 @@ public class clientremoteform extends javax.swing.JFrame {
     class T1 implements Runnable {
         @Override
         public void run() {
+            
             while (running) {
                 try {       
                     //New Socket for receiving screen  
@@ -151,17 +152,26 @@ public class clientremoteform extends javax.swing.JFrame {
 
                     // Convert bytes to BufferedImage
                     BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
+                    
+                    Dimension panelSize = getScaledDimension(new Dimension(img.getWidth(), img.getHeight()), screenSize);
 
-                    Image scaledImage = img.getScaledInstance(screenSize.width, screenSize.height, Image.SCALE_SMOOTH);                  
+                    Image scaledImage = img.getScaledInstance(panelSize.width, panelSize.height, Image.SCALE_SMOOTH);                  
                    
                     //Height and width of image         
                     JLabel lab = new JLabel(new ImageIcon(scaledImage));
 
                     //Add label to panel
+                    if (panelSize != panel.getSize()) {
+                        // panel.setSize(panelSize);
+                    }
                     panel.removeAll();
                     panel.add(lab);
                     panel.revalidate();
                     panel.repaint();
+                    
+//                    lab.setIcon(new ImageIcon(scaledImage));
+//                    lab.revalidate();
+//                    lab.repaint();
                  
                     //Sleep for delay
                     sleep(Commons.SLEEP_TIME);  
@@ -195,7 +205,7 @@ public class clientremoteform extends javax.swing.JFrame {
                 try {
                     if (eve == null || eve.isClosed()) {
                         System.out.println("Attempting to connect to server...");
-                        eve = new Socket(serverName, Commons.CHAT_SOCKET_PORT);
+                        eve = new Socket(serverName, Commons.EVENT_SOCKET_PORT);
                         System.out.println("Connected to server.");
                         setEvent(eve);
                     }
@@ -384,7 +394,42 @@ public class clientremoteform extends javax.swing.JFrame {
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
     }
-         
+    
+    private Dimension getScaledDimension(Dimension imgSize, Dimension frameSize) {
+    int originalWidth = imgSize.width;
+    int originalHeight = imgSize.height;
+    int boundWidth = frameSize.width;
+    int boundHeight = frameSize.height;
+    int newWidth = originalWidth;
+    int newHeight = originalHeight;
+
+    // Calculate the aspect ratio
+    double aspectRatio = (double) originalWidth / (double) originalHeight;
+
+        // Scale to fit within frame size, maintaining aspect ratio
+        if (originalWidth > boundWidth || originalHeight > boundHeight) {
+            // If image is larger than frame, scale it down
+            if ((double) boundWidth / (double) boundHeight > aspectRatio) {
+                newHeight = boundHeight;
+                newWidth = (int) (newHeight * aspectRatio);
+            } else {
+                newWidth = boundWidth;
+                newHeight = (int) (newWidth / aspectRatio);
+            }
+        } else {
+            // If image is smaller than frame, scale it up
+            if ((double) boundWidth / (double) boundHeight > aspectRatio) {
+                newHeight = boundHeight;
+                newWidth = (int) (newHeight * aspectRatio);
+            } else {
+                newWidth = boundWidth;
+                newHeight = (int) (newWidth / aspectRatio);
+            }
+        }
+
+        return new Dimension(newWidth, newHeight);
+    }
+
     /**
      * @param args the command line arguments
      */
