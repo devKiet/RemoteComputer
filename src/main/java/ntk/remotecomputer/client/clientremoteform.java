@@ -49,7 +49,7 @@ public class clientremoteform extends javax.swing.JFrame {
     private Socket eve = null;
     private Socket serverSocket = null;
     private int titleBarHeight = 0;
-    private Dimension panelSize;
+    private Dimension lableSize;
     /**
      * Creates new form clientremoteform
      */
@@ -79,9 +79,9 @@ public class clientremoteform extends javax.swing.JFrame {
         System.out.println(screenSize);
         //Set frame and Panel size
 
-        // panel.setSize(screenSize.width, screenSize.height);
+        panel.setSize(screenSize.width, screenSize.height);
         this.setSize(screenSize.width, screenSize.height + titleBarHeight);
-        // this.setExtendedState(JFrame.MAXIMIZED_HORIZ);
+        this.setExtendedState(JFrame.MAXIMIZED_HORIZ);
 
         //Setting IP address of Server
         serverName = ip;
@@ -117,12 +117,15 @@ public class clientremoteform extends javax.swing.JFrame {
     private void initComponents() {
 
         panel = new javax.swing.JPanel();
+        lab = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocation(new java.awt.Point(0, 0));
         setResizable(false);
 
         panel.setLayout(new java.awt.GridBagLayout());
+        panel.add(lab, new java.awt.GridBagConstraints());
+
         getContentPane().add(panel, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -150,18 +153,14 @@ public class clientremoteform extends javax.swing.JFrame {
                     // Convert bytes to BufferedImage
                     BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
                     
-                    panelSize = getScaledDimension(new Dimension(img.getWidth(), img.getHeight()), screenSize);
+                    lableSize = getScaledDimension(new Dimension(img.getWidth(), img.getHeight()), screenSize);
 
-                    Image scaledImage = img.getScaledInstance(panelSize.width, panelSize.height, Image.SCALE_SMOOTH);                  
+                    Image scaledImage = img.getScaledInstance(lableSize.width, lableSize.height, Image.SCALE_SMOOTH);                  
                    
                     //Height and width of image         
-                    JLabel lab = new JLabel(new ImageIcon(scaledImage));
-                    
-                    if (/*panelSize.width != panel.getWidth() ||*/ panelSize.height != panel.getHeight()) {
-                        panel.setPreferredSize(new Dimension(panelSize.width, panelSize.height));
-                    }
-                    panel.removeAll();
-                    panel.add(lab);
+                    //JLable lab = new JLabel(new ImageIcon(scaledImage));
+                    lab.setIcon(new ImageIcon(scaledImage));
+
                     panel.revalidate();
                     panel.repaint();
 
@@ -245,7 +244,7 @@ public class clientremoteform extends javax.swing.JFrame {
             Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        panel.addMouseListener(new MouseAdapter() {
+        lab.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 try {
@@ -274,7 +273,7 @@ public class clientremoteform extends javax.swing.JFrame {
             }
         });
         
-        panel.addMouseMotionListener(new MouseMotionAdapter() {
+        lab.addMouseMotionListener(new MouseMotionAdapter() {
             //Mouse Moved Event
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -282,8 +281,8 @@ public class clientremoteform extends javax.swing.JFrame {
                     writer.writeInt(e.getID());
                     System.out.println("Mouse moved");
 
-                    double x = ((double) (e.getX()) / panel.getWidth());
-                    double y = ((double) (e.getY()) / panel.getHeight());
+                    double x = ((double) (e.getX()) / lableSize.getWidth());
+                    double y = ((double) (e.getY()) / lableSize.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
                     writer.flush();
@@ -312,7 +311,7 @@ public class clientremoteform extends javax.swing.JFrame {
         });
         
         // Add key listener to the frame
-        panel.addKeyListener(new KeyAdapter() {
+        lab.addKeyListener(new KeyAdapter() {
             //Key Pressed Event
             @Override
             public void keyPressed(KeyEvent e) {
@@ -353,7 +352,7 @@ public class clientremoteform extends javax.swing.JFrame {
             }
         });
         
-        panel.addMouseWheelListener(new MouseAdapter() {
+        lab.addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 try {
@@ -375,7 +374,7 @@ public class clientremoteform extends javax.swing.JFrame {
             }
         });
         
-        panel.addFocusListener(new FocusListener() {
+        lab.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 // JFrame gained focus, allow key events to be sent
@@ -384,12 +383,12 @@ public class clientremoteform extends javax.swing.JFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 // JFrame lost focus, disable key events
-                panel.requestFocusInWindow(); // Ensure another component gets focus
+                lab.requestFocusInWindow(); // Ensure another component gets focus
             }
         });
         
-        panel.setFocusable(true);
-        panel.setFocusTraversalKeysEnabled(false);
+        lab.setFocusable(true);
+        lab.setFocusTraversalKeysEnabled(false);
     }
     
     private Dimension getScaledDimension(Dimension imgSize, Dimension frameSize) {
@@ -467,6 +466,7 @@ public class clientremoteform extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel lab;
     private javax.swing.JPanel panel;
     // End of variables declaration//GEN-END:variables
 }
