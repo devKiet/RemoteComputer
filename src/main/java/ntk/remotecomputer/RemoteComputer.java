@@ -359,11 +359,6 @@ public class RemoteComputer extends javax.swing.JFrame {
                     jTextField6.setText(ipAddress);
                     // Generate new token and display it
                     String token = generateNewToken();
-                    
-                    /// Test
-                        token = "OK";
-                    ///
-                    
                     jTextField4.setText(token);
                     jLabel4.setVisible(true);
                     // Set up the server socket
@@ -410,11 +405,13 @@ public class RemoteComputer extends javax.swing.JFrame {
         SwingUtilities.invokeLater(() -> {
             ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card4");
             jLabel1.setVisible(false);
-            
-            /// test
-            jTextField7.setText("192.168.2.22");
-            jTextField3.setText("OK");    
-            ///
+            try {
+                String localIp = getWifiIPAddress();
+                String subnet = localIp.substring(0, localIp.lastIndexOf('.') + 1);
+                jTextField7.setText(subnet); 
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(RemoteComputer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
     }//GEN-LAST:event_jButton2ActionPerformed
 
