@@ -30,7 +30,7 @@ public class Server extends Thread {
     private static ServerSocket eveSocket = null;
     private static Socket eve = null;
     private AtomicBoolean running = new AtomicBoolean(true);
-    private static ServerSocket processSeverSocket = null;
+    private static ServerSocket processServerSocket = null;
     private static ServerSocket hardwareSeverSocket = null;
     private static ServerSocket performenceSeverSocket = null;
     private static ServerSocket chatSocket = null;
@@ -75,8 +75,9 @@ public class Server extends Thread {
         running.set(false);
         try {
             eveSocket.close();
+            eve.close();
             serverSocket.close();
-            performenceSeverSocket.close();
+            processServerSocket.close();
             hardwareSeverSocket.close();
             performenceSeverSocket.close();
             chatSocket.close();
@@ -182,7 +183,7 @@ public class Server extends Thread {
         @Override
         public void run() {
             try {
-                processSeverSocket = new ServerSocket(8001);
+                processServerSocket = new ServerSocket(8001);
                 hardwareSeverSocket = new ServerSocket(8002);
                 performenceSeverSocket = new ServerSocket(8003);
             } catch (IOException ex) {
@@ -206,7 +207,7 @@ public class Server extends Thread {
 
                     Thread realtimeProcessThread = new Thread(() -> {
                         try {
-                            Socket processSocket = processSeverSocket.accept();    
+                            Socket processSocket = processServerSocket.accept();    
                             JSONObject systemResourceInfo = new JSONObject();
                             systemResourceInfo.put("RealtimeProcess", getRealtimeProcessInfo());
                             sendSystemResourceInfo(processSocket, systemResourceInfo);

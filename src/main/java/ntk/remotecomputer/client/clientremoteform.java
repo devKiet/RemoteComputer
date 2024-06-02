@@ -280,7 +280,7 @@ public class clientremoteform extends javax.swing.JFrame {
             public void mouseMoved(MouseEvent e) {
                 try {
                     writer.writeInt(e.getID());
-                    System.out.println("Mouse moved");
+                    // System.out.println("Mouse moved");
 
                     double x = ((double) (e.getX()) / lableSize.getWidth());
                     double y = ((double) (e.getY()) / lableSize.getHeight());
@@ -358,17 +358,8 @@ public class clientremoteform extends javax.swing.JFrame {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 try {
                     writer.writeInt(e.getID());
-                    System.out.println("Scroll mouse");
-                    
-                    double x = ((double) (e.getX()) / lableSize.getWidth());
-                    double y = ((double) (e.getY()) / lableSize.getHeight());
-                    writer.writeDouble(x);
-                    writer.writeDouble(y);
-                    
+                    // System.out.println("Scroll mouse");
                     writer.writeInt(e.getWheelRotation());
-                    writer.writeDouble(e.getPreciseWheelRotation());
-                    writer.writeInt(e.getScrollAmount());
-                    writer.writeInt(e.getScrollType());
                     writer.flush();
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
