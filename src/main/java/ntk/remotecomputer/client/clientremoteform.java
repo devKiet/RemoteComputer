@@ -252,7 +252,7 @@ public class clientremoteform extends javax.swing.JFrame {
                     writer.writeInt(e.getID());
                     //System.out.println("Mouse Pressed");
                     writer.writeInt(InputEvent.getMaskForButton(e.getButton()));
-                    //writer.flush();
+                    writer.flush();
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -299,8 +299,8 @@ public class clientremoteform extends javax.swing.JFrame {
                     writer.writeInt(e.getID());
                     System.out.println("Mouse moved");
 
-                    double x = ((double) (e.getX()) / panel.getWidth());
-                    double y = ((double) (e.getY()) / panel.getHeight());
+                    double x = ((double) (e.getX()) / lableSize.getWidth());
+                    double y = ((double) (e.getY()) / lableSize.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
                     writer.flush();
@@ -358,9 +358,10 @@ public class clientremoteform extends javax.swing.JFrame {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 try {
                     writer.writeInt(e.getID());
+                    System.out.println("Scroll mouse");
                     
-                    double x = ((double) (e.getX()) / panel.getWidth());
-                    double y = ((double) (e.getY() - titleBarHeight) / panel.getHeight());
+                    double x = ((double) (e.getX()) / lableSize.getWidth());
+                    double y = ((double) (e.getY()) / lableSize.getHeight());
                     writer.writeDouble(x);
                     writer.writeDouble(y);
                     
