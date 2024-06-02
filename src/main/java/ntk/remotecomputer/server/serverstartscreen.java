@@ -115,10 +115,14 @@ public class serverstartscreen extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         
         try {
-            server.setRunning(false);
-            server.stopServer();
-            fileform.setRunning(false);
-            fileform.closeSocket();
+            if (server != null) {
+                server.setRunning(false);
+                server.stopServer();
+            }
+            if (fileform != null) {
+                fileform.setRunning(false);
+                fileform.closeSocket();
+            }
         } catch (IOException ex) {
             Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
         }
