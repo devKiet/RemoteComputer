@@ -106,7 +106,7 @@ public class downloadfileform extends javax.swing.JFrame {
 
                 System.out.println("Output file : " + outputFile + " is successfully saved ");
                 JOptionPane.showMessageDialog(this, "File downloaded successfully!");
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 this.dispose();
             } else {
                 System.out.println("No directory selected. Exiting...");

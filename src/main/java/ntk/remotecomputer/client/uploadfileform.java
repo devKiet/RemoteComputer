@@ -29,8 +29,6 @@ public class uploadfileform extends javax.swing.JFrame {
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
-        
-        jFileChooser1.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     }
 
     @SuppressWarnings("unchecked")

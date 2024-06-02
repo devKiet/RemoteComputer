@@ -178,7 +178,7 @@ public class clientfirstpage extends javax.swing.JFrame {
         } else {
             
             //File Transfer Initialization
-            SystemInfoForm systemInfoForm = new SystemInfoForm(ipAddress.getText());
+            systeminforform systemInfoForm = new systeminforform(ipAddress.getText());
             systemInfoForm.setBounds(550, 150, 600, 400);
             systemInfoForm.setResizable(false);
             systemInfoForm.setVisible(true);

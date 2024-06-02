@@ -194,13 +194,13 @@ public class serverfileform extends javax.swing.JFrame {
                 fileEvent.setStatus("Error");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "path specified is not pointing to a file");
+            // JOptionPane.showMessageDialog(null, "path specified is not pointing to a file");
             fileEvent.setStatus("Error");
         }
 
         try {
             outputStream.writeObject(fileEvent);
-            JOptionPane.showMessageDialog(null, "Done...Going to exit");
+            // JOptionPane.showMessageDialog(null, "Done...Going to exit");
             Thread.sleep(1000);
         } catch (InterruptedException e) {
         }
@@ -224,7 +224,7 @@ public class serverfileform extends javax.swing.JFrame {
             fileOutputStream.write(fileEvent.getFileData());
             fileOutputStream.flush();
             fileOutputStream.close();
-            JOptionPane.showMessageDialog(null, "Output file : " + outputFile + " is successfully saved ");
+            // JOptionPane.showMessageDialog(null, "Output file : " + outputFile + " is successfully saved ");
             Thread.sleep(1000);
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
         }

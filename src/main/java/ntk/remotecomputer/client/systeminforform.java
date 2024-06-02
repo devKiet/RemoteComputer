@@ -24,7 +24,7 @@ import org.json.JSONObject;
  *
  * @author AD
  */
-public class SystemInfoForm extends java.awt.Frame {
+public class systeminforform extends java.awt.Frame {
     
     private static Thread backgroundThread = null;
     static String ip;
@@ -38,10 +38,10 @@ public class SystemInfoForm extends java.awt.Frame {
      * Creates new form SystemInfoForm
      * @param ip
      */
-    public SystemInfoForm(String ip) {
+    public systeminforform(String ip) {
         super("Process List");
         setSize(600, 400);
-        SystemInfoForm.ip = ip;
+        systeminforform.ip = ip;
         initComponents();
         
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -305,7 +305,7 @@ public class SystemInfoForm extends java.awt.Frame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SystemInfoForm(ip).setVisible(true);
+                new systeminforform(ip).setVisible(true);
             }
         });
     }
