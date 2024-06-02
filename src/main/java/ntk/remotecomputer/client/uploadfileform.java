@@ -14,7 +14,9 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import ntk.remotecomputer.Commons;
 
 public class uploadfileform extends javax.swing.JFrame {
@@ -27,6 +29,8 @@ public class uploadfileform extends javax.swing.JFrame {
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
+        
+        jFileChooser1.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     }
 
     @SuppressWarnings("unchecked")
@@ -47,6 +51,7 @@ public class uploadfileform extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
     private static ObjectOutputStream outputStream = null;
     private FileEvent fileEvent = null;
     private static String fname = null;
@@ -93,38 +98,42 @@ public class uploadfileform extends javax.swing.JFrame {
             this.dispose();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error: " + e);
+            JOptionPane.showMessageDialog(this, "Error: " + e);
         } catch (IOException ex) {
             Logger.getLogger(uploadfileform.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Error: " + ex);
+            JOptionPane.showMessageDialog(this, "Error: " + ex);
         }
 
     }
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
-        try {
-      
-            String serverName = ip; //loop back ip   
-            Socket sock = new Socket(serverName, Commons.FILE_SOCKET_PORT);
-            Scanner input = new Scanner(System.in);
-            System.out.print("Enter the file name : ");
-            String keyRead = jFileChooser1.getSelectedFile().getAbsolutePath();
-            System.out.println("Old path: " + keyRead);
-            keyRead = keyRead.replaceAll("\\\\", "/");
-          
-            System.out.println("Path: " + keyRead);
-          
-            fname = keyRead;
-            OutputStream ostream = null;
-            ostream = sock.getOutputStream();
-            PrintWriter pwrite = new PrintWriter(ostream, true);
-            pwrite.println("");
-            outputStream = new ObjectOutputStream(sock.getOutputStream());
-            this.sendFile();
-            sock.close();
+        try {        
+            if (JFileChooser.APPROVE_SELECTION.equals(evt.getActionCommand())) {
+                String serverName = ip; //loop back ip   
+                Socket sock = new Socket(serverName, Commons.FILE_SOCKET_PORT);
+                Scanner input = new Scanner(System.in);
+                System.out.print("Enter the file name : ");
+                String keyRead = jFileChooser1.getSelectedFile().getAbsolutePath();
+                System.out.println("Old path: " + keyRead);
+                keyRead = keyRead.replaceAll("\\\\", "/");
 
+                System.out.println("Path: " + keyRead);
+
+                fname = keyRead;
+                OutputStream ostream = null;
+                ostream = sock.getOutputStream();
+                PrintWriter pwrite = new PrintWriter(ostream, true);
+                pwrite.println("");
+                outputStream = new ObjectOutputStream(sock.getOutputStream());
+                this.sendFile();
+                sock.close();
+            } else if (JFileChooser.CANCEL_SELECTION.equals(evt.getActionCommand())) {
+                this.dispose();
+            }       
         } catch (IOException ex) {
-            Logger.getLogger(uploadfileform.class.getName()).log(Level.SEVERE, null, ex);
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(this, "Connection failed: " + ex.getMessage());
+            });
         }
     }//GEN-LAST:event_jFileChooser1ActionPerformed
 

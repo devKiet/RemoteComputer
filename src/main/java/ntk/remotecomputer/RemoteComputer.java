@@ -431,56 +431,56 @@ public class RemoteComputer extends javax.swing.JFrame {
                     
                     try {
                     // Set up the socket address and timeout values
-                    String ipAddress = jTextField7.getText();
+                        String ipAddress = jTextField7.getText();
 
-                    SocketAddress socketAddress = new InetSocketAddress(ipAddress, Commons.LOGIN_SOCKET_PORT);
-                    Socket socket = new Socket();
-                    
-                    // Attempt to connect with timeout
-                    socket.connect(socketAddress, Commons.CONNECTION_TIMEOUT);
-                    // Set the read timeout
-                    socket.setSoTimeout(Commons.READ_TIMEOUT);
+                        SocketAddress socketAddress = new InetSocketAddress(ipAddress, Commons.LOGIN_SOCKET_PORT);
+                        Socket socket = new Socket();
 
-                    try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                         PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+                        // Attempt to connect with timeout
+                        socket.connect(socketAddress, Commons.CONNECTION_TIMEOUT);
+                        // Set the read timeout
+                        socket.setSoTimeout(Commons.READ_TIMEOUT);
 
-                        out.println(jTextField3.getText());
-                        String response = in.readLine();
+                        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-                        if ("Access Granted".equals(response)) {
-                            // Hide the current frame and show the client page on the EDT
+                            out.println(jTextField3.getText());
+                            String response = in.readLine();
+
+                            if ("Access Granted".equals(response)) {
+                                // Hide the current frame and show the client page on the EDT
+                                SwingUtilities.invokeLater(() -> {
+                                    dispose();
+                                    clientfirstpage client;
+                                    try {
+                                        client = new clientfirstpage(jTextField7.getText());
+                                        client.setVisible(true);
+                                    } catch (UnknownHostException ex) {
+                                        Logger.getLogger(RemoteComputer.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                });
+                            } else {
+                                // Show access denied message on the EDT
+                                SwingUtilities.invokeLater(() -> {
+                                    JOptionPane.showMessageDialog(mainPanel, "Access Denied by Server");
+                                });
+                            }
+                        } catch (IOException ex) {
+                            // Handle read timeout and other I/O exceptions
                             SwingUtilities.invokeLater(() -> {
-                                dispose();
-                                clientfirstpage client;
-                                try {
-                                    client = new clientfirstpage(jTextField7.getText());
-                                    client.setVisible(true);
-                                } catch (UnknownHostException ex) {
-                                    Logger.getLogger(RemoteComputer.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                                JOptionPane.showMessageDialog(mainPanel, "Connection failed: " + ex.getMessage());
                             });
-                        } else {
-                            // Show access denied message on the EDT
-                            SwingUtilities.invokeLater(() -> {
-                                JOptionPane.showMessageDialog(jButton3, "Access Denied by Server");
-                            });
+                        } finally {
+                            socket.close();
                         }
                     } catch (IOException ex) {
-                        // Handle read timeout and other I/O exceptions
+                        // Handle connection timeout and other I/O exceptions
                         SwingUtilities.invokeLater(() -> {
-                            JOptionPane.showMessageDialog(jButton3, "Connection failed: " + ex.getMessage());
+                            JOptionPane.showMessageDialog(mainPanel, "Connection failed: " + ex.getMessage());
                         });
-                    } finally {
-                        socket.close();
                     }
-                } catch (IOException ex) {
-                    // Handle connection timeout and other I/O exceptions
-                    SwingUtilities.invokeLater(() -> {
-                        JOptionPane.showMessageDialog(jButton3, "Connection failed: " + ex.getMessage());
-                    });
+                    return null;
                 }
-                return null;
-            }
 
                 @Override
                 protected void done() {

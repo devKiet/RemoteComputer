@@ -1,5 +1,9 @@
 package ntk.remotecomputer.client;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import ntk.remotecomputer.Commons;
 
@@ -76,7 +80,7 @@ public class clientfileform extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+
         this.setVisible(false);
 
 	/* Call uploadfileform on button action */

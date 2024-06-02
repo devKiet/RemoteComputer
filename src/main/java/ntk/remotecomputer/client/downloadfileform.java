@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import ntk.remotecomputer.Commons;
 
 public class downloadfileform extends javax.swing.JFrame {
@@ -65,7 +66,7 @@ public class downloadfileform extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(267, 206, 171, 28);
+        jButton1.setBounds(268, 206, 170, 28);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         getContentPane().add(jLabel3);
@@ -84,7 +85,7 @@ public class downloadfileform extends javax.swing.JFrame {
             fileEvent = (FileEvent) inputStream.readObject();
             if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
                 System.out.println("Error occurred ..So exiting");
-                System.exit(0);
+                this.dispose();
             }
 
             // Tạo JFileChooser để người dùng chọn thư mục đích
@@ -104,16 +105,16 @@ public class downloadfileform extends javax.swing.JFrame {
                 fileOutputStream.close();
 
                 System.out.println("Output file : " + outputFile + " is successfully saved ");
-                JOptionPane.showMessageDialog(null, "File downloaded successfully!");
+                JOptionPane.showMessageDialog(this, "File downloaded successfully!");
                 Thread.sleep(3000);
                 this.dispose();
             } else {
                 System.out.println("No directory selected. Exiting...");
-                JOptionPane.showMessageDialog(null, "No directory selected. Exiting...");
+                JOptionPane.showMessageDialog(this, "No directory selected. Exiting...");
             }
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error: " + e);
+            JOptionPane.showMessageDialog(this, "Error: " + e);
         }
     }
     
@@ -140,7 +141,9 @@ public class downloadfileform extends javax.swing.JFrame {
             ostream.close();
             pwrite.close();
         } catch (IOException ex) {
-            Logger.getLogger(downloadfileform.class.getName()).log(Level.SEVERE, null, ex);
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(this, "Connection failed: " + ex.getMessage());
+            });
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
