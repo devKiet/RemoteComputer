@@ -317,47 +317,6 @@ public class clientremoteform extends javax.swing.JFrame {
 
         });
         
-        // Add key listener to the frame
-//        lab.addKeyListener(new KeyAdapter() {
-//            //Key Pressed Event
-//            @Override
-//            public void keyPressed(KeyEvent e) {
-//                try {
-//                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
-//                        e.consume(); // Ignore Windows key
-//                        return;
-//                    }
-//                    writer.writeInt(e.getID());
-//                    System.out.println("Key Pressed: " + e.getKeyChar());
-//                    writer.writeInt(e.getKeyCode());
-//                    writer.flush();
-//                } catch (IOException ex) {
-//                    Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//                
-//            //Key Released Event
-//            @Override
-//            public void keyReleased(KeyEvent e) {
-//                try {
-//                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
-//                        e.consume(); // Ignore Windows key
-//                        return;
-//                    }
-//                    writer.writeInt(e.getID());
-//                    System.out.println("Key Released");
-//                    writer.writeInt(e.getKeyCode());
-//                    writer.flush();
-//                } catch (IOException ex) {
-//                    Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//            
-//            @Override
-//            public void keyTyped(KeyEvent e) {
-//                System.out.println("Key Released");
-//            }
-//        });
         GlobalScreen.registerNativeHook();
         GlobalScreen.addNativeKeyListener(new NativeKeyListener() {
             @Override

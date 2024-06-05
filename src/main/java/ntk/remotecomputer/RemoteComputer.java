@@ -191,7 +191,13 @@ public class RemoteComputer extends javax.swing.JFrame {
         jPanel6.setPreferredSize(new java.awt.Dimension(840, 550));
 
         jTextField4.setEditable(false);
-        jTextField4.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jTextField4.setFont(new java.awt.Font("AppleMyungjo", 1, 24)); // NOI18N
+        jTextField4.setText("I l");
+        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField4ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/Spinner@1x-1.6s-200px-200px.gif"))); // NOI18N
@@ -253,7 +259,7 @@ public class RemoteComputer extends javax.swing.JFrame {
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(50, 50, 50)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(139, Short.MAX_VALUE))
+                .addContainerGap(137, Short.MAX_VALUE))
         );
 
         mainPanel.add(jPanel6, "card3");
@@ -519,6 +525,10 @@ public class RemoteComputer extends javax.swing.JFrame {
             jLabel1.setVisible(false);
         });
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField4ActionPerformed
     
     public static String getWifiIPAddress() throws UnknownHostException {
         return Inet4Address.getLocalHost().getHostAddress();

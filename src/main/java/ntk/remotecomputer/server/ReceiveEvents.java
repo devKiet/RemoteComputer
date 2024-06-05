@@ -105,25 +105,6 @@ public class ReceiveEvents {
         keyCodeMap.put(NativeKeyEvent.VC_PERIOD, KeyEvent.VK_PERIOD);
         keyCodeMap.put(NativeKeyEvent.VC_SLASH, KeyEvent.VK_SLASH);
 
-        // Map phím số trên keypad
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD0, KeyEvent.VK_NUMPAD0);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD1, KeyEvent.VK_NUMPAD1);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD2, KeyEvent.VK_NUMPAD2);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD3, KeyEvent.VK_NUMPAD3);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD4, KeyEvent.VK_NUMPAD4);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD5, KeyEvent.VK_NUMPAD5);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD6, KeyEvent.VK_NUMPAD6);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD7, KeyEvent.VK_NUMPAD7);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD8, KeyEvent.VK_NUMPAD8);
-//        keyCodeMap.put(NativeKeyEvent.VC_NUMPAD9, KeyEvent.VK_NUMPAD9);
-//
-//        // Map phím toán học trên keypad
-//        keyCodeMap.put(NativeKeyEvent.VC_MULTIPLY, KeyEvent.VK_MULTIPLY);
-//        keyCodeMap.put(NativeKeyEvent.VC_ADD, KeyEvent.VK_ADD);
-//        keyCodeMap.put(NativeKeyEvent.VC_SUBTRACT, KeyEvent.VK_SUBTRACT);
-//        keyCodeMap.put(NativeKeyEvent.VC_DECIMAL, KeyEvent.VK_DECIMAL);
-//        keyCodeMap.put(NativeKeyEvent.VC_DIVIDE, KeyEvent.VK_DIVIDE);
-        
         // Map các phím khác
         keyCodeMap.put(NativeKeyEvent.VC_DELETE, KeyEvent.VK_DELETE);
         keyCodeMap.put(NativeKeyEvent.VC_INSERT, KeyEvent.VK_INSERT);
