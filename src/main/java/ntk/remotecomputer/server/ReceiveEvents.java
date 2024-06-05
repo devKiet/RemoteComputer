@@ -1,6 +1,7 @@
 
 package ntk.remotecomputer.server;
 
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -59,11 +60,11 @@ public class ReceiveEvents {
                         r.mouseMove((int) (reader.readDouble()* width), (int) (reader.readDouble() * height));
                         System.out.println("Mouse moved");
                         break;
-                    case KeyEvent.KEY_PRESSED:
+                    case NativeKeyEvent.NATIVE_KEY_PRESSED:
                         r.keyPress(reader.readInt());
                         System.out.println("Key Pressed");
                         break;
-                    case KeyEvent.KEY_RELEASED:
+                    case NativeKeyEvent.NATIVE_KEY_RELEASED:
                         r.keyRelease(reader.readInt());
                         System.out.println("Key Released");
                         break;

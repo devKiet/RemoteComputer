@@ -4,6 +4,10 @@
  */
 package ntk.remotecomputer.client;
 
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.NativeHookException;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -220,6 +224,8 @@ public class clientremoteform extends javax.swing.JFrame {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt(); // Restore interrupted status
                     }
+                } catch (NativeHookException ex) {
+                    Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -237,7 +243,7 @@ public class clientremoteform extends javax.swing.JFrame {
         }
     }
     
-    private void setEvent(Socket eve) throws IOException {
+    private void setEvent(Socket eve) throws IOException, NativeHookException {
         
         try {
             writer = new ObjectOutputStream(eve.getOutputStream());
@@ -312,44 +318,75 @@ public class clientremoteform extends javax.swing.JFrame {
         });
         
         // Add key listener to the frame
-        lab.addKeyListener(new KeyAdapter() {
-            //Key Pressed Event
+//        lab.addKeyListener(new KeyAdapter() {
+//            //Key Pressed Event
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                try {
+//                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+//                        e.consume(); // Ignore Windows key
+//                        return;
+//                    }
+//                    writer.writeInt(e.getID());
+//                    System.out.println("Key Pressed: " + e.getKeyChar());
+//                    writer.writeInt(e.getKeyCode());
+//                    writer.flush();
+//                } catch (IOException ex) {
+//                    Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//                
+//            //Key Released Event
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                try {
+//                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+//                        e.consume(); // Ignore Windows key
+//                        return;
+//                    }
+//                    writer.writeInt(e.getID());
+//                    System.out.println("Key Released");
+//                    writer.writeInt(e.getKeyCode());
+//                    writer.flush();
+//                } catch (IOException ex) {
+//                    Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            
+//            @Override
+//            public void keyTyped(KeyEvent e) {
+//                System.out.println("Key Released");
+//            }
+//        });
+        GlobalScreen.registerNativeHook();
+        GlobalScreen.addNativeKeyListener(new NativeKeyListener() {
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void nativeKeyPressed(NativeKeyEvent e) {
                 try {
-                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
-                        e.consume(); // Ignore Windows key
-                        return;
-                    }
-                    writer.writeInt(e.getID());
-                    System.out.println("Key Pressed: " + e.getKeyChar());
+                    writer.writeInt(NativeKeyEvent.NATIVE_KEY_PRESSED);
                     writer.writeInt(e.getKeyCode());
                     writer.flush();
+                    System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-                
-            //Key Released Event
+
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void nativeKeyReleased(NativeKeyEvent e) {
                 try {
-                    if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
-                        e.consume(); // Ignore Windows key
-                        return;
-                    }
-                    writer.writeInt(e.getID());
-                    System.out.println("Key Released");
+                    writer.writeInt(NativeKeyEvent.NATIVE_KEY_RELEASED);
                     writer.writeInt(e.getKeyCode());
                     writer.flush();
+                    System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             @Override
-            public void keyTyped(KeyEvent e) {
-                System.out.println("Key Released");
+            public void nativeKeyTyped(NativeKeyEvent e) {
+                // Not used
             }
         });
         
