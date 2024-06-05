@@ -28,7 +28,7 @@ public final class Commons {
     public static final int IMAGE_HEIGHT = 600;
 
     // Other constants
-    public static final int SLEEP_TIME = 10;
+    public static final int SLEEP_TIME = 5;
     public static final String ICON_IMG_PATH = "/ntk/remotecomputer/res/icons8-remote-desktop-96.png";
     
 }
