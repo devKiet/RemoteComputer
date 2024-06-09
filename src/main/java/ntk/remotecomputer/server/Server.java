@@ -44,7 +44,7 @@ public class Server extends Thread {
     static Thread Server_Thread_1 = null;
     static Thread Server_Thread_2 = null;
     static Thread Server_Thread_3 = null;
-    static Thread Server_Thread_4 = null;
+    // static Thread Server_Thread_4 = null;
     
     //Constructor to assign threads
     public Server() throws IOException, SQLException, ClassNotFoundException, Exception {
@@ -63,12 +63,12 @@ public class Server extends Thread {
         Server_Thread_3 = new Thread(new chatThread());
         
         ///Thread for send i4 
-        Server_Thread_4 = new Thread(new trackingThread());
+        // Server_Thread_4 = new Thread(new trackingThread());
         
         Server_Thread_1.start();
         Server_Thread_2.start();
         Server_Thread_3.start();
-        Server_Thread_4.start();
+        // Server_Thread_4.start();
     }
     
     public void stopServer() {
