@@ -95,9 +95,13 @@ public class uploadfileform extends javax.swing.JFrame {
                 read = read + numRead;
             }
             diStream.close();
+            fileEvent.setFileSize(len);
+            fileEvent.setFileData(fileBytes);
+            fileEvent.setStatus("Success");
             return fileBytes;
         } catch (IOException e) {
             e.printStackTrace();
+            fileEvent.setStatus("Error");
             return null;
         }
     }
