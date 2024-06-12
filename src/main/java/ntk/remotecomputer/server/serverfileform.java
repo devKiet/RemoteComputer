@@ -16,6 +16,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -177,30 +179,26 @@ public class serverfileform extends javax.swing.JFrame {
         fileEvent = new FileEvent();
         String fileName = fname.substring(fname.lastIndexOf("/") + 1, fname.length());
         String path = fname.substring(0, fname.lastIndexOf("/") + 1);
-        fileEvent.setDestinationDirectory(destinationPath1);
-        fileEvent.setFilename(fileName);
-        fileEvent.setSourceDirectory(fname);
-        File file = new File(fname);
-        if (file.isFile()) {
-            try {
-                DataInputStream diStream = new DataInputStream(new FileInputStream(file));
-                long len = (int) file.length();
-                byte[] fileBytes = new byte[(int) len];
-                int read = 0;
-                int numRead = 0;
-                while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
-                    read = read + numRead;
-                }
 
-                fileEvent.setFileSize(len);
-                fileEvent.setFileData(fileBytes);
-                fileEvent.setStatus("Success");
-            } catch (IOException e) {
-                fileEvent.setStatus("Error");
-            }
+        File file = new File(fname);
+        if (file.isDirectory()) {
+            fileEvent.setDirectory(true);
+            fileEvent.setFileList(getFileList(file));
         } else {
-            // JOptionPane.showMessageDialog(null, "path specified is not pointing to a file");
-            fileEvent.setStatus("Error");
+            fileEvent.setDirectory(false);
+            fileEvent.setFileData(readFile(file));
+        }
+        fileEvent.setFilename(file.getName());
+        fileEvent.setSourceDirectory(fname);
+        fileEvent.setDestinationDirectory(destinationPath1);
+
+        try {
+            outputStream.writeObject(fileEvent);
+            JOptionPane.showMessageDialog(this, "File/Folder uploaded successfully!");
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e);
         }
 
         try {
@@ -209,6 +207,46 @@ public class serverfileform extends javax.swing.JFrame {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
         }
+    }
+    
+    private byte[] readFile(File file) {
+        try {
+            DataInputStream diStream = new DataInputStream(new FileInputStream(file));
+            long len = (int) file.length();
+            byte[] fileBytes = new byte[(int) len];
+            int read = 0;
+            int numRead = 0;
+            while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
+                read = read + numRead;
+            }
+            diStream.close();
+            fileEvent.setFileSize(len);
+            fileEvent.setFileData(fileBytes);
+            fileEvent.setStatus("Success");
+            return fileBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+            fileEvent.setStatus("Error");
+            return null;
+        }
+    }
+
+    private List<FileEvent> getFileList(File directory) {
+        List<FileEvent> fileList = new ArrayList<>();
+        for (File file : directory.listFiles()) {
+            FileEvent event = new FileEvent();
+            event.setFilename(file.getName());
+            event.setSourceDirectory(file.getAbsolutePath());
+            if (file.isDirectory()) {
+                event.setDirectory(true);
+                event.setFileList(getFileList(file));
+            } else {
+                event.setDirectory(false);
+                event.setFileData(readFile(file));
+            }
+            fileList.add(event);
+        }
+        return fileList;
     }
 
     public void downloadFile() {

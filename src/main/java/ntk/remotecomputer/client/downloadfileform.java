@@ -90,34 +90,54 @@ public class downloadfileform extends javax.swing.JFrame {
 
             // Tạo JFileChooser để người dùng chọn thư mục đích
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             int returnVal = fileChooser.showSaveDialog(null);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File selectedDirectory = fileChooser.getSelectedFile();
                 String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
 
-                dstFile = new File(outputFile);
-
-                fileOutputStream = new FileOutputStream(dstFile);
-                fileOutputStream.write(fileEvent.getFileData());
-                fileOutputStream.flush();
-                fileOutputStream.close();
-
-                System.out.println("Output file : " + outputFile + " is successfully saved ");
-                JOptionPane.showMessageDialog(this, "File downloaded successfully!");
-                Thread.sleep(1000);
-                this.dispose();
+                if (fileEvent.isDirectory()) {
+                    new File(outputFile).mkdirs();
+                    saveDirectory(fileEvent, outputFile);
+                } else {
+                    saveFile(fileEvent, outputFile);
+                }
+                JOptionPane.showMessageDialog(this, "File/Folder downloaded successfully!");
             } else {
                 System.out.println("No directory selected. Exiting...");
                 JOptionPane.showMessageDialog(this, "No directory selected. Exiting...");
             }
-        } catch (IOException | ClassNotFoundException | InterruptedException e) {
+        } catch (IOException | ClassNotFoundException  e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e);
         }
     }
     
+    private void saveFile(FileEvent fileEvent, String outputPath) {
+        try {
+            File dstFile = new File(outputPath);
+            FileOutputStream fileOutputStream = new FileOutputStream(dstFile);
+            fileOutputStream.write(fileEvent.getFileData());
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveDirectory(FileEvent fileEvent, String parentPath) {
+        for (FileEvent event : fileEvent.getFileList()) {
+            String newPath = parentPath + File.separator + event.getFilename();
+            if (event.isDirectory()) {
+                new File(newPath).mkdirs();
+                saveDirectory(event, newPath);
+            } else {
+                saveFile(event, newPath);
+            }
+        }
+    }
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
            
