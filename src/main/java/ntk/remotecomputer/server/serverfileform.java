@@ -90,6 +90,11 @@ public class serverfileform extends javax.swing.JFrame {
         jLabel3.setBounds(600, 120, 50, 50);
 
         jTextField1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jTextField1);
         jTextField1.setBounds(70, 120, 520, 50);
 
@@ -214,23 +219,44 @@ public class serverfileform extends javax.swing.JFrame {
                 return;
             }
             
-            String outputFile = destinationPath1 + "\\" + fileEvent.getFilename();
-            if (!new File(fileEvent.getDestinationDirectory()).exists()) {
-                new File(fileEvent.getDestinationDirectory()).mkdirs();
-            }
+            String outputFile = jTextField1.getText() + File.separator + fileEvent.getFilename();
 
-            dstFile = new File(outputFile);
-            fileOutputStream = new FileOutputStream(dstFile);
-            fileOutputStream.write(fileEvent.getFileData());
-            fileOutputStream.flush();
-            fileOutputStream.close();
-            // JOptionPane.showMessageDialog(null, "Output file : " + outputFile + " is successfully saved ");
+            if (fileEvent.isDirectory()) {
+                new File(outputFile).mkdirs();
+                saveDirectory(fileEvent, outputFile);
+            } else {
+                saveFile(fileEvent, outputFile);
+            }
             Thread.sleep(1000);
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
         }
 
     }
     
+    private void saveFile(FileEvent fileEvent, String outputPath) {
+        try {
+            File dstFile = new File(outputPath);
+            FileOutputStream fileOutputStream = new FileOutputStream(dstFile);
+            fileOutputStream.write(fileEvent.getFileData());
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveDirectory(FileEvent fileEvent, String parentPath) {
+        for (FileEvent event : fileEvent.getFileList()) {
+            String newPath = parentPath + File.separator + event.getFilename();
+            if (event.isDirectory()) {
+                new File(newPath).mkdirs();
+                saveDirectory(event, newPath);
+            } else {
+                saveFile(event, newPath);
+            }
+        }
+    }
+
     private void jLabel3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MousePressed
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
@@ -243,6 +269,10 @@ public class serverfileform extends javax.swing.JFrame {
             destinationPath1 = jTextField1.getText();
         }
     }//GEN-LAST:event_jLabel3MousePressed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments

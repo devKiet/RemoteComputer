@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +31,7 @@ public class uploadfileform extends javax.swing.JFrame {
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
+        jFileChooser1.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     }
 
     @SuppressWarnings("unchecked")
@@ -58,50 +61,63 @@ public class uploadfileform extends javax.swing.JFrame {
 	/* send file from client to server */
     public void sendFile() {
         fileEvent = new FileEvent();
-        String fileName = fname.substring(fname.lastIndexOf("/") + 1, fname.length());
-        String path = fname.substring(0, fname.lastIndexOf("/") + 1);
-        fileEvent.setDestinationDirectory(destinationPath);
-        fileEvent.setFilename(fileName);
-        fileEvent.setSourceDirectory(fname);
         File file = new File(fname);
-        if (file.isFile()) {
-            try {
-                DataInputStream diStream = new DataInputStream(new FileInputStream(file));
-                long len = (int) file.length();
-                byte[] fileBytes = new byte[(int) len];
-                int read = 0;
-                int numRead = 0;
-                while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
-                    read = read + numRead;
-                }
-                fileEvent.setFileSize(len);
-                fileEvent.setFileData(fileBytes);
-                fileEvent.setStatus("Success");
-            } catch (Exception e) {
-                e.printStackTrace();
-                fileEvent.setStatus("Error");
-            }
+        if (file.isDirectory()) {
+            fileEvent.setDirectory(true);
+            fileEvent.setFileList(getFileList(file));
         } else {
-            System.out.println("path specified is not pointing to a file");
-            fileEvent.setStatus("Error");
+            fileEvent.setDirectory(false);
+            fileEvent.setFileData(readFile(file));
         }
+        fileEvent.setFilename(file.getName());
+        fileEvent.setSourceDirectory(fname);
+        fileEvent.setDestinationDirectory(destinationPath);
 
         try {
             outputStream.writeObject(fileEvent);
-            JOptionPane.showMessageDialog(this, "File uploaded successfully!");
-            System.out.println("Done...Going to exit");
-            Thread.sleep(1000);
-            outputStream.close();
-            
-            this.dispose();
-        } catch (InterruptedException e) {
+            JOptionPane.showMessageDialog(this, "File/Folder uploaded successfully!");
+            outputStream.flush();
+        } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e);
-        } catch (IOException ex) {
-            Logger.getLogger(uploadfileform.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Error: " + ex);
         }
 
+    }
+    
+    private byte[] readFile(File file) {
+        try {
+            DataInputStream diStream = new DataInputStream(new FileInputStream(file));
+            long len = (int) file.length();
+            byte[] fileBytes = new byte[(int) len];
+            int read = 0;
+            int numRead = 0;
+            while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
+                read = read + numRead;
+            }
+            diStream.close();
+            return fileBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private List<FileEvent> getFileList(File directory) {
+        List<FileEvent> fileList = new ArrayList<>();
+        for (File file : directory.listFiles()) {
+            FileEvent event = new FileEvent();
+            event.setFilename(file.getName());
+            event.setSourceDirectory(file.getAbsolutePath());
+            if (file.isDirectory()) {
+                event.setDirectory(true);
+                event.setFileList(getFileList(file));
+            } else {
+                event.setDirectory(false);
+                event.setFileData(readFile(file));
+            }
+            fileList.add(event);
+        }
+        return fileList;
     }
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
