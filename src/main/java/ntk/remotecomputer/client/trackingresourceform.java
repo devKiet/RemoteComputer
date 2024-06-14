@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import javax.swing.ImageIcon;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import ntk.remotecomputer.Commons;
 import ntk.remotecomputer.server.ResourceInfo;
 import org.jfree.chart.ChartFactory;
@@ -16,6 +18,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -27,7 +30,10 @@ import org.jfree.data.time.TimeSeriesCollection;
 public class trackingresourceform extends javax.swing.JFrame {
     private TimeSeries cpuSeries;
     private TimeSeries memorySeries;
+    private TimeSeries diskSeries;
+    private TimeSeries networkSeries;
     private String ip = null;
+    private long startTime = System.currentTimeMillis();
     /**
      * Creates new form trackingresourceform
      */
@@ -39,54 +45,145 @@ public class trackingresourceform extends javax.swing.JFrame {
         setSize(850, 550);
         
         this.ip = ip;
-        // Create dataset
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
+        // Create dataset for CPU
+        TimeSeriesCollection cpuDataset = new TimeSeriesCollection();
         cpuSeries = new TimeSeries("CPU Load");
-        memorySeries = new TimeSeries("Used Memory");
-        dataset.addSeries(cpuSeries);
-        dataset.addSeries(memorySeries);
+        cpuSeries.setMaximumItemCount(30);
+        cpuDataset.addSeries(cpuSeries);
 
-        // Create chart
-        JFreeChart chart = ChartFactory.createTimeSeriesChart(
-                "System Resource Usage",
+        // Create dataset for Memory
+        TimeSeriesCollection memoryDataset = new TimeSeriesCollection();
+        memorySeries = new TimeSeries("Used Memory");
+        memorySeries.setMaximumItemCount(30);
+        memoryDataset.addSeries(memorySeries);
+        
+        // Create dataset for Disk
+        TimeSeriesCollection diskDataset = new TimeSeriesCollection();
+        diskSeries = new TimeSeries("Disk Usage");
+        diskSeries.setMaximumItemCount(30);
+        diskDataset.addSeries(diskSeries);
+
+        // Create dataset for Network
+        TimeSeriesCollection networkDataset = new TimeSeriesCollection();
+        networkSeries = new TimeSeries("Network Speed");
+        networkSeries.setMaximumItemCount(30);
+        networkDataset.addSeries(networkSeries);
+
+        // Create CPU chart
+        JFreeChart cpuChart = ChartFactory.createTimeSeriesChart(
+                "CPU Usage",
                 "Time",
-                "Value",
-                dataset,
+                "CPU Load (%)",
+                cpuDataset,
                 true,
                 true,
                 false
         );
 
-        // Customize plot
-        XYPlot plot = (XYPlot) chart.getPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        plot.setRenderer(renderer);
-        plot.setOrientation(PlotOrientation.VERTICAL);
-
-        // Create ChartPanel and add it to JFrame
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(800, 600));
-        setContentPane(chartPanel);
+        // Create Memory chart
+        JFreeChart memoryChart = ChartFactory.createTimeSeriesChart(
+                "Memory Usage",
+                "Time",
+                "Used Memory (MB)",
+                memoryDataset,
+                true,
+                true,
+                false
+        );
         
-        startClient();
-    }
-    
-    public void startClient() {
-        try (Socket socket = new Socket(this.ip, Commons.TRACKING_SOCKET_PORT);
-             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+        // Create Disk chart
+        JFreeChart diskChart = ChartFactory.createTimeSeriesChart(
+                "Disk Usage",
+                "Time",
+                "Disk Usage (MB)",
+                diskDataset,
+                true,
+                true,
+                false
+        );
 
-            while (true) {
-                ResourceInfo resourceInfo = (ResourceInfo) ois.readObject();
-                updateChart(resourceInfo);
-            }
-        } catch (Exception e) {
+        // Create Network chart
+        JFreeChart networkChart = ChartFactory.createTimeSeriesChart(
+                "Network Speed",
+                "Time",
+                "Network Speed (Bytes)",
+                networkDataset,
+                true,
+                true,
+                false
+        );
+
+        // Customize CPU plot
+        XYPlot cpuPlot = (XYPlot) cpuChart.getPlot();
+        XYLineAndShapeRenderer cpuRenderer = new XYLineAndShapeRenderer();
+        cpuPlot.setRenderer(cpuRenderer);
+        cpuPlot.setOrientation(PlotOrientation.VERTICAL);
+
+        // Customize Memory plot
+        XYPlot memoryPlot = (XYPlot) memoryChart.getPlot();
+        XYLineAndShapeRenderer memoryRenderer = new XYLineAndShapeRenderer();
+        memoryPlot.setRenderer(memoryRenderer);
+        memoryPlot.setOrientation(PlotOrientation.VERTICAL);
+
+        // Customize Disk plot
+        XYPlot diskPlot = (XYPlot) diskChart.getPlot();
+        XYLineAndShapeRenderer diskRenderer = new XYLineAndShapeRenderer();
+        diskPlot.setRenderer(diskRenderer);
+        diskPlot.setOrientation(PlotOrientation.VERTICAL);
+
+        // Customize Network plot
+        XYPlot networkPlot = (XYPlot) networkChart.getPlot();
+        XYLineAndShapeRenderer networkRenderer = new XYLineAndShapeRenderer();
+        networkPlot.setRenderer(networkRenderer);
+        networkPlot.setOrientation(PlotOrientation.VERTICAL);
+
+        // Create ChartPanel for CPU, Memory, Disk, and Network
+        ChartPanel cpuChartPanel = new ChartPanel(cpuChart);
+        ChartPanel memoryChartPanel = new ChartPanel(memoryChart);
+        ChartPanel diskChartPanel = new ChartPanel(diskChart);
+        ChartPanel networkChartPanel = new ChartPanel(networkChart);
+
+        // Create JTabbedPane and add charts
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("CPU Usage", cpuChartPanel);
+        tabbedPane.addTab("Memory Usage", memoryChartPanel);
+        tabbedPane.addTab("Disk Usage", diskChartPanel);
+        tabbedPane.addTab("Network Speed", networkChartPanel);
+
+        // Add tabbedPane to JFrame
+        setContentPane(tabbedPane);
+        
+        TrackingThread th = new TrackingThread();
+        new Thread(th).start();
+        
+        setVisible(true);
+    }
+    //Thread for Chat
+    class TrackingThread implements Runnable {
+
+        @Override
+        public void run() {
+            try (Socket socket = new Socket(ip, Commons.TRACKING_SOCKET_PORT);
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+
+               while (true) {
+                   ResourceInfo resourceInfo = (ResourceInfo) ois.readObject();
+                   updateChart(resourceInfo);
+               }
+           } catch (Exception e) {
+           }
         }
     }
 
     private void updateChart(ResourceInfo resourceInfo) {
-        Second current = new Second();
-        cpuSeries.addOrUpdate(current, resourceInfo.getCpuLoad());
-        memorySeries.addOrUpdate(current, resourceInfo.getUsedMemory() / (1024 * 1024)); // Convert to MB
+        SwingUtilities.invokeLater(() -> {
+            long currentTime = System.currentTimeMillis();
+            FixedMillisecond time = new FixedMillisecond(currentTime - startTime);
+            cpuSeries.addOrUpdate(time, resourceInfo.getCpuLoad());
+            memorySeries.addOrUpdate(time, resourceInfo.getUsedMemory() / (1024 * 1024)); // Convert to MB
+            diskSeries.addOrUpdate(time, resourceInfo.getDiskUsage() / (1024 * 1024)); // Convert to MB
+            networkSeries.addOrUpdate(time, resourceInfo.getNetworkSpeed());
+        });
     }
 
     /**
@@ -98,7 +195,7 @@ public class trackingresourceform extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

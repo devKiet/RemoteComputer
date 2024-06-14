@@ -15,12 +15,16 @@ public class ResourceInfo implements Serializable {
     private long usedMemory;
     private long totalMemory;
     private long uptime;
+    private long diskUsage;
+    private long networkSpeed;
 
-    public ResourceInfo(double cpuLoad, long usedMemory, long totalMemory, long uptime) {
+    public ResourceInfo(double cpuLoad, long usedMemory, long totalMemory, long uptime, long diskUsage, long networkSpeed) {
         this.cpuLoad = cpuLoad;
         this.usedMemory = usedMemory;
         this.totalMemory = totalMemory;
         this.uptime = uptime;
+        this.diskUsage = diskUsage;
+        this.networkSpeed = networkSpeed;
     }
 
     public double getCpuLoad() {
@@ -37,5 +41,13 @@ public class ResourceInfo implements Serializable {
 
     public long getUptime() {
         return uptime;
+    }
+    
+    public long getDiskUsage() {
+        return diskUsage;
+    }
+    
+    public long getNetworkSpeed() {
+        return networkSpeed;
     }
 }

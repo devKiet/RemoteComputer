@@ -9,6 +9,7 @@ import java.net.*;
 import java.sql.SQLException;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.List;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,8 @@ import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.NetworkIF;
+import oshi.software.os.OSFileStore;
 
 
 public class Server extends Thread {
@@ -198,16 +201,41 @@ public class Server extends Thread {
         }
         
         private ResourceInfo gatherResourceInfo() {
+            // Lấy thông tin CPU
             double cpuLoad = processor.getSystemCpuLoadBetweenTicks(prevTicks) * 100;
             prevTicks = processor.getSystemCpuLoadTicks();
 
+            // Lấy thông tin bộ nhớ
             GlobalMemory memory = hal.getMemory();
             long totalMemory = memory.getTotal();
             long availableMemory = memory.getAvailable();
             long usedMemory = totalMemory - availableMemory;
+
+            // Lấy thông tin uptime
             long uptime = systemInfo.getOperatingSystem().getSystemUptime();
 
-            return new ResourceInfo(cpuLoad, usedMemory, totalMemory, uptime);
+            // Lấy thông tin ổ đĩa
+            List<OSFileStore> fileStores = systemInfo.getOperatingSystem().getFileSystem().getFileStores();
+            long totalDiskSpace = 0;
+            long usableDiskSpace = 0;
+            for (OSFileStore fileStore : fileStores) {
+                totalDiskSpace += fileStore.getTotalSpace();
+                usableDiskSpace += fileStore.getUsableSpace();
+            }
+            long diskUsage = totalDiskSpace - usableDiskSpace;
+
+            // Lấy thông tin tốc độ mạng
+            List<NetworkIF> networkIFs = hal.getNetworkIFs();
+            long totalBytesSent = 0;
+            long totalBytesRecv = 0;
+            for (NetworkIF net : networkIFs) {
+                net.updateAttributes();
+                totalBytesSent += net.getBytesSent();
+                totalBytesRecv += net.getBytesRecv();
+            }
+            long networkSpeed = totalBytesSent + totalBytesRecv;
+
+            return new ResourceInfo(cpuLoad, usedMemory, totalMemory, uptime, diskUsage, networkSpeed);
         }
     }
 
