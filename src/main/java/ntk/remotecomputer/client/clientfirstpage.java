@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 import ntk.remotecomputer.Commons;
 
 public class clientfirstpage extends javax.swing.JFrame {
@@ -34,6 +35,7 @@ public class clientfirstpage extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
 
@@ -99,13 +101,21 @@ public class clientfirstpage extends javax.swing.JFrame {
         });
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 190, 200, 40));
 
+        jButton3.setText("jButton3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 380, -1, -1));
+
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Welcome to Remote Computer");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, 620, -1));
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1930, 1050));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 0, 1930, 1050));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -153,6 +163,10 @@ public class clientfirstpage extends javax.swing.JFrame {
         c1.setResizable(false);
         c1.setVisible(true);   
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        new trackingresourceform(ipAddress.getText()).setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
     
     public static String getWifiIPAddress() throws UnknownHostException {
         return Inet4Address.getLocalHost().getHostAddress();
@@ -176,6 +190,7 @@ public class clientfirstpage extends javax.swing.JFrame {
     public javax.swing.JTextField ipAddress;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
