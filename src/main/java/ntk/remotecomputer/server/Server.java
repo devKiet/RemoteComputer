@@ -182,21 +182,18 @@ public class Server extends Thread {
     class trackingThread implements Runnable {
         @Override
         public void run() {
-            Socket clientSocket = null;
-            try {
-                clientSocket = trackingServerSocket.accept();
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try (ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream())) {
+            try (Socket clientSocket = trackingServerSocket.accept();
+                ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream())) {
                 while (running.get()) {
                     ResourceInfo resourceInfo = gatherResourceInfo();
                     oos.writeObject(resourceInfo);
                     oos.flush();
                     Thread.sleep(1000); // Gửi thông tin mỗi giây
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         

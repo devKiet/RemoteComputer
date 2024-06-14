@@ -35,7 +35,7 @@ public class clientfirstpage extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
 
@@ -50,7 +50,7 @@ public class clientfirstpage extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 100, 50, 50));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 90, 50, 50));
 
         ipAddress.setEditable(false);
         ipAddress.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
@@ -85,7 +85,7 @@ public class clientfirstpage extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 280, 200, 40));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 220, 210, 40));
 
         jButton4.setBackground(new java.awt.Color(0, 0, 0));
         jButton4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -99,15 +99,21 @@ public class clientfirstpage extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 190, 200, 40));
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 160, 210, 40));
 
-        jButton3.setText("jButton3");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jButton5.setBackground(new java.awt.Color(0, 0, 0));
+        jButton5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
+        jButton5.setText("Tracking Resource");
+        jButton5.setMaximumSize(new java.awt.Dimension(180, 30));
+        jButton5.setMinimumSize(new java.awt.Dimension(180, 30));
+        jButton5.setPreferredSize(new java.awt.Dimension(180, 30));
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButton5ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 380, -1, -1));
+        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 280, 210, 40));
 
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -164,9 +170,18 @@ public class clientfirstpage extends javax.swing.JFrame {
         c1.setVisible(true);   
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        new trackingresourceform(ipAddress.getText()).setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        //Checking Null values of IP
+        if (ipAddress.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter the IP address to get connected");
+        } else {
+            //File Transfer Initialization
+            trackingresourceform c = new trackingresourceform(ipAddress.getText());
+            c.setBounds(550, 150, 800, 700);
+            c.setResizable(false);
+            c.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
     
     public static String getWifiIPAddress() throws UnknownHostException {
         return Inet4Address.getLocalHost().getHostAddress();
@@ -190,8 +205,8 @@ public class clientfirstpage extends javax.swing.JFrame {
     public javax.swing.JTextField ipAddress;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
