@@ -20,9 +20,9 @@ import ntk.remotecomputer.Commons;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
+import oshi.hardware.HWDiskStore;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.NetworkIF;
-import oshi.software.os.OSFileStore;
 
 
 public class Server extends Thread {
@@ -200,6 +200,7 @@ public class Server extends Thread {
             }
         }
         
+        // Method to send screenshots to clients
         private ResourceInfo gatherResourceInfo() {
             // Lấy thông tin CPU
             double cpuLoad = processor.getSystemCpuLoadBetweenTicks(prevTicks) * 100;
@@ -214,15 +215,17 @@ public class Server extends Thread {
             // Lấy thông tin uptime
             long uptime = systemInfo.getOperatingSystem().getSystemUptime();
 
-            // Lấy thông tin ổ đĩa
-            List<OSFileStore> fileStores = systemInfo.getOperatingSystem().getFileSystem().getFileStores();
-            long totalDiskSpace = 0;
-            long usableDiskSpace = 0;
-            for (OSFileStore fileStore : fileStores) {
-                totalDiskSpace += fileStore.getTotalSpace();
-                usableDiskSpace += fileStore.getUsableSpace();
+            // Lấy thông tin tốc độ đọc/ghi ổ đĩa
+            long totalReadBytes = 0;
+            long totalWriteBytes = 0;
+            List<HWDiskStore> diskStores = systemInfo.getHardware().getDiskStores();
+            for (HWDiskStore disk : diskStores) {
+                disk.updateAttributes();
+                totalReadBytes += disk.getReadBytes();
+                totalWriteBytes += disk.getWriteBytes();
             }
-            long diskUsage = totalDiskSpace - usableDiskSpace;
+            double diskReadRate = totalReadBytes / 1024.0; // Convert to KB
+            double diskWriteRate = totalWriteBytes / 1024.0; // Convert to KB
 
             // Lấy thông tin tốc độ mạng
             List<NetworkIF> networkIFs = hal.getNetworkIFs();
@@ -233,12 +236,13 @@ public class Server extends Thread {
                 totalBytesSent += net.getBytesSent();
                 totalBytesRecv += net.getBytesRecv();
             }
-            long networkSpeed = totalBytesSent + totalBytesRecv;
+            double networkSendRate = totalBytesSent * 8 / 1024.0; // Convert to Kbps
+            double networkReceiveRate = totalBytesRecv * 8 / 1024.0; // Convert to Kbps
 
-            return new ResourceInfo(cpuLoad, usedMemory, totalMemory, uptime, diskUsage, networkSpeed);
+            return new ResourceInfo(cpuLoad, usedMemory, totalMemory, uptime, diskReadRate, diskWriteRate, networkSendRate, networkReceiveRate);
         }
     }
-
+    
     // Method to send screenshots to clients
     private static void sendScreen(final Robot robot) throws IOException {
         //Get current screen dimensions

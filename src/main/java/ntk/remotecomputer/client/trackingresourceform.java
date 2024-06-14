@@ -4,7 +4,6 @@
  */
 package ntk.remotecomputer.client;
 
-import java.awt.Dimension;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import javax.swing.ImageIcon;
@@ -19,7 +18,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.FixedMillisecond;
-import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
@@ -30,10 +28,14 @@ import org.jfree.data.time.TimeSeriesCollection;
 public class trackingresourceform extends javax.swing.JFrame {
     private TimeSeries cpuSeries;
     private TimeSeries memorySeries;
-    private TimeSeries diskSeries;
-    private TimeSeries networkSeries;
+    private TimeSeries diskReadSeries;
+    private TimeSeries diskWriteSeries;
+    private TimeSeries networkSendSeries;
+    private TimeSeries networkReceiveSeries;
     private String ip = null;
     private long startTime = System.currentTimeMillis();
+    private static final int MAX_POINTS = 30;
+    
     /**
      * Creates new form trackingresourceform
      */
@@ -48,26 +50,32 @@ public class trackingresourceform extends javax.swing.JFrame {
         // Create dataset for CPU
         TimeSeriesCollection cpuDataset = new TimeSeriesCollection();
         cpuSeries = new TimeSeries("CPU Load");
-        cpuSeries.setMaximumItemCount(30);
+        cpuSeries.setMaximumItemCount(MAX_POINTS);
         cpuDataset.addSeries(cpuSeries);
 
         // Create dataset for Memory
         TimeSeriesCollection memoryDataset = new TimeSeriesCollection();
         memorySeries = new TimeSeries("Used Memory");
-        memorySeries.setMaximumItemCount(30);
+        memorySeries.setMaximumItemCount(MAX_POINTS);
         memoryDataset.addSeries(memorySeries);
-        
-        // Create dataset for Disk
-        TimeSeriesCollection diskDataset = new TimeSeriesCollection();
-        diskSeries = new TimeSeries("Disk Usage");
-        diskSeries.setMaximumItemCount(30);
-        diskDataset.addSeries(diskSeries);
 
-        // Create dataset for Network
+        // Create dataset for Disk Read/Write
+        TimeSeriesCollection diskDataset = new TimeSeriesCollection();
+        diskReadSeries = new TimeSeries("Disk Read Rate");
+        diskReadSeries.setMaximumItemCount(MAX_POINTS);
+        diskWriteSeries = new TimeSeries("Disk Write Rate");
+        diskWriteSeries.setMaximumItemCount(MAX_POINTS);
+        diskDataset.addSeries(diskReadSeries);
+        diskDataset.addSeries(diskWriteSeries);
+
+        // Create dataset for Network Send/Receive
         TimeSeriesCollection networkDataset = new TimeSeriesCollection();
-        networkSeries = new TimeSeries("Network Speed");
-        networkSeries.setMaximumItemCount(30);
-        networkDataset.addSeries(networkSeries);
+        networkSendSeries = new TimeSeries("Network Send Rate");
+        networkSendSeries.setMaximumItemCount(MAX_POINTS);
+        networkReceiveSeries = new TimeSeries("Network Receive Rate");
+        networkReceiveSeries.setMaximumItemCount(MAX_POINTS);
+        networkDataset.addSeries(networkSendSeries);
+        networkDataset.addSeries(networkReceiveSeries);
 
         // Create CPU chart
         JFreeChart cpuChart = ChartFactory.createTimeSeriesChart(
@@ -90,23 +98,23 @@ public class trackingresourceform extends javax.swing.JFrame {
                 true,
                 false
         );
-        
-        // Create Disk chart
+
+        // Create Disk Read/Write chart
         JFreeChart diskChart = ChartFactory.createTimeSeriesChart(
-                "Disk Usage",
+                "Disk Read/Write Rate",
                 "Time",
-                "Disk Usage (MB)",
+                "Rate (KB/s)",
                 diskDataset,
                 true,
                 true,
                 false
         );
 
-        // Create Network chart
+        // Create Network Send/Receive chart
         JFreeChart networkChart = ChartFactory.createTimeSeriesChart(
-                "Network Speed",
+                "Network Send/Receive Rate",
                 "Time",
-                "Network Speed (Bytes)",
+                "Rate (Kbps)",
                 networkDataset,
                 true,
                 true,
@@ -137,7 +145,7 @@ public class trackingresourceform extends javax.swing.JFrame {
         networkPlot.setRenderer(networkRenderer);
         networkPlot.setOrientation(PlotOrientation.VERTICAL);
 
-        // Create ChartPanel for CPU, Memory, Disk, and Network
+        // Create ChartPanel for CPU, Memory, Disk, Network
         ChartPanel cpuChartPanel = new ChartPanel(cpuChart);
         ChartPanel memoryChartPanel = new ChartPanel(memoryChart);
         ChartPanel diskChartPanel = new ChartPanel(diskChart);
@@ -147,8 +155,9 @@ public class trackingresourceform extends javax.swing.JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("CPU Usage", cpuChartPanel);
         tabbedPane.addTab("Memory Usage", memoryChartPanel);
-        tabbedPane.addTab("Disk Usage", diskChartPanel);
-        tabbedPane.addTab("Network Speed", networkChartPanel);
+        tabbedPane.addTab("Disk Read/Write Rate", diskChartPanel);
+        tabbedPane.addTab("Network Send/Receive Rate", networkChartPanel);
+
 
         // Add tabbedPane to JFrame
         setContentPane(tabbedPane);
@@ -178,11 +187,13 @@ public class trackingresourceform extends javax.swing.JFrame {
     private void updateChart(ResourceInfo resourceInfo) {
         SwingUtilities.invokeLater(() -> {
             long currentTime = System.currentTimeMillis();
-            FixedMillisecond time = new FixedMillisecond(currentTime - startTime);
+            FixedMillisecond time = new FixedMillisecond(currentTime);
             cpuSeries.addOrUpdate(time, resourceInfo.getCpuLoad());
             memorySeries.addOrUpdate(time, resourceInfo.getUsedMemory() / (1024 * 1024)); // Convert to MB
-            diskSeries.addOrUpdate(time, resourceInfo.getDiskUsage() / (1024 * 1024)); // Convert to MB
-            networkSeries.addOrUpdate(time, resourceInfo.getNetworkSpeed());
+            diskReadSeries.addOrUpdate(time, resourceInfo.getDiskReadRate()); // Already in KB/s
+            diskWriteSeries.addOrUpdate(time, resourceInfo.getDiskWriteRate()); // Already in KB/s
+            networkSendSeries.addOrUpdate(time, resourceInfo.getNetworkSendRate()); // Already in Kbps
+            networkReceiveSeries.addOrUpdate(time, resourceInfo.getNetworkReceiveRate()); // Already in Kbps
         });
     }
 

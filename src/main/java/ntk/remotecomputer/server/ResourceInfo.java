@@ -15,16 +15,20 @@ public class ResourceInfo implements Serializable {
     private long usedMemory;
     private long totalMemory;
     private long uptime;
-    private long diskUsage;
-    private long networkSpeed;
+    private double diskReadRate;
+    private double diskWriteRate;
+    private double networkSendRate;
+    private double networkReceiveRate;
 
-    public ResourceInfo(double cpuLoad, long usedMemory, long totalMemory, long uptime, long diskUsage, long networkSpeed) {
+    public ResourceInfo(double cpuLoad, long usedMemory, long totalMemory, long uptime, double diskReadRate, double diskWriteRate, double networkSendRate, double networkReceiveRate) {
         this.cpuLoad = cpuLoad;
         this.usedMemory = usedMemory;
         this.totalMemory = totalMemory;
         this.uptime = uptime;
-        this.diskUsage = diskUsage;
-        this.networkSpeed = networkSpeed;
+        this.diskReadRate = diskReadRate;
+        this.diskWriteRate = diskWriteRate;
+        this.networkSendRate = networkSendRate;
+        this.networkReceiveRate = networkReceiveRate;
     }
 
     public double getCpuLoad() {
@@ -43,11 +47,19 @@ public class ResourceInfo implements Serializable {
         return uptime;
     }
     
-    public long getDiskUsage() {
-        return diskUsage;
+    public double getDiskReadRate() {
+        return diskReadRate;
     }
     
-    public long getNetworkSpeed() {
-        return networkSpeed;
+    public double getDiskWriteRate() {
+        return diskWriteRate;
+    }
+    
+    public double getNetworkSendRate() {
+        return networkSendRate;
+    }
+    
+    public double getNetworkReceiveRate() {
+        return networkReceiveRate;
     }
 }
