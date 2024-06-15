@@ -194,7 +194,11 @@ public class Server extends Thread {
                     Thread.sleep(1000); // Gửi thông tin mỗi giây
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                if (running.get()) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                } else {
+                    System.out.println("Server stopped.");
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
