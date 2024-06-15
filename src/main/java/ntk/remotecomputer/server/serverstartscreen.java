@@ -113,7 +113,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 server.setRunning(false);
                 server.stopServer();
             }
-            if (fileform.isDisplayable()) {
+            if (fileform != null) {
                 fileform.setRunning(false);
                 fileform.closeSocket();
             }

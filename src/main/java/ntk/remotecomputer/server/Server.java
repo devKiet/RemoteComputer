@@ -80,11 +80,19 @@ public class Server extends Thread {
     public void stopServer() {
         running.set(false);
         try {
-            eveSocket.close();
-            eve.close();
-            serverSocket.close();
-            trackingServerSocket.close();
-            chatSocket.close();
+            if (eveSocket != null) {
+                eveSocket.close();
+                eve.close();
+            }
+            if (serverSocket != null) {
+                serverSocket.close();
+            }
+            if (trackingServerSocket != null) {
+                trackingServerSocket.close();
+            }
+            if (chatSocket != null) {
+                chatSocket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
