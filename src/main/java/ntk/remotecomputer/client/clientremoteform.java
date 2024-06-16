@@ -145,7 +145,8 @@ public class clientremoteform extends javax.swing.JFrame {
         public void run() {
             
             while (running) {
-                try {       
+                try {   
+                    long startTime = System.currentTimeMillis();
                     //New Socket for receiving screen  
                     serverSocket = new Socket(serverName, Commons.SCREEN_SOCKET_PORT);  
                     
@@ -173,7 +174,11 @@ public class clientremoteform extends javax.swing.JFrame {
                     panel.repaint();
 
                     //Sleep for delay
-                    Thread.sleep(Commons.SLEEP_TIME);  
+                    Thread.sleep(Commons.SLEEP_TIME); 
+                    
+                    long endTime = System.currentTimeMillis();
+                    long duration = (endTime - startTime); // Đơn vị: milliseconds
+                    System.out.println("Time: " + duration + " milliseconds");
                 } catch (IOException | InterruptedException ex) {
 
                 }
@@ -325,9 +330,11 @@ public class clientremoteform extends javax.swing.JFrame {
             @Override
             public void nativeKeyPressed(NativeKeyEvent e) {
                 try {
-                    writer.writeInt(NativeKeyEvent.NATIVE_KEY_PRESSED);
-                    writer.writeInt(e.getKeyCode());
-                    writer.flush();
+                    if (lab.hasFocus()) {
+                         writer.writeInt(NativeKeyEvent.NATIVE_KEY_PRESSED);
+                        writer.writeInt(e.getKeyCode());
+                        writer.flush();
+                    }
                     System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
@@ -337,9 +344,11 @@ public class clientremoteform extends javax.swing.JFrame {
             @Override
             public void nativeKeyReleased(NativeKeyEvent e) {
                 try {
-                    writer.writeInt(NativeKeyEvent.NATIVE_KEY_RELEASED);
-                    writer.writeInt(e.getKeyCode());
-                    writer.flush();
+                    if (lab.hasFocus()) {
+                        writer.writeInt(NativeKeyEvent.NATIVE_KEY_RELEASED);
+                        writer.writeInt(e.getKeyCode());
+                        writer.flush();
+                    }
                     System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
                 } catch (IOException ex) {
                     Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
@@ -348,7 +357,9 @@ public class clientremoteform extends javax.swing.JFrame {
 
             @Override
             public void nativeKeyTyped(NativeKeyEvent e) {
-                // Not used
+                if (!lab.hasFocus()) {
+                    lab.requestFocus();
+                }
             }
         });
         
