@@ -78,13 +78,14 @@ public class serverstartscreen extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         ipAddress = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         accessTextField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -99,7 +100,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 250, 150, 50));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 260, 150, 40));
 
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
         jButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -110,18 +111,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 140, 150, 50));
-
-        jButton3.setBackground(new java.awt.Color(0, 0, 0));
-        jButton3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Restart");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 330, 150, 50));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 150, 150, 40));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -132,9 +122,9 @@ public class serverstartscreen extends javax.swing.JFrame {
         ipAddress.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         getContentPane().add(ipAddress, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 150, 360, 40));
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
-        jLabel2.setText("Your IP address");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, 30));
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel2.setText("Open Chat Window");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 220, -1, 30));
 
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel5.setText("ACCESS TOKEN KEY");
@@ -145,12 +135,20 @@ public class serverstartscreen extends javax.swing.JFrame {
         getContentPane().add(accessTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 260, 360, -1));
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/Radio@1x-1.0s-200px-200px.gif"))); // NOI18N
-        jLabel4.setText("LOADING...");
+        jLabel4.setText("Waiting Connection...");
         jLabel4.setToolTipText("");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 320, -1, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 300, -1, -1));
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
+        jLabel6.setText("Your IP address");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, 30));
+
+        jLabel7.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel7.setText("Accept Transfer");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 110, -1, 30));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         jLabel3.setMaximumSize(new java.awt.Dimension(842, 551));
@@ -177,11 +175,6 @@ public class serverstartscreen extends javax.swing.JFrame {
             }
         });
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
-        
-    }//GEN-LAST:event_jButton3ActionPerformed
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -226,11 +219,12 @@ public class serverstartscreen extends javax.swing.JFrame {
     public javax.swing.JTextField ipAddress;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     // End of variables declaration//GEN-END:variables
 }

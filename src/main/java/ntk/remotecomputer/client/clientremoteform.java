@@ -17,8 +17,6 @@ import java.awt.Toolkit;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -67,7 +65,12 @@ public class clientremoteform extends javax.swing.JFrame {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         Insets screenInsets = toolkit.getScreenInsets(gd.getDefaultConfiguration());
-        int taskbarHeight = screenInsets.bottom + screenInsets.top;
+        int taskbarHeight = 0;
+        
+        String osName = System.getProperty("os.name");
+        if (osName.contains("macOS")) {
+            taskbarHeight = screenInsets.bottom + screenInsets.top;
+        }
         
         JFrame tempFrame = new JFrame();
         tempFrame.setSize(200, 200);
