@@ -21,6 +21,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import ntk.remotecomputer.client.clientfirstpage;
 import ntk.remotecomputer.server.serverstartscreen;
 
@@ -35,7 +39,9 @@ public class RemoteComputer extends javax.swing.JFrame {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
-        setLocationRelativeTo(null); 
+        setLocationRelativeTo(null);    
+        ((AbstractDocument) jTextField3.getDocument()).setDocumentFilter(new NoSpaceFilter());
+        ((AbstractDocument) jTextField7.getDocument()).setDocumentFilter(new NoSpaceFilter());
     }
     
     /**
@@ -380,7 +386,29 @@ public class RemoteComputer extends javax.swing.JFrame {
             jLabel1.setVisible(false);
         });
     }//GEN-LAST:event_jButton4ActionPerformed
- 
+    
+    class NoSpaceFilter extends DocumentFilter {
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            if (string != null && !string.contains(" ")) {
+                super.insertString(fb, offset, string, attr);
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            if (text != null && !text.contains(" ")) {
+                super.replace(fb, offset, length, text, attrs);
+            }
+        }
+
+        @Override
+        public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+            super.remove(fb, offset, length);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */

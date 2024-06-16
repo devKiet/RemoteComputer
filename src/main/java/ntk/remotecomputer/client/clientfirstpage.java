@@ -16,10 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.text.AbstractDocument;
 import ntk.remotecomputer.Commons;
-import ntk.remotecomputer.RemoteComputer;
 
 public class clientfirstpage extends javax.swing.JFrame {
 
@@ -32,7 +30,7 @@ public class clientfirstpage extends javax.swing.JFrame {
         String ip = getWifiIPAddress();
         jTextField2.setText(ip);
         ipAddress.setText(serverIp);
-        
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

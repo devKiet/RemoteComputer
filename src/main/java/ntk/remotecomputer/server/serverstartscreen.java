@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.SwingWorker;
 import ntk.remotecomputer.Commons;
 
 public class serverstartscreen extends javax.swing.JFrame {
