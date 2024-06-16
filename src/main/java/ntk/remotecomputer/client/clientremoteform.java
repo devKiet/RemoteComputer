@@ -90,20 +90,20 @@ public class clientremoteform extends javax.swing.JFrame {
         serverName = ip;
         
         //Creating three Threads
-        T1 t1 = new T1();
-        T2 t2 = new T2();
+        receiveScreenThread receiveScreen = new receiveScreenThread();
+        sendEventsThread sendEvents = new sendEventsThread();
 
         //Starting Threads
-        Thread revScreen = new Thread(t1);
+        Thread revScreen = new Thread(receiveScreen);
         revScreen.start();
-        Thread revEvent = new Thread(t2);
+        Thread revEvent = new Thread(sendEvents);
         revEvent.start();
         
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                t1.stop();
-                t2.stop();
+                receiveScreen.stop();
+                sendEvents.stop();
                 dispose();       // Dispose the frame
                 System.out.println("Frame closed and threads stopped.");
             }
@@ -137,7 +137,7 @@ public class clientremoteform extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     //Receive Screen Thread 
-    class T1 implements Runnable {
+    class receiveScreenThread  implements Runnable {
         @Override
         public void run() {
             
@@ -191,7 +191,7 @@ public class clientremoteform extends javax.swing.JFrame {
     }
 
     //Send Events Thread
-    class T2 implements Runnable {
+    class sendEventsThread implements Runnable {
         @Override
         public void run() {
             

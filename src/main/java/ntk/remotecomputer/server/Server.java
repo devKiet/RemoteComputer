@@ -131,6 +131,17 @@ public class Server extends Thread {
                 }
             }
         }
+        
+        public void stopRunning() {
+            running.set(false);
+        }
+
+        public void startRunning() {
+            if (!running.get()) {
+                running.set(true);
+                new Thread(this).start(); // Khởi động lại thread
+            }
+        }
     }
 
     //Thread to Receive events from clients
@@ -163,6 +174,17 @@ public class Server extends Thread {
             }
             System.out.println("Th 2 stop");
         }
+        
+        public void stopRunning() {
+            running.set(false);
+        }
+
+        public void startRunning() {
+            if (!running.get()) {
+                running.set(true);
+                new Thread(this).start(); // Khởi động lại thread
+            }
+        }
     }
 
     //Thread for chat with Clients
@@ -185,6 +207,17 @@ public class Server extends Thread {
                         System.out.println("Server stopped.");
                     }
                 }
+            }
+        }
+        
+        public void stopRunning() {
+            running.set(false);
+        }
+
+        public void startRunning() {
+            if (!running.get()) {
+                running.set(true);
+                new Thread(this).start(); // Khởi động lại thread
             }
         }
     }
@@ -252,6 +285,17 @@ public class Server extends Thread {
             double networkReceiveRate = totalBytesRecv * 8 / 1024.0; // Convert to Kbps
 
             return new ResourceInfo(cpuLoad, usedMemory, totalMemory, uptime, diskReadRate, diskWriteRate, networkSendRate, networkReceiveRate);
+        }
+    
+        public void stopRunning() {
+            running.set(false);
+        }
+
+        public void startRunning() {
+            if (!running.get()) {
+                running.set(true);
+                new Thread(this).start(); // Khởi động lại thread
+            }
         }
     }
     

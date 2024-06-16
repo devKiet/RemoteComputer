@@ -1,15 +1,25 @@
 
 package ntk.remotecomputer.client;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Inet4Address;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import ntk.remotecomputer.Commons;
+import ntk.remotecomputer.RemoteComputer;
 
 public class clientfirstpage extends javax.swing.JFrame {
 
@@ -22,6 +32,35 @@ public class clientfirstpage extends javax.swing.JFrame {
         String ip = getWifiIPAddress();
         jTextField2.setText(ip);
         ipAddress.setText(serverIp);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int confirm = JOptionPane.showOptionDialog(
+                    null, "Are You Sure to Close this Application?",
+                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    SocketAddress clientClose = new InetSocketAddress(serverIp, Commons.LOGIN_SOCKET_PORT);
+                    try (Socket socket = new Socket()) {
+                        socket.connect(clientClose, Commons.CONNECTION_TIMEOUT);
+                        // Set the read timeout
+                        socket.setSoTimeout(Commons.READ_TIMEOUT);
+                        
+                        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {               
+                            out.println("Client Closed!!!");
+                        } catch (IOException ex) {
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        dispose();
+                    }
+                    dispose();
+                }
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -66,11 +105,6 @@ public class clientfirstpage extends javax.swing.JFrame {
 
         jTextField2.setEditable(false);
         jTextField2.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
         getContentPane().add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, 360, 40));
 
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
@@ -158,10 +192,6 @@ public class clientfirstpage extends javax.swing.JFrame {
             c.setVisible(true);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         clientmsg c1 = new clientmsg(ipAddress.getText());

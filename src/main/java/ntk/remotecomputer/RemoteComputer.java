@@ -33,10 +33,6 @@ import ntk.remotecomputer.server.serverstartscreen;
  * @author proxc
  */
 public class RemoteComputer extends javax.swing.JFrame {
-    
-    private static final SecureRandom secureRandom = new SecureRandom();
-    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
-    private ServerSocket serverSocket;
     private SwingWorker<Void, Void> worker;
 
     public RemoteComputer() {
@@ -66,13 +62,6 @@ public class RemoteComputer extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jPanel6 = new javax.swing.JPanel();
-        jTextField4 = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
-        jButton5 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jTextField3 = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
@@ -187,82 +176,6 @@ public class RemoteComputer extends javax.swing.JFrame {
 
         mainPanel.add(jPanel1, "card2");
 
-        jPanel6.setBackground(new java.awt.Color(102, 255, 255));
-        jPanel6.setPreferredSize(new java.awt.Dimension(840, 550));
-
-        jTextField4.setEditable(false);
-        jTextField4.setFont(new java.awt.Font("AppleMyungjo", 1, 24)); // NOI18N
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/Spinner@1x-1.6s-200px-200px.gif"))); // NOI18N
-
-        jLabel5.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel5.setText("ACCESS TOKEN KEY");
-
-        jLabel6.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel6.setText("IP Address");
-
-        jTextField6.setEditable(false);
-        jTextField6.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/icons8-left-arrow-64.png"))); // NOI18N
-        jButton5.setBorder(null);
-        jButton5.setBorderPainted(false);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(111, 111, 111)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(114, 114, 114)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField4))
-                .addGap(0, 129, Short.MAX_VALUE))
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton5))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(343, 343, 343)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton5)
-                .addGap(48, 48, 48)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5))
-                .addGap(9, 9, 9)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(202, Short.MAX_VALUE))
-        );
-
-        mainPanel.add(jPanel6, "card3");
-
         jPanel7.setBackground(new java.awt.Color(36, 47, 65));
         jPanel7.setPreferredSize(new java.awt.Dimension(840, 550));
 
@@ -357,48 +270,14 @@ public class RemoteComputer extends javax.swing.JFrame {
         worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
+                dispose();
                 try {
-                    // Switch to the "card3" panel
-                    ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card3");
-                    String ipAddress = getWifiIPAddress();
-                    jTextField6.setText(ipAddress);
-                    // Generate new token and display it
-                    String token = generateNewToken();
-                    jTextField4.setText(token);
-                    jLabel4.setVisible(true);
-                    // Set up the server socket
-                    serverSocket = new ServerSocket(Commons.LOGIN_SOCKET_PORT);
-
-                    // Keep listening for incoming connections
-                    while (true) {
-                        try (Socket socket = serverSocket.accept();
-                            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-                            jLabel4.setVisible(false);
-                            String receivedToken = in.readLine();
-
-                            // Validate token
-                            if (token.equals(receivedToken)) {
-                                out.println("Access Granted");
-                                serverSocket.close();
-                                dispose();
-                                try {
-                                    serverstartscreen se = new serverstartscreen();
-                                    se.setVisible(true);
-                                } catch (SQLException ex) {
-                                } catch (ClassNotFoundException ex) {
-                                } catch (Exception ex) {
-                                }
-                            } else {
-                                out.println("Access Denied");
-                                System.out.println("Access denied to client.");
-                            }
-                        } catch (IOException e) {
-                        }
-                        jLabel4.setVisible(true);
-                    }
-                } catch (IOException ex) {
-                }
+                    serverstartscreen se = new serverstartscreen();
+                    se.setVisible(true);
+                } catch (SQLException ex) {
+                } catch (ClassNotFoundException ex) {
+                } catch (Exception ex) {
+                }    
                 return null;
             }
         };
@@ -411,7 +290,7 @@ public class RemoteComputer extends javax.swing.JFrame {
             ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card4");
             jLabel1.setVisible(false);
             try {
-                String localIp = getWifiIPAddress();
+                String localIp = Commons.getWifiIPAddress();
                 String subnet = localIp.substring(0, localIp.lastIndexOf('.') + 1);
                 jTextField7.setText(subnet); 
             } catch (UnknownHostException ex) {
@@ -495,25 +374,6 @@ public class RemoteComputer extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        if (worker != null && !worker.isDone()) {
-             worker.cancel(true); // Cancel the worker
-             if (serverSocket != null && !serverSocket.isClosed()) {
-                 try {
-                     serverSocket.close(); 
-
-                 } catch (IOException e) {
-                     e.printStackTrace();
-                 }
-             }
-
-             SwingUtilities.invokeLater(() -> {
-                 ((CardLayout) mainPanel.getLayout()).show(mainPanel, "card2");
-                 jLabel1.setVisible(false);
-             });
-         }
-    }//GEN-LAST:event_jButton5ActionPerformed
-
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         
     }//GEN-LAST:event_jButton6ActionPerformed
@@ -524,21 +384,7 @@ public class RemoteComputer extends javax.swing.JFrame {
             jLabel1.setVisible(false);
         });
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
-    
-    public static String getWifiIPAddress() throws UnknownHostException {
-        return Inet4Address.getLocalHost().getHostAddress();
-    }
-    
-    public static String generateNewToken() {
-        byte[] randomBytes = new byte[8];
-        secureRandom.nextBytes(randomBytes);
-        return base64Encoder.encodeToString(randomBytes);
-    }
-    
+ 
     /**
      * @param args the command line arguments
      */
@@ -580,26 +426,19 @@ public class RemoteComputer extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables

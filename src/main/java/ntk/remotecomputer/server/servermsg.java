@@ -16,6 +16,7 @@ public class servermsg extends javax.swing.JFrame {
     static Socket sckt;
     static DataInputStream dtinpt;
     static DataOutputStream dtotpt;
+    
     public void sendmsg(ServerSocket sock) {
         System.out.println("Send message method called Server side");
 

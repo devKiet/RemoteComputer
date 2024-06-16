@@ -1,27 +1,77 @@
 
 package ntk.remotecomputer.server;
-
+;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import ntk.remotecomputer.RemoteComputer;
+import javax.swing.SwingWorker;
 import ntk.remotecomputer.Commons;
+import ntk.remotecomputer.RemoteComputer;
 
 public class serverstartscreen extends javax.swing.JFrame {
     
     private Server server = null;
     private serverfileform fileform = null;
-    
+    private static final String privateTokenKey = Commons.generateNewToken();
+    private ServerSocket serverSocket;
+    private SwingWorker<Void, Void> worker;
+
     public serverstartscreen() throws SQLException, ClassNotFoundException, Exception {
         initComponents();      
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null); 
-        server = new Server();
-        server.start();
+        ipAddress.setText(Commons.getWifiIPAddress());
+        accessTextField.setText(privateTokenKey);
+        acceptConnect acp = new acceptConnect();
+        Thread therad = new Thread(acp);
+        therad.start();
     }
+    
+    class acceptConnect implements Runnable {
+        @Override
+        public void run() {
+            try {  
+                serverSocket = new ServerSocket(Commons.LOGIN_SOCKET_PORT);
+                // Keep listening for incoming connections
+                while (true) {
+                    try (Socket socket = serverSocket.accept();
+                        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+                        String receivedToken = in.readLine();
+
+                        // Validate token
+                        if (privateTokenKey.equals(receivedToken)) {
+                            server = new Server();
+                            server.start();
+                            jLabel4.setVisible(false);
+                        } else if ("Client Closed!!!".equals(receivedToken)) {
+                            if (server != null) {
+                                server.stopServer();
+                                jLabel4.setVisible(true);
+                            }
+                        } else {
+                            out.println("Access Denied");
+                            System.out.println("Access denied to client.");
+                        }
+                    } catch (IOException e) {
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (Exception ex) {
+                        Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } catch (IOException ex) {
+            }
+        }
+    }  
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -31,6 +81,10 @@ public class serverstartscreen extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        ipAddress = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        accessTextField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -46,7 +100,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 300, 150, 50));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 250, 150, 50));
 
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
         jButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -57,7 +111,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 220, 150, 50));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 140, 150, 50));
 
         jButton3.setBackground(new java.awt.Color(0, 0, 0));
         jButton3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -68,17 +122,36 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 380, 150, 50));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 330, 150, 50));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Welcome to Remote Computer");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 50, 440, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 60, 450, -1));
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel4.setText("You can choose the function below.");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 450, -1));
+        ipAddress.setEditable(false);
+        ipAddress.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        getContentPane().add(ipAddress, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 150, 360, 40));
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
+        jLabel2.setText("Your IP address");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 110, -1, 30));
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel5.setText("ACCESS TOKEN KEY");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 220, -1, -1));
+
+        accessTextField.setEditable(false);
+        accessTextField.setFont(new java.awt.Font("AppleMyungjo", 1, 24)); // NOI18N
+        getContentPane().add(accessTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 260, 360, -1));
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/Radio@1x-1.0s-200px-200px.gif"))); // NOI18N
+        jLabel4.setText("LOADING...");
+        jLabel4.setToolTipText("");
+        jLabel4.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 320, -1, -1));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         jLabel3.setMaximumSize(new java.awt.Dimension(842, 551));
@@ -108,24 +181,7 @@ public class serverstartscreen extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         
-        try {
-            if (server != null) {
-                server.setRunning(false);
-                server.stopServer();
-            }
-            if (fileform != null) {
-                fileform.setRunning(false);
-                fileform.closeSocket();
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.dispose();
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RemoteComputer().setVisible(true);
-            }
-        });
+        
     }//GEN-LAST:event_jButton3ActionPerformed
     
     public static void main(String args[]) {
@@ -167,11 +223,15 @@ public class serverstartscreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField accessTextField;
+    public javax.swing.JTextField ipAddress;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     // End of variables declaration//GEN-END:variables
 }

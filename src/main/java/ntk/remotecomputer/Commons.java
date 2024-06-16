@@ -4,6 +4,11 @@
  */
 package ntk.remotecomputer;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+import java.security.SecureRandom;
+import java.util.Base64;
+
 /**
  *
  * @author kiet
@@ -31,4 +36,15 @@ public final class Commons {
     public static final int SLEEP_TIME = 5;
     public static final String ICON_IMG_PATH = "/ntk/remotecomputer/res/icons8-remote-desktop-96.png";
     
+    public static String getWifiIPAddress() throws UnknownHostException {
+        return Inet4Address.getLocalHost().getHostAddress();
+    }
+    
+    public static String generateNewToken() {
+        SecureRandom secureRandom = new SecureRandom();
+        Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
+        byte[] randomBytes = new byte[8];
+        secureRandom.nextBytes(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
+    }
 }
