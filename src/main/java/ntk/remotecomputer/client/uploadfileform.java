@@ -1,6 +1,8 @@
 
 package ntk.remotecomputer.client;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import ntk.remotecomputer.server.FileEvent;
 import java.io.DataInputStream;
 import java.io.File;
@@ -32,6 +34,20 @@ public class uploadfileform extends javax.swing.JFrame {
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
         jFileChooser1.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int confirm = JOptionPane.showOptionDialog(
+                    null, "Are You Sure to Close this Application?",
+                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    dispose();
+                }
+            }
+        });
+
     }
 
     @SuppressWarnings("unchecked")
@@ -145,6 +161,7 @@ public class uploadfileform extends javax.swing.JFrame {
                 outputStream = new ObjectOutputStream(sock.getOutputStream());
                 this.sendFile();
                 sock.close();
+                this.dispose();
             } else if (JFileChooser.CANCEL_SELECTION.equals(evt.getActionCommand())) {
                 this.dispose();
             }       

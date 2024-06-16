@@ -4,6 +4,8 @@
  */
 package ntk.remotecomputer.server;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -56,6 +58,21 @@ public class serverfileform extends javax.swing.JFrame {
         T1 t1 = new T1();
         fileThread = new Thread(t1);
         fileThread.start();
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int confirm = JOptionPane.showOptionDialog(
+                    null, "Are You Sure to Close this Application?",
+                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    setRunning(false);
+                    dispose();
+                }
+            }
+        });
+
     }
 
     /**
@@ -194,7 +211,6 @@ public class serverfileform extends javax.swing.JFrame {
 
         try {
             outputStream.writeObject(fileEvent);
-            JOptionPane.showMessageDialog(this, "File/Folder uploaded successfully!");
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();

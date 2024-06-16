@@ -4,9 +4,20 @@
  */
 package ntk.remotecomputer.client;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import ntk.remotecomputer.Commons;
@@ -33,9 +44,8 @@ public class trackingresourceform extends javax.swing.JFrame {
     private TimeSeries networkSendSeries;
     private TimeSeries networkReceiveSeries;
     private String ip = null;
-    private long startTime = System.currentTimeMillis();
     private static final int MAX_POINTS = 30;
-    
+    private Socket socket = null;
     /**
      * Creates new form trackingresourceform
      */
@@ -165,6 +175,26 @@ public class trackingresourceform extends javax.swing.JFrame {
         TrackingThread th = new TrackingThread();
         new Thread(th).start();
         
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int confirm = JOptionPane.showOptionDialog(
+                    null, "Are You Sure to Close this Application?",
+                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    try {
+                         socket.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        dispose();
+                    }
+                    dispose();
+                }
+            }
+        });
+        
         setVisible(true);
     }
     //Thread for Chat
@@ -172,13 +202,13 @@ public class trackingresourceform extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            try (Socket socket = new Socket(ip, Commons.TRACKING_SOCKET_PORT);
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
-
-               while (true) {
+            try {
+                socket = new Socket(ip, Commons.TRACKING_SOCKET_PORT);
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                while (true) {
                    ResourceInfo resourceInfo = (ResourceInfo) ois.readObject();
                    updateChart(resourceInfo);
-               }
+                }
            } catch (Exception e) {
            }
         }

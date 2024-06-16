@@ -205,13 +205,14 @@ public class Server extends Thread {
         @Override
         public void run() {
             while (running.get()) {
+                System.out.println("Server tracking start");
                 try (Socket clientSocket = trackingServerSocket.accept();
                     ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream())) {
                     while (running.get()) {
                         ResourceInfo resourceInfo = gatherResourceInfo();
                         oos.writeObject(resourceInfo);
                         oos.flush();
-                        Thread.sleep(1000); // Gửi thông tin mỗi giây
+                        Thread.sleep(1000);
                     }
                 } catch (IOException ex) {
                     if (running.get()) {

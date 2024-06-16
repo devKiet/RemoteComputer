@@ -1,6 +1,8 @@
 
 package ntk.remotecomputer.server;
 ;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,6 +13,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
 
 public class serverstartscreen extends javax.swing.JFrame {
@@ -28,8 +31,21 @@ public class serverstartscreen extends javax.swing.JFrame {
         ipAddress.setText(Commons.getWifiIPAddress());
         accessTextField.setText(privateTokenKey);
         acceptConnect acp = new acceptConnect();
-        Thread therad = new Thread(acp);
-        therad.start();
+        Thread thread = new Thread(acp);
+        thread.start();
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int confirm = JOptionPane.showOptionDialog(
+                    null, "Are You Sure to Close this Application?",
+                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    dispose();
+                }
+            }
+        });
     }
     
     class acceptConnect implements Runnable {

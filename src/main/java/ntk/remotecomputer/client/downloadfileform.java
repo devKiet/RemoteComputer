@@ -1,6 +1,8 @@
 
 package ntk.remotecomputer.client;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import ntk.remotecomputer.server.FileEvent;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,13 +22,31 @@ import ntk.remotecomputer.Commons;
 
 public class downloadfileform extends javax.swing.JFrame {
     static String ip = "";
- 
+    private static ObjectInputStream inputStream = null;
+    private FileEvent fileEvent = null;
+    private File dstFile = null;
+    private FileOutputStream fileOutputStream = null;
+   
     public downloadfileform(String ip) {
         this.ip = ip;
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int confirm = JOptionPane.showOptionDialog(
+                    null, "Are You Sure to Close this Application?",
+                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    dispose();
+                }
+            }
+        });
+
     }
 
     @SuppressWarnings("unchecked")
@@ -74,12 +94,7 @@ public class downloadfileform extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private static ObjectInputStream inputStream = null;
-    private FileEvent fileEvent = null;
-    private File dstFile = null;
-    private FileOutputStream fileOutputStream = null;
-   
-	/* Function for downloading file */
+    
     public void downloadFile() {
         try {
             fileEvent = (FileEvent) inputStream.readObject();
@@ -160,6 +175,7 @@ public class downloadfileform extends javax.swing.JFrame {
             sock.close();
             ostream.close();
             pwrite.close();
+            dispose();
         } catch (IOException ex) {
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(this, "Connection failed: " + ex.getMessage());
