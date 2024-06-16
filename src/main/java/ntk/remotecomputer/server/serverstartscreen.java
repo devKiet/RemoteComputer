@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.SwingWorker;
 import ntk.remotecomputer.Commons;
-import ntk.remotecomputer.RemoteComputer;
 
 public class serverstartscreen extends javax.swing.JFrame {
     
@@ -21,7 +20,6 @@ public class serverstartscreen extends javax.swing.JFrame {
     private serverfileform fileform = null;
     private static final String privateTokenKey = Commons.generateNewToken();
     private ServerSocket serverSocket;
-    private SwingWorker<Void, Void> worker;
 
     public serverstartscreen() throws SQLException, ClassNotFoundException, Exception {
         initComponents();      
@@ -51,6 +49,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                         if (privateTokenKey.equals(receivedToken)) {
                             server = new Server();
                             server.start();
+                            out.println("Access Granted");
                             jLabel4.setVisible(false);
                         } else if ("Client Closed!!!".equals(receivedToken)) {
                             if (server != null) {
