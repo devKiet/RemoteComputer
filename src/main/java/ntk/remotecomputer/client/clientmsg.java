@@ -1,5 +1,7 @@
 package ntk.remotecomputer.client;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
@@ -50,6 +52,22 @@ public class clientmsg extends javax.swing.JFrame {
                 }
             }
         });
+        
+        jTextArea2.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (e.isShiftDown()) {
+                        // Shift + Enter for new line
+                        jTextArea2.append("\n");
+                    } else {
+                        // Enter to send message
+                        e.consume(); 
+                        handleSendBtn();
+                    }
+                }
+            }
+        });
     }
 
 	/* function for sending message */
@@ -72,9 +90,9 @@ public class clientmsg extends javax.swing.JFrame {
 		/* input in string and send */
                 msg = dtinpt.readUTF();
                 LocalDateTime now = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss");
                 String formattedDateTime = now.format(formatter);
-                jTextArea1.setText(jTextArea1.getText().trim() + "\n[" + formattedDateTime + "] Client: " + msg);
+                jTextArea1.setText(jTextArea1.getText().trim() + "\n[" + formattedDateTime + "] Server: " + msg);
             }
         } catch (IOException ex) {
         }
@@ -147,6 +165,10 @@ public class clientmsg extends javax.swing.JFrame {
 
     private void jLabel4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MousePressed
         // TODO add your handling code here:
+        handleSendBtn();
+    }//GEN-LAST:event_jLabel4MousePressed
+    
+    private void handleSendBtn() {
         try {
             String msgout = jTextArea2.getText().trim();
             dtotpt.writeUTF(msgout);
@@ -155,11 +177,11 @@ public class clientmsg extends javax.swing.JFrame {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss");
             String formattedDateTime = now.format(formatter);
-            jTextArea1.setText(jTextArea1.getText().trim() + "\n[" + formattedDateTime + "] Server: " + msgout);
+            jTextArea1.setText(jTextArea1.getText().trim() + "\n[" + formattedDateTime + "] You: " + msgout);
         } catch (IOException ex) {
         }
-    }//GEN-LAST:event_jLabel4MousePressed
-
+    }
+    
     static void display() {
         clientmsg c = new clientmsg(ip);
         c.getContentPane().setSize(800, 700);

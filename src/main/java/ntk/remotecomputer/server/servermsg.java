@@ -2,6 +2,8 @@
 package ntk.remotecomputer.server;
 
 import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
@@ -38,7 +40,7 @@ public class servermsg extends javax.swing.JFrame {
                 msg = dtinpt.readUTF();
                 System.out.println("message received: " + msg);
                 LocalDateTime now = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss");
                 String formattedDateTime = now.format(formatter);
                 jTextArea2.setText(jTextArea2.getText().trim() + "\n[" + formattedDateTime + "] Client: " + msg);
             }
@@ -61,6 +63,22 @@ public class servermsg extends javax.swing.JFrame {
                     JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == JOptionPane.YES_OPTION) {
                     dispose();
+                }
+            }
+        });
+        
+        jTextArea3.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (e.isShiftDown()) {
+                        // Shift + Enter for new line
+                        jTextArea3.append("\n");
+                    } else {
+                        // Enter to send message
+                        e.consume(); 
+                        handleSendBtn();
+                    }
                 }
             }
         });
@@ -105,6 +123,7 @@ public class servermsg extends javax.swing.JFrame {
         jLabel4.getAccessibleContext().setAccessibleDescription("");
 
         jTextArea3.setColumns(20);
+        jTextArea3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jTextArea3.setLineWrap(true);
         jTextArea3.setRows(1);
         jTextArea3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -152,7 +171,7 @@ public class servermsg extends javax.swing.JFrame {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss");
             String formattedDateTime = now.format(formatter);
-            jTextArea2.setText(jTextArea2.getText().trim() + "\n[" + formattedDateTime + "] Server: " + msgout);            
+            jTextArea2.setText(jTextArea2.getText().trim() + "\n[" + formattedDateTime + "] You: " + msgout);            
         } catch (Exception ex) {
         }
     }

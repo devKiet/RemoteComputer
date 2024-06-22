@@ -296,6 +296,8 @@ public class Server extends Thread {
             // Write image data to output stream
             outputStream.write(imageBytes);
             outputStream.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
