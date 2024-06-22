@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.text.AbstractDocument;
 import ntk.remotecomputer.Commons;
 
 public class clientfirstpage extends javax.swing.JFrame {

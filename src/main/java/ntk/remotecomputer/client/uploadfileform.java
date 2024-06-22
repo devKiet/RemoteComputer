@@ -15,8 +15,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -25,7 +23,11 @@ import ntk.remotecomputer.Commons;
 
 public class uploadfileform extends javax.swing.JFrame {
     static String ip = "";
-   
+    private static ObjectOutputStream outputStream = null;
+    private FileEvent fileEvent = null;
+    private static String fname = null;
+    private String destinationPath = "C:/User";
+    
     public uploadfileform(String ip) {
         this.ip = ip;
         setSize(700, 400);
@@ -70,13 +72,9 @@ public class uploadfileform extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
-    private static ObjectOutputStream outputStream = null;
-    private FileEvent fileEvent = null;
-    private static String fname = null;
-    private String destinationPath = "C:/User";
-
-	/* send file from client to server */
+        /* send file from client to server */
     public void sendFile() {
+        JOptionPane.showMessageDialog(null, this, "Uploading...", JOptionPane.INFORMATION_MESSAGE);
         fileEvent = new FileEvent();
         File file = new File(fname);
         if (file.isDirectory()) {

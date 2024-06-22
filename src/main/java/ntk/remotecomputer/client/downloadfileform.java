@@ -24,16 +24,14 @@ public class downloadfileform extends javax.swing.JFrame {
     static String ip = "";
     private static ObjectInputStream inputStream = null;
     private FileEvent fileEvent = null;
-    private File dstFile = null;
-    private FileOutputStream fileOutputStream = null;
-   
+
     public downloadfileform(String ip) {
         this.ip = ip;
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
-        
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -114,6 +112,7 @@ public class downloadfileform extends javax.swing.JFrame {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File selectedDirectory = fileChooser.getSelectedFile();
                 String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
+                JOptionPane.showMessageDialog(null, this, "Downloading...", JOptionPane.INFORMATION_MESSAGE);
 
                 if (fileEvent.isDirectory()) {
                     new File(outputFile).mkdirs();
