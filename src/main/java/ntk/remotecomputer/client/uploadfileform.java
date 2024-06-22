@@ -57,6 +57,7 @@ public class uploadfileform extends javax.swing.JFrame {
         jFileChooser1 = new javax.swing.JFileChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(600, 400));
         setResizable(false);
 
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {

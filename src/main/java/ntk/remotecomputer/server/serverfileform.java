@@ -92,10 +92,11 @@ public class serverfileform extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(700, 300));
+        setSize(new java.awt.Dimension(700, 300));
         getContentPane().setLayout(null);
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel2.setText("Select the floder for the client to upload the file");
+        jLabel2.setText("Select the folder for the client to upload the file");
         getContentPane().add(jLabel2);
         jLabel2.setBounds(140, 70, 460, 22);
 

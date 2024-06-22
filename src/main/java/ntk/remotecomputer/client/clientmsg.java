@@ -112,6 +112,8 @@ public class clientmsg extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
 
+        setPreferredSize(new java.awt.Dimension(800, 700));
+        setSize(new java.awt.Dimension(800, 700));
         getContentPane().setLayout(null);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -157,8 +159,9 @@ public class clientmsg extends javax.swing.JFrame {
         jTextField2.setBounds(70, 600, 655, 48);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
+        jLabel3.setSize(new java.awt.Dimension(1920, 1079));
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(0, 0, 800, 700);
+        jLabel3.setBounds(0, 0, 1920, 1079);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

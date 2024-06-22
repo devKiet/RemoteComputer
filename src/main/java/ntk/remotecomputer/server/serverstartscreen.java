@@ -104,6 +104,8 @@ public class serverstartscreen extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(850, 550));
+        setSize(new java.awt.Dimension(850, 550));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton1.setBackground(new java.awt.Color(0, 0, 0));
@@ -169,8 +171,7 @@ public class serverstartscreen extends javax.swing.JFrame {
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         jLabel3.setMaximumSize(new java.awt.Dimension(842, 551));
         jLabel3.setMinimumSize(new java.awt.Dimension(842, 551));
-        jLabel3.setPreferredSize(new java.awt.Dimension(842, 551));
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 850, 550));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
         jLabel3.getAccessibleContext().setAccessibleName("");
 
         pack();

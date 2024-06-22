@@ -100,6 +100,8 @@ public class servermsg extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(800, 700));
+        setSize(new java.awt.Dimension(800, 700));
         getContentPane().setLayout(null);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -148,8 +150,9 @@ public class servermsg extends javax.swing.JFrame {
 
         jLabel3.setBackground(new java.awt.Color(102, 255, 255));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
+        jLabel3.setSize(new java.awt.Dimension(1920, 1079));
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(0, 0, 800, 700);
+        jLabel3.setBounds(0, 0, 1920, 1079);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
