@@ -16,12 +16,12 @@ import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
 
 public class serverstartscreen extends javax.swing.JFrame {
-    
     private Server server = null;
     private serverfileform fileform = null;
     private static final String privateTokenKey = Commons.generateNewToken();
     private ServerSocket serverSocket;
-
+    private servermsg svmsg = null;
+    
     public serverstartscreen() throws SQLException, ClassNotFoundException, Exception {
         initComponents();      
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -177,10 +177,12 @@ public class serverstartscreen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        servermsg s = new servermsg();
-        s.setBounds (0, 0 , 800 , 700 );
-        s.setResizable(false);
-        s.setVisible(true);
+        if (svmsg == null) {
+            svmsg = new servermsg();
+            svmsg.setBounds (0, 0 , 800 , 700 );
+            svmsg.setResizable(false);
+        }
+        svmsg.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

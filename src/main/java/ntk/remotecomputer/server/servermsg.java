@@ -41,7 +41,6 @@ public class servermsg extends javax.swing.JFrame {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
-        setLocationRelativeTo(null);
         
         jTextArea3.addKeyListener(new KeyAdapter() {
             @Override
@@ -74,7 +73,6 @@ public class servermsg extends javax.swing.JFrame {
         jTextArea2 = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 700));
         setSize(new java.awt.Dimension(800, 700));
         getContentPane().setLayout(null);
@@ -114,10 +112,12 @@ public class servermsg extends javax.swing.JFrame {
         getContentPane().add(jTextField2);
         jTextField2.setBounds(70, 600, 655, 48);
 
+        jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
-        jTextArea2.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jTextArea2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jTextArea2.setLineWrap(true);
         jTextArea2.setRows(10);
+        jTextArea2.setToolTipText("Enter message...");
         jScrollPane2.setViewportView(jTextArea2);
 
         getContentPane().add(jScrollPane2);
@@ -152,16 +152,6 @@ public class servermsg extends javax.swing.JFrame {
         } catch (IOException ex) {
         }
     }
-    
-    static void display() {
-        servermsg c = new servermsg();
-
-        c.setPreferredSize(new Dimension(800,700));
-        c.setResizable(false);
-
-        c.setLocationRelativeTo(null);
-        c.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    }
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -189,7 +179,6 @@ public class servermsg extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            display();
             new servermsg().setVisible(true);
         });
      

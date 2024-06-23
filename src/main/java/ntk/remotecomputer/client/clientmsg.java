@@ -33,7 +33,6 @@ public class clientmsg extends javax.swing.JFrame {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
-        setLocationRelativeTo(null);
         
         jTextArea2.addKeyListener(new KeyAdapter() {
             @Override
@@ -95,6 +94,7 @@ public class clientmsg extends javax.swing.JFrame {
         getContentPane().add(jLabel1);
         jLabel1.setBounds(320, 30, 133, 30);
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         jTextArea1.setLineWrap(true);
@@ -119,6 +119,7 @@ public class clientmsg extends javax.swing.JFrame {
         jLabel4.setBounds(672, 600, 48, 48);
 
         jTextArea2.setColumns(20);
+        jTextArea2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jTextArea2.setLineWrap(true);
         jTextArea2.setRows(1);
         jTextArea2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));

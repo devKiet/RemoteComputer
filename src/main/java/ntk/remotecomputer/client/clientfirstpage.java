@@ -18,8 +18,8 @@ import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
 
 public class clientfirstpage extends javax.swing.JFrame {
-
-    //Initializing JFrame
+    private clientmsg clmsg = null;
+    
     public clientfirstpage(String serverIp) throws UnknownHostException {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -156,41 +156,31 @@ public class clientfirstpage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        //Checking Null values of IP
-        if (ipAddress.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter the IP address to get connected");
-        } else {
-            // Chat and Share Screen Window Initialization
-            java.awt.EventQueue.invokeLater(() -> {
-                try {
-                    new clientremoteform(ipAddress.getText()).setVisible(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
-        }
+        // Chat and Share Screen Window Initialization
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new clientremoteform(ipAddress.getText()).setVisible(true);
+            } catch (IOException ex) {
+                Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        //Checking Null values of IP
-        if (ipAddress.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter the IP address to get connected");
-        } else {
-            
-            //File Transfer Initialization
-            clientfileform c = new clientfileform(ipAddress.getText());
-            c.setBounds(550, 150, 800, 700);
-            c.setResizable(false);
-            c.setVisible(true);
-        }
+        //File Transfer Initialization
+        clientfileform c = new clientfileform(ipAddress.getText());
+        c.setBounds(550, 150, 800, 700);
+        c.setResizable(false);
+        c.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        clientmsg c1 = new clientmsg(ipAddress.getText());
-        c1.setBounds(0, 0, 800, 700);
-        c1.setResizable(false);
-        c1.setVisible(true);   
+        if (clmsg == null) {
+            clmsg = new clientmsg(ipAddress.getText());
+            clmsg.setBounds(0, 0, 800, 700);
+            clmsg.setResizable(false);
+        }
+        clmsg.setVisible(true);  
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
