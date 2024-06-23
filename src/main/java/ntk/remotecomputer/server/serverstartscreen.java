@@ -33,6 +33,10 @@ public class serverstartscreen extends javax.swing.JFrame {
         Thread thread = new Thread(acp);
         thread.start();
         
+        svmsg = new servermsg();
+        svmsg.setBounds (0, 0 , 800 , 700 );
+        svmsg.setResizable(false);
+        
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -177,11 +181,6 @@ public class serverstartscreen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (svmsg == null) {
-            svmsg = new servermsg();
-            svmsg.setBounds (0, 0 , 800 , 700 );
-            svmsg.setResizable(false);
-        }
         svmsg.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 

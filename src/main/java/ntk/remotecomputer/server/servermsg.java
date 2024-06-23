@@ -1,6 +1,5 @@
 package ntk.remotecomputer.server;
 
-import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;

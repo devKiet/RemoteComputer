@@ -28,7 +28,10 @@ public class clientfirstpage extends javax.swing.JFrame {
         String ip = getWifiIPAddress();
         jTextField2.setText(ip);
         ipAddress.setText(serverIp);
-
+        clmsg = new clientmsg(ipAddress.getText());
+        clmsg.setBounds(0, 0, 800, 700);
+        clmsg.setResizable(false);
+        
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -175,11 +178,6 @@ public class clientfirstpage extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (clmsg == null) {
-            clmsg = new clientmsg(ipAddress.getText());
-            clmsg.setBounds(0, 0, 800, 700);
-            clmsg.setResizable(false);
-        }
         clmsg.setVisible(true);  
     }//GEN-LAST:event_jButton4ActionPerformed
 
