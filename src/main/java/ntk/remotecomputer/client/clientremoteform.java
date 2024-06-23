@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ntk.remotecomputer.client;
 
 import com.github.kwhat.jnativehook.GlobalScreen;
@@ -52,9 +48,7 @@ public class clientremoteform extends javax.swing.JFrame {
     private Socket serverSocket = null;
     private int titleBarHeight = 0;
     private Dimension lableSize;
-    /**
-     * Creates new form clientremoteform
-     */
+
     public clientremoteform(String ip) throws IOException {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -463,13 +457,11 @@ public class clientremoteform extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new clientremoteform(Commons.SERVER_NAME).setVisible(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new clientremoteform(Commons.SERVER_NAME).setVisible(true);
+            } catch (IOException ex) {
+                Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }

@@ -1,4 +1,3 @@
-
 package ntk.remotecomputer.client;
 
 import java.awt.event.WindowAdapter;
@@ -163,13 +162,11 @@ public class clientfirstpage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please enter the IP address to get connected");
         } else {
             // Chat and Share Screen Window Initialization
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    try {
-                        new clientremoteform(ipAddress.getText()).setVisible(true);
-                    } catch (IOException ex) {
-                        Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            java.awt.EventQueue.invokeLater(() -> {
+                try {
+                    new clientremoteform(ipAddress.getText()).setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
         }
@@ -215,14 +212,11 @@ public class clientfirstpage extends javax.swing.JFrame {
     
     public static void main(String args[]) throws UnknownHostException {
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new clientfirstpage(getWifiIPAddress()).setVisible(true);
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new clientfirstpage(getWifiIPAddress()).setVisible(true);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ntk.remotecomputer.server;
 
 import java.io.Serializable;
@@ -11,14 +7,14 @@ import java.io.Serializable;
  * @author kiet
  */
 public class ResourceInfo implements Serializable {
-    private double cpuLoad;
-    private long usedMemory;
-    private long totalMemory;
-    private long uptime;
-    private double diskReadRate;
-    private double diskWriteRate;
-    private double networkSendRate;
-    private double networkReceiveRate;
+    private final double cpuLoad;
+    private final long usedMemory;
+    private final long totalMemory;
+    private final long uptime;
+    private final double diskReadRate;
+    private final double diskWriteRate;
+    private final double networkSendRate;
+    private final double networkReceiveRate;
 
     public ResourceInfo(double cpuLoad, long usedMemory, long totalMemory, long uptime, double diskReadRate, double diskWriteRate, double networkSendRate, double networkReceiveRate) {
         this.cpuLoad = cpuLoad;

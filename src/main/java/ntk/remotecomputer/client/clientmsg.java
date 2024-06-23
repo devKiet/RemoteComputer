@@ -2,8 +2,6 @@ package ntk.remotecomputer.client;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,7 +9,6 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
 
 public class clientmsg extends javax.swing.JFrame {	
@@ -19,10 +16,8 @@ public class clientmsg extends javax.swing.JFrame {
     static DataInputStream dtinpt;
     static DataOutputStream dtotpt;
     static String ip = "";
-    
-    //Thread for Chat
-    class ChatThread implements Runnable {
 
+    class ChatThread implements Runnable {
         @Override
         public void run() {
             sendmess();
@@ -39,19 +34,6 @@ public class clientmsg extends javax.swing.JFrame {
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
-        
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                int confirm = JOptionPane.showOptionDialog(
-                    null, "Are You Sure to Close this Application?",
-                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE, null, null, null);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    dispose();
-                }
-            }
-        });
         
         jTextArea2.addKeyListener(new KeyAdapter() {
             @Override
@@ -70,25 +52,17 @@ public class clientmsg extends javax.swing.JFrame {
         });
     }
 
-	/* function for sending message */
     public void sendmess() {
         try {
             System.out.println("Send message method called Client side");
           
             String serverName = ip;             
             sock = new Socket(serverName, Commons.CHAT_SOCKET_PORT);
-
-		/* Get message from input stream */
             dtinpt = new DataInputStream(sock.getInputStream());
-
-		/* Send message from output stream */
             dtotpt = new DataOutputStream(sock.getOutputStream());
 
-		/* converation until message bye */
-            String msg = "";
-            while (!msg.equals("bye")) {
-		/* input in string and send */
-                msg = dtinpt.readUTF();
+            while (true) {
+                String msg = dtinpt.readUTF();
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss");
                 String formattedDateTime = now.format(formatter);
@@ -112,7 +86,6 @@ public class clientmsg extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 700));
         setSize(new java.awt.Dimension(800, 700));
         getContentPane().setLayout(null);
@@ -185,27 +158,11 @@ public class clientmsg extends javax.swing.JFrame {
         } catch (IOException ex) {
         }
     }
-    
-    static void display() {
-        clientmsg c = new clientmsg(ip);
-        c.getContentPane().setSize(800, 700);
-       
-        c.setLocationRelativeTo(null);
-        c.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    }
 
     public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                display();
-                new clientmsg(ip).setVisible(true);
-
-                
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new clientmsg(ip).setVisible(true);
         });
-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

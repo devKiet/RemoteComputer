@@ -1,4 +1,3 @@
-
 package ntk.remotecomputer.client;
 
 import java.awt.event.WindowAdapter;
@@ -26,7 +25,7 @@ public class downloadfileform extends javax.swing.JFrame {
     private FileEvent fileEvent = null;
 
     public downloadfileform(String ip) {
-        this.ip = ip;
+        downloadfileform.ip = ip;
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
@@ -101,7 +100,8 @@ public class downloadfileform extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     public void downloadFile(Socket sock) {
-        SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+        SwingWorker<Void, Integer> worker;
+        worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() {
                 try {
@@ -117,26 +117,26 @@ public class downloadfileform extends javax.swing.JFrame {
                     int returnVal = fileChooser.showSaveDialog(null);
 
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        progressBar.setVisible(true);
-                        File selectedDirectory = fileChooser.getSelectedFile();
-                        String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
-
-                        if (fileEvent.isDirectory()) {
-                            new File(outputFile).mkdirs();
-                            saveDirectory(fileEvent, outputFile);
-                        } else {
-                            saveFile(fileEvent, outputFile);
+                        try (sock) {
+                            progressBar.setVisible(true);
+                            File selectedDirectory = fileChooser.getSelectedFile();
+                            String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
+                            
+                            if (fileEvent.isDirectory()) {
+                                new File(outputFile).mkdirs();
+                                saveDirectory(fileEvent, outputFile);
+                            } else {
+                                saveFile(fileEvent, outputFile);
+                            }
+                            progressBar.setVisible(false);
+                            JOptionPane.showMessageDialog(downloadfileform.this, "File/Folder downloaded successfully!");
                         }
-                        progressBar.setVisible(false);
-                        JOptionPane.showMessageDialog(downloadfileform.this, "File/Folder downloaded successfully!");
-                        sock.close();
                         dispose();
                     } else {
                         System.out.println("No directory selected. Exiting...");
                         JOptionPane.showMessageDialog(downloadfileform.this, "No directory selected. Exiting...");
                     }
                 } catch (IOException | ClassNotFoundException  e) {
-                    e.printStackTrace();
                     JOptionPane.showMessageDialog(downloadfileform.this, "Error: " + e);
                 }
                 
@@ -159,12 +159,11 @@ public class downloadfileform extends javax.swing.JFrame {
     private void saveFile(FileEvent fileEvent, String outputPath) {
         try {
             File dstFile = new File(outputPath);
-            FileOutputStream fileOutputStream = new FileOutputStream(dstFile);
-            fileOutputStream.write(fileEvent.getFileData());
-            fileOutputStream.flush();
-            fileOutputStream.close();
+            try (FileOutputStream fileOutputStream = new FileOutputStream(dstFile)) {
+                fileOutputStream.write(fileEvent.getFileData());
+                fileOutputStream.flush();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -187,16 +186,15 @@ public class downloadfileform extends javax.swing.JFrame {
             this.setBounds(550, 150, 700, 300);
             this.setResizable(false);
 
-            String keyRead = jTextField1.getText();
-            String sourceFilePath2 = keyRead;
+            String sourceFilePath2 = jTextField1.getText();
             System.out.println("Path is: " + sourceFilePath2);
           
-	    OutputStream ostream = null;
-            ostream = sock.getOutputStream();
-            PrintWriter pwrite = new PrintWriter(ostream, true);
-            pwrite.println(sourceFilePath2 + " download");
-            inputStream = new ObjectInputStream(sock.getInputStream());
-            ostream.close();
+            PrintWriter pwrite;
+            try (OutputStream ostream = sock.getOutputStream()) {
+                pwrite = new PrintWriter(ostream, true);
+                pwrite.println(sourceFilePath2 + " download");
+                inputStream = new ObjectInputStream(sock.getInputStream());
+            }
             pwrite.close();
             
             this.downloadFile(sock);
@@ -232,10 +230,8 @@ public class downloadfileform extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new downloadfileform(ip).setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new downloadfileform(ip).setVisible(true);
         });
     }
 

@@ -1,19 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ntk.remotecomputer.client;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -37,18 +28,16 @@ import org.jfree.data.time.TimeSeriesCollection;
  * @author kiet
  */
 public class trackingresourceform extends javax.swing.JFrame {
-    private TimeSeries cpuSeries;
-    private TimeSeries memorySeries;
-    private TimeSeries diskReadSeries;
-    private TimeSeries diskWriteSeries;
-    private TimeSeries networkSendSeries;
-    private TimeSeries networkReceiveSeries;
+    private final TimeSeries cpuSeries;
+    private final TimeSeries memorySeries;
+    private final TimeSeries diskReadSeries;
+    private final TimeSeries diskWriteSeries;
+    private final TimeSeries networkSendSeries;
+    private final TimeSeries networkReceiveSeries;
     private String ip = null;
     private static final int MAX_POINTS = 30;
     private Socket socket = null;
-    /**
-     * Creates new form trackingresourceform
-     */
+
     public trackingresourceform(String ip) {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -209,7 +198,7 @@ public class trackingresourceform extends javax.swing.JFrame {
                    ResourceInfo resourceInfo = (ResourceInfo) ois.readObject();
                    updateChart(resourceInfo);
                 }
-           } catch (Exception e) {
+           } catch (IOException | ClassNotFoundException e) {
            }
         }
     }
@@ -280,10 +269,8 @@ public class trackingresourceform extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                // new trackingresourceform().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new trackingresourceform("localhost").setVisible(true);
         });
     }
 

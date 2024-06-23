@@ -1,4 +1,3 @@
-
 package ntk.remotecomputer.server;
 
 import java.awt.event.WindowAdapter;
@@ -185,11 +184,9 @@ public class serverstartscreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                fileform = new serverfileform();
-                fileform.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            fileform = new serverfileform();
+            fileform.setVisible(true);
         });
     }//GEN-LAST:event_jButton2ActionPerformed
     
@@ -218,15 +215,13 @@ public class serverstartscreen extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new serverstartscreen().setVisible(true);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (Exception ex) {
-                    Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new serverstartscreen().setVisible(true);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(serverstartscreen.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }

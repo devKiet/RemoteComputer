@@ -4,11 +4,10 @@ import javax.swing.ImageIcon;
 import ntk.remotecomputer.Commons;
 
 public class clientfileform extends javax.swing.JFrame {
-    /* ip address */
     static String ip = "";
  
     public clientfileform(String ip) {
-        this.ip = ip;
+        clientfileform.ip = ip;
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
@@ -78,10 +77,8 @@ public class clientfileform extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
+        // TODO add your handling code here:
         this.setVisible(false);
-
-	/* Call uploadfileform on button action */
         uploadfileform u = new uploadfileform(ip);
 	u.setBounds(550, 150, 700, 300);
         u.setVisible(true);
@@ -89,8 +86,6 @@ public class clientfileform extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-
-	/* call downloadfileform on button action */
         this.setVisible(false);
         downloadfileform d = new downloadfileform(ip);
 	d.setBounds(550, 150, 700, 300);

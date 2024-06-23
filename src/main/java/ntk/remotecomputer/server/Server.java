@@ -32,7 +32,7 @@ public class Server extends Thread {
     private static Socket server = null;
     private static ServerSocket eveSocket = null;
     private static Socket eve = null;
-    private AtomicBoolean running = new AtomicBoolean(true);
+    private final AtomicBoolean running = new AtomicBoolean(true);
     private static ServerSocket trackingServerSocket = null;
     private static ServerSocket chatSocket = null;
     private static final SystemInfo systemInfo = new SystemInfo();
@@ -96,7 +96,6 @@ public class Server extends Thread {
                 chatSocket.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
     
@@ -123,7 +122,6 @@ public class Server extends Thread {
                     break;
                 } catch (IOException e) {
                     if (running.get()) {
-                        e.printStackTrace();
                     } else {
                         System.out.println("Server stopped.");
                     }
@@ -165,12 +163,11 @@ public class Server extends Thread {
                     new ReceiveEvents(eve, robot);
                 } catch (IOException e) {
                     if (running.get()) {
-                        e.printStackTrace();
                     } else {
                         System.out.println("Server stopped.");
                     }
                     break;
-                } catch (Exception ex) {
+                } catch (AWTException ex) {
                     System.out.println(ex);
                 }
             }
@@ -193,7 +190,6 @@ public class Server extends Thread {
                     s.pack();
                 } catch (IOException e) {
                     if (running.get()) {
-                        e.printStackTrace();
                     } else {
                         System.out.println("Server stopped.");
                     }
@@ -280,13 +276,15 @@ public class Server extends Thread {
         // Take screenshot using robot class
         BufferedImage screenshot = robot.createScreenCapture(new Rectangle(screenSize));
 
-        // Send image to client through output stream of socket
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] imageBytes;
         // Use JPEG with lower quality to reduce size
-        ImageIO.write(screenshot, "jpg", baos);
-        baos.flush();
-        byte[] imageBytes = baos.toByteArray();
-        baos.close();
+        try ( // Send image to client through output stream of socket
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            // Use JPEG with lower quality to reduce size
+            ImageIO.write(screenshot, "jpg", baos);
+            baos.flush();
+            imageBytes = baos.toByteArray();
+        }
 
         // Write image size to output stream
         try (OutputStream outputStream = server.getOutputStream();

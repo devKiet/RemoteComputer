@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ntk.remotecomputer;
 
 import java.awt.CardLayout;
@@ -438,10 +433,8 @@ public class RemoteComputer extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RemoteComputer().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new RemoteComputer().setVisible(true);
         });
     }
 

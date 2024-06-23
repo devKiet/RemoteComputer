@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package ntk.remotecomputer.server;
 
 import java.awt.event.WindowAdapter;
@@ -28,25 +24,16 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
 
-/**
- *
- * @author kiet
- */
 public class serverfileform extends javax.swing.JFrame {
-    private File dstFile = null;
     private static ObjectOutputStream outputStream = null;
     private static ObjectInputStream inputStream = null;
     private FileEvent fileEvent = null;
     private static String fname = null;
-    private FileOutputStream fileOutputStream = null;
     private static String destinationPath1 = "";
     private Thread fileThread = null;
-    private AtomicBoolean running = new AtomicBoolean(true);
+    private final AtomicBoolean running = new AtomicBoolean(true);
     ServerSocket sersock = null;
     
-    /**
-     * Creates new form serverfileform
-     */
     public serverfileform() {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -68,11 +55,15 @@ public class serverfileform extends javax.swing.JFrame {
                     JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == JOptionPane.YES_OPTION) {
                     setRunning(false);
+                    try {
+                        closeSocket();
+                    } catch (IOException ex) {
+                        Logger.getLogger(serverfileform.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     dispose();
                 }
             }
         });
-
     }
 
     /**
@@ -174,7 +165,6 @@ public class serverfileform extends javax.swing.JFrame {
                     }
                 } catch (IOException e) {
                     if (running.get()) {
-                        e.printStackTrace();
                     } else {
                         System.out.println("Server stopped.");
                     }
@@ -195,9 +185,7 @@ public class serverfileform extends javax.swing.JFrame {
 
     public void sendFile() throws IOException {
         fileEvent = new FileEvent();
-        String fileName = fname.substring(fname.lastIndexOf("/") + 1, fname.length());
-        String path = fname.substring(0, fname.lastIndexOf("/") + 1);
-
+        
         File file = new File(fname);
         if (file.isDirectory()) {
             fileEvent.setDirectory(true);
@@ -214,13 +202,11 @@ public class serverfileform extends javax.swing.JFrame {
             outputStream.writeObject(fileEvent);
             outputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e);
         }
 
         try {
             outputStream.writeObject(fileEvent);
-            // JOptionPane.showMessageDialog(null, "Done...Going to exit");
             Thread.sleep(1000);
         } catch (InterruptedException e) {
         }
@@ -228,21 +214,22 @@ public class serverfileform extends javax.swing.JFrame {
     
     private byte[] readFile(File file) {
         try {
-            DataInputStream diStream = new DataInputStream(new FileInputStream(file));
-            long len = (int) file.length();
-            byte[] fileBytes = new byte[(int) len];
-            int read = 0;
-            int numRead = 0;
-            while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
-                read = read + numRead;
+            long len;
+            byte[] fileBytes;
+            try (DataInputStream diStream = new DataInputStream(new FileInputStream(file))) {
+                len = (int) file.length();
+                fileBytes = new byte[(int) len];
+                int read = 0;
+                int numRead = 0;
+                while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
+                    read = read + numRead;
+                }
             }
-            diStream.close();
             fileEvent.setFileSize(len);
             fileEvent.setFileData(fileBytes);
             fileEvent.setStatus("Success");
             return fileBytes;
         } catch (IOException e) {
-            e.printStackTrace();
             fileEvent.setStatus("Error");
             return null;
         }
@@ -291,12 +278,11 @@ public class serverfileform extends javax.swing.JFrame {
     private void saveFile(FileEvent fileEvent, String outputPath) {
         try {
             File dstFile = new File(outputPath);
-            FileOutputStream fileOutputStream = new FileOutputStream(dstFile);
-            fileOutputStream.write(fileEvent.getFileData());
-            fileOutputStream.flush();
-            fileOutputStream.close();
+            try (FileOutputStream fileOutputStream = new FileOutputStream(dstFile)) {
+                fileOutputStream.write(fileEvent.getFileData());
+                fileOutputStream.flush();
+            }
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -357,10 +343,8 @@ public class serverfileform extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new serverfileform().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new serverfileform().setVisible(true);
         });
     }
 

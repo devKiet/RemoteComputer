@@ -1,7 +1,6 @@
 
 package ntk.remotecomputer.client;
 
-import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import ntk.remotecomputer.server.FileEvent;
@@ -28,10 +27,10 @@ public class uploadfileform extends javax.swing.JFrame {
     private static ObjectOutputStream outputStream = null;
     private FileEvent fileEvent = null;
     private static String fname = null;
-    private String destinationPath = "C:/User";
+    private final String destinationPath = "C:/User";
 
     public uploadfileform(String ip) {
-        this.ip = ip;
+        uploadfileform.ip = ip;
         setSize(700, 400);
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -76,7 +75,8 @@ public class uploadfileform extends javax.swing.JFrame {
     
         /* send file from client to server */
     public void sendFile(Socket sock) {
-        SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+        SwingWorker<Void, Integer> worker;
+        worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() {
                 fileEvent = new FileEvent();
@@ -98,7 +98,6 @@ public class uploadfileform extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(uploadfileform.this, "File/Folder uploaded successfully!");
                     outputStream.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
                     progressBar.setVisible(false);
                     JOptionPane.showMessageDialog(uploadfileform.this, "Error: " + e);
                 } finally {
@@ -106,7 +105,6 @@ public class uploadfileform extends javax.swing.JFrame {
                         sock.close();
                         uploadfileform.this.dispose();
                     } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
                 return null;
@@ -128,24 +126,25 @@ public class uploadfileform extends javax.swing.JFrame {
     
     private byte[] readFile(File file) {
         try {
-            DataInputStream diStream = new DataInputStream(new FileInputStream(file));
-            long len = (int) file.length();
-            byte[] fileBytes = new byte[(int) len];
-            int read = 0;
-            int numRead = 0;
-            while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
-                read = read + numRead;
-                int progress = (int) ((read / (float) fileBytes.length) * 100);
-                // Publish the progress
-                progressBar.setValue(progress);
+            long len;
+            byte[] fileBytes;
+            try (DataInputStream diStream = new DataInputStream(new FileInputStream(file))) {
+                len = (int) file.length();
+                fileBytes = new byte[(int) len];
+                int read = 0;
+                int numRead = 0;
+                while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
+                    read = read + numRead;
+                    int progress = (int) ((read / (float) fileBytes.length) * 100);
+                    // Publish the progress
+                    progressBar.setValue(progress);
+                }
             }
-            diStream.close();
             fileEvent.setFileSize(len);
             fileEvent.setFileData(fileBytes);
             fileEvent.setStatus("Success");
             return fileBytes;
         } catch (IOException e) {
-            e.printStackTrace();
             fileEvent.setStatus("Error");
             return null;
         }
@@ -184,8 +183,7 @@ public class uploadfileform extends javax.swing.JFrame {
                 System.out.println("Path: " + keyRead);
 
                 fname = keyRead;
-                OutputStream ostream = null;
-                ostream = sock.getOutputStream();
+                OutputStream ostream = sock.getOutputStream();
                 PrintWriter pwrite = new PrintWriter(ostream, true);
                 pwrite.println("");
                 outputStream = new ObjectOutputStream(sock.getOutputStream());
@@ -225,10 +223,8 @@ public class uploadfileform extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new uploadfileform(ip).setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new uploadfileform(ip).setVisible(true);
         });
     }
 

@@ -1,4 +1,3 @@
-
 package ntk.remotecomputer.server;
 
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
@@ -145,43 +144,42 @@ public class ReceiveEvents {
                 
                 //Check Event id and take actions accordingly
                 switch (eventId) {
-                    case MouseEvent.MOUSE_PRESSED:
+                    case MouseEvent.MOUSE_PRESSED -> {
                         int btnMask1 = reader.readInt();
                         r.mousePress(btnMask1);
                         System.out.println("Mouse pressed");
-                        break;
-                    case MouseEvent.MOUSE_RELEASED:
+                    }
+                    case MouseEvent.MOUSE_RELEASED -> {
                         int btnMask2 = reader.readInt();
                         r.mouseRelease(btnMask2);
                         System.out.println("Mouse Released");
-                        break;
-                    case MouseEvent.MOUSE_MOVED:
-                    case MouseEvent.MOUSE_DRAGGED:
+                    }
+                    case MouseEvent.MOUSE_MOVED, MouseEvent.MOUSE_DRAGGED -> {
                         r.mouseMove((int) (reader.readDouble()* width), (int) (reader.readDouble() * height));
                         System.out.println("Mouse moved");
-                        break;
-                    case NativeKeyEvent.NATIVE_KEY_PRESSED:
+                    }
+                    case NativeKeyEvent.NATIVE_KEY_PRESSED -> {
                         int keyCodePress = getKeyEventCode(reader.readInt());
                         if (keyCodePress == KeyEvent.VK_UNDEFINED) {
                             continue;
                         }
                         r.keyPress(keyCodePress);
                         System.out.println("Key Pressed");
-                        break;
-                    case NativeKeyEvent.NATIVE_KEY_RELEASED:
+                    }
+                    case NativeKeyEvent.NATIVE_KEY_RELEASED -> {
                         int keyCodeRelease = getKeyEventCode(reader.readInt());
                         if (keyCodeRelease == KeyEvent.VK_UNDEFINED) {
                             continue;
                         }
                         r.keyRelease(keyCodeRelease);
                         System.out.println("Key Released");
-                        break;
-                    case MouseWheelEvent.MOUSE_WHEEL:
+                    }
+                    case MouseWheelEvent.MOUSE_WHEEL -> {
                         int wheelRotation = reader.readInt();
                         r.mouseWheel(wheelRotation);
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                    }
                 }
             } catch (IOException ex) {
                 System.out.println("Exception in receive events:" + ex);

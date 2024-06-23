@@ -1,11 +1,8 @@
-
 package ntk.remotecomputer.server;
 
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,7 +11,6 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
 
 public class servermsg extends javax.swing.JFrame {
@@ -24,20 +20,13 @@ public class servermsg extends javax.swing.JFrame {
     
     public void sendmsg(ServerSocket sock) {
         System.out.println("Send message method called Server side");
-
-        String msg = "";
         try {
             sckt = sock.accept();
-
-		/* Get message from input stream */
             dtinpt = new DataInputStream(sckt.getInputStream());
-
-		/* Send message from output stream */
             dtotpt = new DataOutputStream(sckt.getOutputStream());
-
-		/* conversation between client and server until bye */
-            while (!msg.equals("bye")) {
-                msg = dtinpt.readUTF();
+            
+            while (true) {
+                String msg = dtinpt.readUTF();
                 System.out.println("message received: " + msg);
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss");
@@ -54,19 +43,6 @@ public class servermsg extends javax.swing.JFrame {
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
         
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                int confirm = JOptionPane.showOptionDialog(
-                    null, "Are You Sure to Close this Application?",
-                    "Exit Confirmation", JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE, null, null, null);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    dispose();
-                }
-            }
-        });
-        
         jTextArea3.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -82,7 +58,6 @@ public class servermsg extends javax.swing.JFrame {
                 }
             }
         });
-
     }
   
     @SuppressWarnings("unchecked")
@@ -165,8 +140,7 @@ public class servermsg extends javax.swing.JFrame {
     private void handleSendBtn() {
         // TODO add your handling code here:
         try {
-            String msgout = "";
-            msgout = jTextArea3.getText().trim();
+            String msgout = jTextArea3.getText().trim();
             dtotpt.writeUTF(msgout);
             System.out.println("Message sent: " + msgout);
             jTextArea3.setText(null);
@@ -175,7 +149,7 @@ public class servermsg extends javax.swing.JFrame {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm:ss");
             String formattedDateTime = now.format(formatter);
             jTextArea2.setText(jTextArea2.getText().trim() + "\n[" + formattedDateTime + "] You: " + msgout);            
-        } catch (Exception ex) {
+        } catch (IOException ex) {
         }
     }
     
@@ -214,11 +188,9 @@ public class servermsg extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                display();
-                new servermsg().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            display();
+            new servermsg().setVisible(true);
         });
      
     }
