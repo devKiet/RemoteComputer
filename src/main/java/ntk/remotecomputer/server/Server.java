@@ -82,7 +82,9 @@ public class Server extends Thread {
         try {
             if (eveSocket != null) {
                 eveSocket.close();
-                eve.close();
+                if (eve != null) {
+                    eve.close();
+                }
             }
             if (serverSocket != null) {
                 serverSocket.close();

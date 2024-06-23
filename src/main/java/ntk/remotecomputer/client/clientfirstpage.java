@@ -45,16 +45,15 @@ public class clientfirstpage extends javax.swing.JFrame {
                         socket.setSoTimeout(Commons.READ_TIMEOUT);
                         
                         try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {               
+                            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {               
                             out.println("Client Closed!!!");
                         } catch (IOException ex) {
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
                     } finally {
-                        dispose();
+                        System.exit(0);
                     }
-                    dispose();
                 }
             }
         });
@@ -75,7 +74,7 @@ public class clientfirstpage extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(850, 550));
         setPreferredSize(new java.awt.Dimension(850, 550));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());

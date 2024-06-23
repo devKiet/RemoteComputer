@@ -42,7 +42,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                     "Exit Confirmation", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    dispose();
+                    System.exit(0);
                 }
             }
         });
@@ -103,7 +103,7 @@ public class serverstartscreen extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(850, 550));
         setSize(new java.awt.Dimension(850, 550));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());

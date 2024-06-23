@@ -1,6 +1,7 @@
 
 package ntk.remotecomputer.client;
 
+import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import ntk.remotecomputer.server.FileEvent;
@@ -19,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import ntk.remotecomputer.Commons;
 
 public class uploadfileform extends javax.swing.JFrame {
@@ -27,7 +29,7 @@ public class uploadfileform extends javax.swing.JFrame {
     private FileEvent fileEvent = null;
     private static String fname = null;
     private String destinationPath = "C:/User";
-    
+
     public uploadfileform(String ip) {
         this.ip = ip;
         setSize(700, 400);
@@ -36,7 +38,7 @@ public class uploadfileform extends javax.swing.JFrame {
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
         jFileChooser1.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        
+        progressBar.setVisible(false);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -49,7 +51,6 @@ public class uploadfileform extends javax.swing.JFrame {
                 }
             }
         });
-
     }
 
     @SuppressWarnings("unchecked")
@@ -57,10 +58,10 @@ public class uploadfileform extends javax.swing.JFrame {
     private void initComponents() {
 
         jFileChooser1 = new javax.swing.JFileChooser();
+        progressBar = new javax.swing.JProgressBar();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(600, 400));
-        setResizable(false);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(600, 500));
 
         jFileChooser1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -68,35 +69,61 @@ public class uploadfileform extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jFileChooser1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(progressBar, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
         /* send file from client to server */
-    public void sendFile() {
-        JOptionPane.showMessageDialog(null, this, "Uploading...", JOptionPane.INFORMATION_MESSAGE);
-        fileEvent = new FileEvent();
-        File file = new File(fname);
-        if (file.isDirectory()) {
-            fileEvent.setDirectory(true);
-            fileEvent.setFileList(getFileList(file));
-        } else {
-            fileEvent.setDirectory(false);
-            fileEvent.setFileData(readFile(file));
-        }
-        fileEvent.setFilename(file.getName());
-        fileEvent.setSourceDirectory(fname);
-        fileEvent.setDestinationDirectory(destinationPath);
+    public void sendFile(Socket sock) {
+        SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() {
+                fileEvent = new FileEvent();
+                File file = new File(fname);
+                if (file.isDirectory()) {
+                    fileEvent.setDirectory(true);
+                    fileEvent.setFileList(getFileList(file));
+                } else {
+                    fileEvent.setDirectory(false);
+                    fileEvent.setFileData(readFile(file));
+                }
+                fileEvent.setFilename(file.getName());
+                fileEvent.setSourceDirectory(fname);
+                fileEvent.setDestinationDirectory(destinationPath);
 
-        try {
-            outputStream.writeObject(fileEvent);
-            JOptionPane.showMessageDialog(this, "File/Folder uploaded successfully!");
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error: " + e);
-        }
+                try {
+                    outputStream.writeObject(fileEvent);
+                    progressBar.setVisible(false);
+                    JOptionPane.showMessageDialog(uploadfileform.this, "File/Folder uploaded successfully!");
+                    outputStream.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    progressBar.setVisible(false);
+                    JOptionPane.showMessageDialog(uploadfileform.this, "Error: " + e);
+                } finally {
+                    try {
+                        sock.close();
+                        uploadfileform.this.dispose();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+            
+            @Override
+            protected void process(List<Integer> chunks) {
+                int progress = chunks.get(chunks.size() - 1);
+                progressBar.setValue(progress);
+            }
 
+            @Override
+            protected void done() {
+                progressBar.setValue(100);
+            }
+        };
+        worker.execute();
     }
     
     private byte[] readFile(File file) {
@@ -108,6 +135,9 @@ public class uploadfileform extends javax.swing.JFrame {
             int numRead = 0;
             while (read < fileBytes.length && (numRead = diStream.read(fileBytes, read, fileBytes.length - read)) >= 0) {
                 read = read + numRead;
+                int progress = (int) ((read / (float) fileBytes.length) * 100);
+                // Publish the progress
+                progressBar.setValue(progress);
             }
             diStream.close();
             fileEvent.setFileSize(len);
@@ -142,6 +172,7 @@ public class uploadfileform extends javax.swing.JFrame {
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
         try {        
             if (JFileChooser.APPROVE_SELECTION.equals(evt.getActionCommand())) {
+                progressBar.setVisible(true);
                 String serverName = ip; //loop back ip   
                 Socket sock = new Socket(serverName, Commons.FILE_SOCKET_PORT);
                 Scanner input = new Scanner(System.in);
@@ -158,9 +189,7 @@ public class uploadfileform extends javax.swing.JFrame {
                 PrintWriter pwrite = new PrintWriter(ostream, true);
                 pwrite.println("");
                 outputStream = new ObjectOutputStream(sock.getOutputStream());
-                this.sendFile();
-                sock.close();
-                this.dispose();
+                this.sendFile(sock);
             } else if (JFileChooser.CANCEL_SELECTION.equals(evt.getActionCommand())) {
                 this.dispose();
             }       
@@ -205,5 +234,6 @@ public class uploadfileform extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JProgressBar progressBar;
     // End of variables declaration//GEN-END:variables
 }

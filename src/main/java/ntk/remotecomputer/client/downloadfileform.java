@@ -12,12 +12,12 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import ntk.remotecomputer.Commons;
 
 public class downloadfileform extends javax.swing.JFrame {
@@ -31,7 +31,8 @@ public class downloadfileform extends javax.swing.JFrame {
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
-
+        
+        progressBar.setVisible(false);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -55,9 +56,10 @@ public class downloadfileform extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        progressBar = new javax.swing.JProgressBar();
         jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(700, 300));
         setSize(new java.awt.Dimension(700, 300));
         getContentPane().setLayout(null);
@@ -87,6 +89,8 @@ public class downloadfileform extends javax.swing.JFrame {
         });
         getContentPane().add(jButton1);
         jButton1.setBounds(268, 206, 170, 28);
+        getContentPane().add(progressBar);
+        progressBar.setBounds(280, 290, 146, 4);
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         jLabel3.setSize(new java.awt.Dimension(1920, 1079));
@@ -96,39 +100,60 @@ public class downloadfileform extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
-    public void downloadFile() {
-        try {
-            fileEvent = (FileEvent) inputStream.readObject();
-            if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
-                System.out.println("Error occurred ..So exiting");
-                this.dispose();
-            }
+    public void downloadFile(Socket sock) {
+        SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() {
+                try {
+                    fileEvent = (FileEvent) inputStream.readObject();
+                    if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
+                        System.out.println("Error occurred ..So exiting");
+                        downloadfileform.this.dispose();
+                    }
 
-            // Tạo JFileChooser để người dùng chọn thư mục đích
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            int returnVal = fileChooser.showSaveDialog(null);
+                    // Tạo JFileChooser để người dùng chọn thư mục đích
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                    int returnVal = fileChooser.showSaveDialog(null);
 
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File selectedDirectory = fileChooser.getSelectedFile();
-                String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
-                JOptionPane.showMessageDialog(null, this, "Downloading...", JOptionPane.INFORMATION_MESSAGE);
+                    if (returnVal == JFileChooser.APPROVE_OPTION) {
+                        progressBar.setVisible(true);
+                        File selectedDirectory = fileChooser.getSelectedFile();
+                        String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
 
-                if (fileEvent.isDirectory()) {
-                    new File(outputFile).mkdirs();
-                    saveDirectory(fileEvent, outputFile);
-                } else {
-                    saveFile(fileEvent, outputFile);
+                        if (fileEvent.isDirectory()) {
+                            new File(outputFile).mkdirs();
+                            saveDirectory(fileEvent, outputFile);
+                        } else {
+                            saveFile(fileEvent, outputFile);
+                        }
+                        progressBar.setVisible(false);
+                        JOptionPane.showMessageDialog(downloadfileform.this, "File/Folder downloaded successfully!");
+                        sock.close();
+                        dispose();
+                    } else {
+                        System.out.println("No directory selected. Exiting...");
+                        JOptionPane.showMessageDialog(downloadfileform.this, "No directory selected. Exiting...");
+                    }
+                } catch (IOException | ClassNotFoundException  e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(downloadfileform.this, "Error: " + e);
                 }
-                JOptionPane.showMessageDialog(this, "File/Folder downloaded successfully!");
-            } else {
-                System.out.println("No directory selected. Exiting...");
-                JOptionPane.showMessageDialog(this, "No directory selected. Exiting...");
+                
+                return null;
             }
-        } catch (IOException | ClassNotFoundException  e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error: " + e);
-        }
+            @Override
+            protected void process(List<Integer> chunks) {
+                int progress = chunks.get(chunks.size() - 1);
+                progressBar.setValue(progress);
+            }
+
+            @Override
+            protected void done() {
+                progressBar.setValue(100);
+            }
+        };
+        worker.execute();
     }
     
     private void saveFile(FileEvent fileEvent, String outputPath) {
@@ -157,7 +182,6 @@ public class downloadfileform extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-           
             String serverName = ip; //loop back ip      
             Socket sock = new Socket(serverName, Commons.FILE_SOCKET_PORT);
             this.setBounds(550, 150, 700, 300);
@@ -172,12 +196,10 @@ public class downloadfileform extends javax.swing.JFrame {
             PrintWriter pwrite = new PrintWriter(ostream, true);
             pwrite.println(sourceFilePath2 + " download");
             inputStream = new ObjectInputStream(sock.getInputStream());
-           
-            this.downloadFile();
-            sock.close();
             ostream.close();
             pwrite.close();
-            dispose();
+            
+            this.downloadFile(sock);
         } catch (IOException ex) {
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(this, "Connection failed: " + ex.getMessage());
@@ -223,5 +245,6 @@ public class downloadfileform extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JProgressBar progressBar;
     // End of variables declaration//GEN-END:variables
 }

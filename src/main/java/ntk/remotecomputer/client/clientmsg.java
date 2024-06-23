@@ -112,6 +112,7 @@ public class clientmsg extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 700));
         setSize(new java.awt.Dimension(800, 700));
         getContentPane().setLayout(null);
