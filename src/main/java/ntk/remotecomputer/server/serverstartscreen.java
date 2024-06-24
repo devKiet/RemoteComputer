@@ -20,7 +20,7 @@ public class serverstartscreen extends javax.swing.JFrame {
     private serverfileform fileform = null;
     private static final String privateTokenKey = Commons.generateNewToken();
     private ServerSocket serverSocket;
-    private servermsg svmsg = null;
+    private static servermsg svmsg = null;
     
     public serverstartscreen() throws SQLException, ClassNotFoundException, Exception {
         initComponents();      
@@ -32,10 +32,6 @@ public class serverstartscreen extends javax.swing.JFrame {
         acceptConnect acp = new acceptConnect();
         Thread thread = new Thread(acp);
         thread.start();
-        
-        svmsg = new servermsg();
-        svmsg.setBounds (0, 0 , 800 , 700 );
-        svmsg.setResizable(false);
         
         addWindowListener(new WindowAdapter() {
             @Override
@@ -69,10 +65,17 @@ public class serverstartscreen extends javax.swing.JFrame {
                             server.start();
                             out.println("Access Granted");
                             jLabel4.setVisible(false);
+                            
+                            if (svmsg == null) {
+                                svmsg = new servermsg();
+                                svmsg.setBounds (0, 0 , 800 , 700 );
+                                svmsg.setResizable(false);
+                            }
                         } else if ("Client Closed!!!".equals(receivedToken)) {
                             if (server != null) {
                                 server.stopServer();
                                 jLabel4.setVisible(true);
+                                svmsg.dispose();
                             }
                         } else {
                             out.println("Access Denied");
@@ -181,6 +184,11 @@ public class serverstartscreen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (svmsg == null) {
+            svmsg = new servermsg();
+            svmsg.setBounds (0, 0 , 800 , 700 );
+            svmsg.setResizable(false);
+        }
         svmsg.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
