@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
+import ntk.remotecomputer.client.uploadfileform;
 
 public class serverstartscreen extends javax.swing.JFrame {
     private Server server = null;
@@ -21,6 +22,7 @@ public class serverstartscreen extends javax.swing.JFrame {
     private static final String privateTokenKey = Commons.generateNewToken();
     private ServerSocket serverSocket;
     private static servermsg svmsg = null;
+    private boolean isConnected = false;
     
     public serverstartscreen() throws SQLException, ClassNotFoundException, Exception {
         initComponents();      
@@ -66,6 +68,8 @@ public class serverstartscreen extends javax.swing.JFrame {
                             out.println("Access Granted");
                             jLabel4.setVisible(false);
                             
+                            isConnected = true;
+                            
                             if (svmsg == null) {
                                 svmsg = new servermsg();
                                 svmsg.setBounds (0, 0 , 800 , 700 );
@@ -75,8 +79,10 @@ public class serverstartscreen extends javax.swing.JFrame {
                             if (server != null) {
                                 server.stopServer();
                                 jLabel4.setVisible(true);
-                                svmsg.dispose();
+                                if (svmsg != null)
+                                    svmsg.dispose();
                             }
+                            isConnected = false;
                         } else {
                             out.println("Access Denied");
                             System.out.println("Access denied to client.");
@@ -184,19 +190,23 @@ public class serverstartscreen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (svmsg == null) {
-            svmsg = new servermsg();
-            svmsg.setBounds (0, 0 , 800 , 700 );
-            svmsg.setResizable(false);
+        if (isConnected) {
+            svmsg.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Waiting Connection...");
         }
-        svmsg.setVisible(true);
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        java.awt.EventQueue.invokeLater(() -> {
-            fileform = new serverfileform();
-            fileform.setVisible(true);
-        });
+        if (isConnected) {
+            java.awt.EventQueue.invokeLater(() -> {
+                fileform = new serverfileform();
+                fileform.setVisible(true);
+            });
+        } else {
+            JOptionPane.showMessageDialog(this, "Waiting Connection...");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
     
     public static void main(String args[]) {
