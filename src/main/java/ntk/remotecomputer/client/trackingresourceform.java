@@ -1,16 +1,23 @@
 package ntk.remotecomputer.client;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 import ntk.remotecomputer.Commons;
 import ntk.remotecomputer.server.ResourceInfo;
 import org.jfree.chart.ChartFactory;
@@ -23,10 +30,6 @@ import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
-/**
- *
- * @author kiet
- */
 public class trackingresourceform extends javax.swing.JFrame {
     private final TimeSeries cpuSeries;
     private final TimeSeries memorySeries;
@@ -37,6 +40,13 @@ public class trackingresourceform extends javax.swing.JFrame {
     private String ip = null;
     private static final int MAX_POINTS = 30;
     private Socket socket = null;
+    private final JLabel cpuLabel;
+    private final JLabel memoryLabel;
+    private final JLabel diskReadLabel;
+    private final JLabel diskWriteLabel;
+    private final JLabel networkSendLabel;
+    private final JLabel networkReceiveLabel;
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     public trackingresourceform(String ip) {
         initComponents();
@@ -44,21 +54,20 @@ public class trackingresourceform extends javax.swing.JFrame {
         setIconImage(icon.getImage());
         setLocationRelativeTo(null);
         setSize(850, 550);
-        
+
         this.ip = ip;
-        // Create dataset for CPU
+
+        // Create datasets
         TimeSeriesCollection cpuDataset = new TimeSeriesCollection();
         cpuSeries = new TimeSeries("CPU Load");
         cpuSeries.setMaximumItemCount(MAX_POINTS);
         cpuDataset.addSeries(cpuSeries);
 
-        // Create dataset for Memory
         TimeSeriesCollection memoryDataset = new TimeSeriesCollection();
         memorySeries = new TimeSeries("Used Memory");
         memorySeries.setMaximumItemCount(MAX_POINTS);
         memoryDataset.addSeries(memorySeries);
 
-        // Create dataset for Disk Read/Write
         TimeSeriesCollection diskDataset = new TimeSeriesCollection();
         diskReadSeries = new TimeSeries("Disk Read Rate");
         diskReadSeries.setMaximumItemCount(MAX_POINTS);
@@ -67,7 +76,6 @@ public class trackingresourceform extends javax.swing.JFrame {
         diskDataset.addSeries(diskReadSeries);
         diskDataset.addSeries(diskWriteSeries);
 
-        // Create dataset for Network Send/Receive
         TimeSeriesCollection networkDataset = new TimeSeriesCollection();
         networkSendSeries = new TimeSeries("Network Send Rate");
         networkSendSeries.setMaximumItemCount(MAX_POINTS);
@@ -76,90 +84,46 @@ public class trackingresourceform extends javax.swing.JFrame {
         networkDataset.addSeries(networkSendSeries);
         networkDataset.addSeries(networkReceiveSeries);
 
-        // Create CPU chart
-        JFreeChart cpuChart = ChartFactory.createTimeSeriesChart(
-                "CPU Usage",
-                "Time",
-                "CPU Load (%)",
-                cpuDataset,
-                true,
-                true,
-                false
-        );
+        // Create charts
+        JFreeChart cpuChart = createChart(cpuDataset, "CPU Usage", "Time", "CPU Load (%)");
+        JFreeChart memoryChart = createChart(memoryDataset, "Memory Usage", "Time", "Used Memory (MB)");
+        JFreeChart diskChart = createChart(diskDataset, "Disk Read/Write Rate", "Time", "Rate (KB/s)");
+        JFreeChart networkChart = createChart(networkDataset, "Network Send/Receive Rate", "Time", "Rate (Kbps)");
 
-        // Create Memory chart
-        JFreeChart memoryChart = ChartFactory.createTimeSeriesChart(
-                "Memory Usage",
-                "Time",
-                "Used Memory (MB)",
-                memoryDataset,
-                true,
-                true,
-                false
-        );
-
-        // Create Disk Read/Write chart
-        JFreeChart diskChart = ChartFactory.createTimeSeriesChart(
-                "Disk Read/Write Rate",
-                "Time",
-                "Rate (KB/s)",
-                diskDataset,
-                true,
-                true,
-                false
-        );
-
-        // Create Network Send/Receive chart
-        JFreeChart networkChart = ChartFactory.createTimeSeriesChart(
-                "Network Send/Receive Rate",
-                "Time",
-                "Rate (Kbps)",
-                networkDataset,
-                true,
-                true,
-                false
-        );
-
-        // Customize CPU plot
-        XYPlot cpuPlot = (XYPlot) cpuChart.getPlot();
-        XYLineAndShapeRenderer cpuRenderer = new XYLineAndShapeRenderer();
-        cpuPlot.setRenderer(cpuRenderer);
-        cpuPlot.setOrientation(PlotOrientation.VERTICAL);
-
-        // Customize Memory plot
-        XYPlot memoryPlot = (XYPlot) memoryChart.getPlot();
-        XYLineAndShapeRenderer memoryRenderer = new XYLineAndShapeRenderer();
-        memoryPlot.setRenderer(memoryRenderer);
-        memoryPlot.setOrientation(PlotOrientation.VERTICAL);
-
-        // Customize Disk plot
-        XYPlot diskPlot = (XYPlot) diskChart.getPlot();
-        XYLineAndShapeRenderer diskRenderer = new XYLineAndShapeRenderer();
-        diskPlot.setRenderer(diskRenderer);
-        diskPlot.setOrientation(PlotOrientation.VERTICAL);
-
-        // Customize Network plot
-        XYPlot networkPlot = (XYPlot) networkChart.getPlot();
-        XYLineAndShapeRenderer networkRenderer = new XYLineAndShapeRenderer();
-        networkPlot.setRenderer(networkRenderer);
-        networkPlot.setOrientation(PlotOrientation.VERTICAL);
-
-        // Create ChartPanel for CPU, Memory, Disk, Network
+        // Create chart panels
         ChartPanel cpuChartPanel = new ChartPanel(cpuChart);
         ChartPanel memoryChartPanel = new ChartPanel(memoryChart);
         ChartPanel diskChartPanel = new ChartPanel(diskChart);
         ChartPanel networkChartPanel = new ChartPanel(networkChart);
 
-        // Create JTabbedPane and add charts
+        // Customize tabs
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("CPU Usage", cpuChartPanel);
         tabbedPane.addTab("Memory Usage", memoryChartPanel);
         tabbedPane.addTab("Disk Read/Write Rate", diskChartPanel);
         tabbedPane.addTab("Network Send/Receive Rate", networkChartPanel);
 
-
-        // Add tabbedPane to JFrame
-        setContentPane(tabbedPane);
+        // Create info panel
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new GridLayout(6, 2));
+        cpuLabel = new JLabel("CPU Load: ");
+        memoryLabel = new JLabel("Used Memory: ");
+        diskReadLabel = new JLabel("Disk Read Rate: ");
+        diskWriteLabel = new JLabel("Disk Write Rate: ");
+        networkSendLabel = new JLabel("Network Send Rate: ");
+        networkReceiveLabel = new JLabel("Network Receive Rate: ");
+        infoPanel.add(cpuLabel);
+        infoPanel.add(memoryLabel);
+        infoPanel.add(diskReadLabel);
+        infoPanel.add(diskWriteLabel);
+        infoPanel.add(networkSendLabel);
+        infoPanel.add(networkReceiveLabel);
+        infoPanel.setBorder(new EmptyBorder(10, 20, 10, 0));
+        
+        // Set layout and add components
+        setLayout(new BorderLayout());
+        add(tabbedPane, BorderLayout.CENTER);
+        add(infoPanel, BorderLayout.SOUTH);
         
         TrackingThread th = new TrackingThread();
         new Thread(th).start();
@@ -186,6 +150,29 @@ public class trackingresourceform extends javax.swing.JFrame {
         
         setVisible(true);
     }
+    
+    private JFreeChart createChart(TimeSeriesCollection dataset, String title, String timeAxisLabel, String valueAxisLabel) {
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(
+                title,
+                timeAxisLabel,
+                valueAxisLabel,
+                dataset,
+                true,
+                true,
+                false
+        );
+
+        XYPlot plot = (XYPlot) chart.getPlot();
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        plot.setRenderer(renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        plot.setBackgroundPaint(Color.lightGray);
+        plot.setDomainGridlinePaint(Color.white);
+        plot.setRangeGridlinePaint(Color.white);
+
+        return chart;
+    }
+    
     //Thread for Chat
     class TrackingThread implements Runnable {
 
@@ -213,6 +200,13 @@ public class trackingresourceform extends javax.swing.JFrame {
             diskWriteSeries.addOrUpdate(time, resourceInfo.getDiskWriteRate()); // Already in KB/s
             networkSendSeries.addOrUpdate(time, resourceInfo.getNetworkSendRate()); // Already in Kbps
             networkReceiveSeries.addOrUpdate(time, resourceInfo.getNetworkReceiveRate()); // Already in Kbps
+
+            cpuLabel.setText("CPU Load: " + decimalFormat.format(resourceInfo.getCpuLoad()) + " %");
+            memoryLabel.setText("Used Memory: " + decimalFormat.format(resourceInfo.getUsedMemory() / (1024 * 1024)) + " MB");
+            diskReadLabel.setText("Disk Read Rate: " + decimalFormat.format(resourceInfo.getDiskReadRate()) + " KB/s");
+            diskWriteLabel.setText("Disk Write Rate: " + decimalFormat.format(resourceInfo.getDiskWriteRate()) + " KB/s");
+            networkSendLabel.setText("Network Send Rate: " + decimalFormat.format(resourceInfo.getNetworkSendRate()) + " Kbps");
+            networkReceiveLabel.setText("Network Receive Rate: " + decimalFormat.format(resourceInfo.getNetworkReceiveRate()) + " Kbps");
         });
     }
 

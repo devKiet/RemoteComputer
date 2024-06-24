@@ -69,7 +69,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                             jLabel4.setVisible(false);
                             
                             isConnected = true;
-                            
+                            Thread.sleep(1000);
                             if (svmsg == null) {
                                 svmsg = new servermsg();
                                 svmsg.setBounds (0, 0 , 800 , 700 );
