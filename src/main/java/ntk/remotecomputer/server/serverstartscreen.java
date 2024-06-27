@@ -14,12 +14,12 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import ntk.remotecomputer.Commons;
-import ntk.remotecomputer.client.uploadfileform;
 
 public class serverstartscreen extends javax.swing.JFrame {
     private Server server = null;
     private serverfileform fileform = null;
-    private static final String privateTokenKey = Commons.generateNewToken();
+//    private static final String privateTokenKey = Commons.generateNewToken();
+    private static final String privateTokenKey = "OK";
     private ServerSocket serverSocket;
     private static servermsg svmsg = null;
     private boolean isConnected = false;

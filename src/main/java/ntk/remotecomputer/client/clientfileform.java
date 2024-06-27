@@ -33,7 +33,7 @@ public class clientfileform extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel1.setText("Client File Transfer");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(270, 76, 274, 34);
+        jLabel1.setBounds(260, 60, 274, 34);
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel2.setText("Select if you want to upload or download a file ");

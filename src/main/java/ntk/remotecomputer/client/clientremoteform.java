@@ -311,7 +311,7 @@ public class clientremoteform extends javax.swing.JFrame {
             public void mouseDragged(MouseEvent e) {
                 try {
                     writer.writeInt(e.getID());
-                    System.out.println("Mouse moved");
+                    // System.out.println("Mouse moved");
 
                     double x = ((double) (e.getX()) / lableSize.getWidth());
                     double y = ((double) (e.getY()) / lableSize.getHeight());
@@ -331,7 +331,7 @@ public class clientremoteform extends javax.swing.JFrame {
             public void nativeKeyPressed(NativeKeyEvent e) {
                 try {
                     if (lab.hasFocus()) {
-                         writer.writeInt(NativeKeyEvent.NATIVE_KEY_PRESSED);
+                        writer.writeInt(NativeKeyEvent.NATIVE_KEY_PRESSED);
                         writer.writeInt(e.getKeyCode());
                         writer.flush();
                     }

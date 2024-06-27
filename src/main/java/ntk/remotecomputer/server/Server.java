@@ -2,6 +2,7 @@ package ntk.remotecomputer.server;
 
 import java.awt.AWTException;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -275,13 +276,18 @@ public class Server extends Thread {
 
         // Take screenshot using robot class
         BufferedImage screenshot = robot.createScreenCapture(new Rectangle(screenSize));
-
+        
+        BufferedImage resizedScreenshot = new BufferedImage(screenSize.width, screenSize.height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = resizedScreenshot.createGraphics();
+        g2d.drawImage(screenshot, 0, 0, screenSize.width, screenSize.height, null);
+        g2d.dispose();
+    
         byte[] imageBytes;
         // Use JPEG with lower quality to reduce size
         try ( // Send image to client through output stream of socket
                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             // Use JPEG with lower quality to reduce size
-            ImageIO.write(screenshot, "jpg", baos);
+            ImageIO.write(resizedScreenshot, "jpg", baos);
             baos.flush();
             imageBytes = baos.toByteArray();
         }
