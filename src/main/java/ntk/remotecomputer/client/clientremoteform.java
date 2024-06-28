@@ -2,6 +2,7 @@ package ntk.remotecomputer.client;
 
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
+import com.github.kwhat.jnativehook.dispatcher.SwingDispatchService;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import java.awt.Dimension;
@@ -48,6 +49,7 @@ public class clientremoteform extends javax.swing.JFrame {
     private Socket serverSocket = null;
     private int titleBarHeight = 0;
     private Dimension lableSize;
+    private static boolean nativeHookRegistered = false;
 
     public clientremoteform(String ip) throws IOException {
         initComponents();
@@ -108,19 +110,15 @@ public class clientremoteform extends javax.swing.JFrame {
                     receiveScreen.stop();
                     try {
                         sendEvents.stop();
+                        if (nativeHookRegistered) {
+                            GlobalScreen.unregisterNativeHook();
+                            GlobalScreen.setEventDispatcher(new SwingDispatchService());
+                            nativeHookRegistered = false;
+                        }
                     } catch (NativeHookException ex) {
                         Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     dispose();
-                }
-            }
-            
-            @Override
-            public void windowClosed(WindowEvent e) {
-                try {
-                    GlobalScreen.unregisterNativeHook();
-                } catch (NativeHookException ex) {
-                    ex.printStackTrace();
                 }
             }
         });
@@ -339,7 +337,14 @@ public class clientremoteform extends javax.swing.JFrame {
 
         });
         
-        GlobalScreen.registerNativeHook();
+        if (!nativeHookRegistered) {
+            try {
+                GlobalScreen.registerNativeHook();
+                nativeHookRegistered = true;
+            } catch (NativeHookException ex) {
+            }
+        }
+        
         GlobalScreen.addNativeKeyListener(new NativeKeyListener() {
             @Override
             public void nativeKeyPressed(NativeKeyEvent e) {

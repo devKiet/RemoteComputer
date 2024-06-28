@@ -303,7 +303,7 @@ public class Server extends Thread {
             outputStream.write(imageBytes);
             outputStream.flush();
         } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception in send screen events:" + ex);
         }
     }
 }

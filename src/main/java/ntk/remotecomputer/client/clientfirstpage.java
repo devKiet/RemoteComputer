@@ -21,7 +21,8 @@ public class clientfirstpage extends javax.swing.JFrame {
     private clientmsg clmsg = null;
     private clientremoteform clientRemote = null;
     private clientfileform clientFile = null;
-            
+    private trackingresourceform tracking = null;
+
     public clientfirstpage(String serverIp) throws UnknownHostException {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -186,7 +187,7 @@ public class clientfirstpage extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         //File Transfer Initialization
         java.awt.EventQueue.invokeLater(() -> {
-            if (clientRemote == null || !clientRemote.isShowing()) {
+            if (clientFile == null || !clientFile.isShowing()) {
                 clientFile = new clientfileform(ipAddress.getText());
                 clientFile.setBounds(550, 150, 800, 700);
                 clientFile.setResizable(false);
@@ -210,15 +211,23 @@ public class clientfirstpage extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         //Checking Null values of IP
-        if (ipAddress.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter the IP address to get connected");
-        } else {
-            //File Transfer Initialization
-            trackingresourceform c = new trackingresourceform(ipAddress.getText());
-            c.setBounds(550, 150, 800, 700);
-            c.setResizable(false);
-            c.setVisible(true);
-        }
+        java.awt.EventQueue.invokeLater(() -> {
+            if (tracking == null || !tracking.isShowing()) {
+                tracking = new trackingresourceform(ipAddress.getText());
+                tracking.setBounds(550, 150, 800, 700);
+                tracking.setResizable(false);
+                tracking.setVisible(true);
+
+                tracking.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        tracking = null;
+                    }
+                });
+            } else {
+                JOptionPane.showMessageDialog(this, "This screen is already open.");
+            }
+        });
     }//GEN-LAST:event_jButton5ActionPerformed
     
     public static String getWifiIPAddress() throws UnknownHostException {
