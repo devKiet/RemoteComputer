@@ -106,8 +106,21 @@ public class clientremoteform extends javax.swing.JFrame {
                     JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (confirm == JOptionPane.YES_OPTION) {
                     receiveScreen.stop();
-                    sendEvents.stop();
+                    try {
+                        sendEvents.stop();
+                    } catch (NativeHookException ex) {
+                        Logger.getLogger(clientremoteform.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     dispose();
+                }
+            }
+            
+            @Override
+            public void windowClosed(WindowEvent e) {
+                try {
+                    GlobalScreen.unregisterNativeHook();
+                } catch (NativeHookException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -125,7 +138,7 @@ public class clientremoteform extends javax.swing.JFrame {
         panel = new javax.swing.JPanel();
         lab = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBackground(new java.awt.Color(102, 102, 102));
         setLocation(new java.awt.Point(0, 0));
         setResizable(false);
@@ -178,7 +191,7 @@ public class clientremoteform extends javax.swing.JFrame {
                     
                     long endTime = System.currentTimeMillis();
                     long duration = (endTime - startTime); // Đơn vị: milliseconds
-                    System.out.println("Time: " + duration + " milliseconds");
+                    // System.out.println("Time: " + duration + " milliseconds");
                 } catch (IOException | InterruptedException ex) {
 
                 }
@@ -205,13 +218,14 @@ public class clientremoteform extends javax.swing.JFrame {
             
             while (running) {
                 try {
+                    System.out.println("start ");
                     if (eve == null || eve.isClosed()) {
                         System.out.println("Attempting to connect to server...");
                         eve = new Socket(serverName, Commons.EVENT_SOCKET_PORT);
                         System.out.println("Connected to server.");
                         setEvent(eve);
                     }
-
+                    System.out.println("end");
                     while (eve.isConnected() && !eve.isClosed() && running) {
                         try {
                             if (eve.isInputShutdown() || eve.isOutputShutdown()) {
@@ -238,7 +252,7 @@ public class clientremoteform extends javax.swing.JFrame {
             }
         }
 
-        public void stop() {
+        public void stop() throws NativeHookException {
             running = false;
             try {
                 if (serverSocket != null && !serverSocket.isClosed()) {

@@ -201,8 +201,19 @@ public class serverstartscreen extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (isConnected) {
             java.awt.EventQueue.invokeLater(() -> {
-                fileform = new serverfileform();
-                fileform.setVisible(true);
+                if (fileform == null || !fileform.isShowing()) {
+                    fileform = new serverfileform();
+                    fileform.setVisible(true);
+                    
+                    fileform.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            fileform = null;
+                        }
+                    });
+                } else {
+                    JOptionPane.showMessageDialog(this, "This screen is already open.");
+                }
             });
         } else {
             JOptionPane.showMessageDialog(this, "Waiting Connection...");

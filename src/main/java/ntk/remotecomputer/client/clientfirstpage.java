@@ -19,7 +19,9 @@ import ntk.remotecomputer.Commons;
 
 public class clientfirstpage extends javax.swing.JFrame {
     private clientmsg clmsg = null;
-    
+    private clientremoteform clientRemote = null;
+    private clientfileform clientFile = null;
+            
     public clientfirstpage(String serverIp) throws UnknownHostException {
         initComponents();
         ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(Commons.ICON_IMG_PATH));
@@ -162,7 +164,19 @@ public class clientfirstpage extends javax.swing.JFrame {
         // Chat and Share Screen Window Initialization
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new clientremoteform(ipAddress.getText()).setVisible(true);
+                if (clientRemote == null || !clientRemote.isShowing()) {
+                    clientRemote = new clientremoteform(ipAddress.getText());
+                    clientRemote.setVisible(true);
+                    
+                    clientRemote.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            clientRemote = null;
+                        }
+                    });
+                } else {
+                    JOptionPane.showMessageDialog(this, "This screen is already open.");
+                }
             } catch (IOException ex) {
                 Logger.getLogger(clientfirstpage.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -171,10 +185,23 @@ public class clientfirstpage extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         //File Transfer Initialization
-        clientfileform c = new clientfileform(ipAddress.getText());
-        c.setBounds(550, 150, 800, 700);
-        c.setResizable(false);
-        c.setVisible(true);
+        java.awt.EventQueue.invokeLater(() -> {
+            if (clientRemote == null || !clientRemote.isShowing()) {
+                clientFile = new clientfileform(ipAddress.getText());
+                clientFile.setBounds(550, 150, 800, 700);
+                clientFile.setResizable(false);
+                clientFile.setVisible(true);
+
+                clientFile.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        clientFile = null;
+                    }
+                });
+            } else {
+                JOptionPane.showMessageDialog(this, "This screen is already open.");
+            }
+        });
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
