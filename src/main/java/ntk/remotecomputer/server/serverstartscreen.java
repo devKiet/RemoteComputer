@@ -18,8 +18,8 @@ import ntk.remotecomputer.Commons;
 public class serverstartscreen extends javax.swing.JFrame {
     private Server server = null;
     private serverfileform fileform = null;
-//    private static final String privateTokenKey = Commons.generateNewToken();
-    private static final String privateTokenKey = "OK";
+    private static final String privateTokenKey = Commons.generateNewToken();
+    // private static final String privateTokenKey = "OK";
     private ServerSocket serverSocket;
     private static servermsg svmsg = null;
     private boolean isConnected = false;
@@ -129,7 +129,7 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 420, 150, 60));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 390, 150, 60));
 
         jButton2.setBackground(new java.awt.Color(0, 0, 0));
         jButton2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -140,45 +140,45 @@ public class serverstartscreen extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 330, 150, 60));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 290, 150, 60));
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Welcome to Remote Computer");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 40, 450, -1));
+        jLabel1.setText("SERVER SIDE");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 30, 450, -1));
 
         ipAddress.setEditable(false);
         ipAddress.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        getContentPane().add(ipAddress, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 130, 360, 40));
+        getContentPane().add(ipAddress, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 130, 300, 40));
 
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel2.setText("Open Chat Window");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 430, -1, 30));
+        jLabel2.setText("Chat Mesage");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 360, -1, 30));
 
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel5.setText("ACCESS TOKEN KEY");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 200, -1, -1));
+        jLabel5.setText("Access Token Key");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 90, -1, -1));
 
         accessTextField.setEditable(false);
         accessTextField.setFont(new java.awt.Font("AppleMyungjo", 1, 24)); // NOI18N
-        getContentPane().add(accessTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 240, 360, -1));
+        getContentPane().add(accessTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 130, 300, 40));
 
         jLabel4.setFont(new java.awt.Font("Arial", 3, 14)); // NOI18N
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/Reload@1x-1.0s-200px-200px.gif"))); // NOI18N
-        jLabel4.setText("Waiting Connection...");
+        jLabel4.setText("Waitting...");
         jLabel4.setToolTipText("");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 150, 150, 120));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 90, 100, 120));
 
         jLabel6.setFont(new java.awt.Font("Dialog", 1, 28)); // NOI18N
         jLabel6.setText("Your IP address");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, -1, 30));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, 30));
 
         jLabel7.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel7.setText("Accept Transfer");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 340, -1, 30));
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 260, -1, 30));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ntk/remotecomputer/res/background.png"))); // NOI18N
         jLabel3.setMaximumSize(new java.awt.Dimension(842, 551));

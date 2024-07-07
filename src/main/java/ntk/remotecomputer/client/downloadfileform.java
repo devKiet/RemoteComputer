@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -23,7 +25,8 @@ public class downloadfileform extends javax.swing.JFrame {
     static String ip = "";
     private static ObjectInputStream inputStream = null;
     private FileEvent fileEvent = null;
-
+    private PrintWriter pwrite;
+    
     public downloadfileform(String ip) {
         downloadfileform.ip = ip;
         initComponents();
@@ -99,71 +102,49 @@ public class downloadfileform extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
-    public void downloadFile(Socket sock) {
-        SwingWorker<Void, Integer> worker;
-        worker = new SwingWorker<>() {
-            @Override
-            protected Void doInBackground() {
-                try {
-                    fileEvent = (FileEvent) inputStream.readObject();
-                    if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
-                        System.out.println("Error occurred ..So exiting");
-                        downloadfileform.this.dispose();
-                    }
+    public void downloadFile() {
+        try {
+            fileEvent = (FileEvent) inputStream.readObject();
+            if (fileEvent.getStatus().equalsIgnoreCase("Error")) {
+                System.out.println("Error occurred ..So exiting");
+                this.dispose();
+            }
 
-                    // Tạo JFileChooser để người dùng chọn thư mục đích
-                    JFileChooser fileChooser = new JFileChooser();
-                    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-                    int returnVal = fileChooser.showSaveDialog(null);
+            // Tạo JFileChooser để người dùng chọn thư mục đích
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            int returnVal = fileChooser.showSaveDialog(null);
 
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        try (sock) {
-                            progressBar.setVisible(true);
-                            File selectedDirectory = fileChooser.getSelectedFile();
-                            String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
-                            
-                            if (fileEvent.isDirectory()) {
-                                new File(outputFile).mkdirs();
-                                saveDirectory(fileEvent, outputFile);
-                            } else {
-                                saveFile(fileEvent, outputFile);
-                            }
-                            progressBar.setVisible(false);
-                            JOptionPane.showMessageDialog(downloadfileform.this, "File/Folder downloaded successfully!");
-                        }
-                        dispose();
-                    } else {
-                        System.out.println("No directory selected. Exiting...");
-                        JOptionPane.showMessageDialog(downloadfileform.this, "No directory selected. Exiting...");
-                    }
-                } catch (IOException | ClassNotFoundException  e) {
-                    JOptionPane.showMessageDialog(downloadfileform.this, "Error: " + e);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File selectedDirectory = fileChooser.getSelectedFile();
+                String outputFile = selectedDirectory.getAbsolutePath() + File.separator + fileEvent.getFilename();
+
+                if (fileEvent.isDirectory()) {
+                    new File(outputFile).mkdirs();
+                    saveDirectory(fileEvent, outputFile);
+                } else {
+                    saveFile(fileEvent, outputFile);
                 }
-                
-                return null;
+                JOptionPane.showMessageDialog(this, "File/Folder downloaded successfully!");
+            } else {
+                System.out.println("No directory selected. Exiting...");
+                JOptionPane.showMessageDialog(this, "No directory selected. Exiting...");
             }
-            @Override
-            protected void process(List<Integer> chunks) {
-                int progress = chunks.get(chunks.size() - 1);
-                progressBar.setValue(progress);
-            }
-
-            @Override
-            protected void done() {
-                progressBar.setValue(100);
-            }
-        };
-        worker.execute();
+        } catch (IOException | ClassNotFoundException  e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e);
+        }
     }
     
     private void saveFile(FileEvent fileEvent, String outputPath) {
         try {
             File dstFile = new File(outputPath);
-            try (FileOutputStream fileOutputStream = new FileOutputStream(dstFile)) {
-                fileOutputStream.write(fileEvent.getFileData());
-                fileOutputStream.flush();
-            }
+            FileOutputStream fileOutputStream = new FileOutputStream(dstFile);
+            fileOutputStream.write(fileEvent.getFileData());
+            fileOutputStream.flush();
+            fileOutputStream.close();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -181,23 +162,27 @@ public class downloadfileform extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
+           
             String serverName = ip; //loop back ip      
             Socket sock = new Socket(serverName, Commons.FILE_SOCKET_PORT);
             this.setBounds(550, 150, 700, 300);
             this.setResizable(false);
 
-            String sourceFilePath2 = jTextField1.getText();
+            String keyRead = jTextField1.getText();
+            String sourceFilePath2 = keyRead;
             System.out.println("Path is: " + sourceFilePath2);
           
-            PrintWriter pwrite;
-            try (OutputStream ostream = sock.getOutputStream()) {
-                pwrite = new PrintWriter(ostream, true);
-                pwrite.println(sourceFilePath2 + " download");
-                inputStream = new ObjectInputStream(sock.getInputStream());
-            }
+	    OutputStream ostream = null;
+            ostream = sock.getOutputStream();
+            PrintWriter pwrite = new PrintWriter(ostream, true);
+            pwrite.println(sourceFilePath2 + " download");
+            inputStream = new ObjectInputStream(sock.getInputStream());
+           
+            this.downloadFile();
+            sock.close();
+            ostream.close();
             pwrite.close();
-            
-            this.downloadFile(sock);
+            dispose();
         } catch (IOException ex) {
             SwingUtilities.invokeLater(() -> {
                 JOptionPane.showMessageDialog(this, "Connection failed: " + ex.getMessage());

@@ -38,9 +38,7 @@ public final class Commons {
     
     public static String generateNewToken() {
         SecureRandom secureRandom = new SecureRandom();
-        Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
-        byte[] randomBytes = new byte[8];
-        secureRandom.nextBytes(randomBytes);
-        return base64Encoder.encodeToString(randomBytes);
+        int randomNumber = secureRandom.nextInt(1000000);
+        return String.format("%06d", randomNumber);
     }
 }
